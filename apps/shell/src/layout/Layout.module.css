@@ -1,0 +1,14 @@
+.layout {
+  display: grid;
+  grid-template-areas:
+    'header header'
+    'nav content';
+  grid-template-columns: var(--npst-nav-width) 1fr;
+  grid-template-rows: var(--npst-header-height) 1fr;
+  min-height: 100vh;
+}
+
+.content {
+  grid-area: content;
+  padding: var(--npst-space-4);
+}

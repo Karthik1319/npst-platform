@@ -1,0 +1,30 @@
+.header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--npst-space-4);
+  background: var(--npst-color-header-bg);
+  color: var(--npst-color-text-inverse);
+}
+
+.brand {
+  color: inherit;
+  font-weight: 600;
+  font-size: 1.125rem;
+  text-decoration: none;
+}
+
+.bell {
+  display: inline-flex;
+  padding: var(--npst-space-2);
+  border: none;
+  border-radius: var(--npst-radius);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.bell:hover {
+  background: var(--npst-color-action-primary);
+}

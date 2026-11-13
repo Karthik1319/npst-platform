@@ -1,0 +1,35 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: var(--npst-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-1);
+  height: 100%;
+  padding: var(--npst-space-3);
+  border: 1px solid var(--npst-color-border-default);
+  border-radius: var(--npst-radius);
+  background: var(--npst-color-surface-card);
+  color: var(--npst-color-text-default);
+  text-decoration: none;
+}
+
+.tile:hover {
+  border-color: var(--npst-color-action-primary);
+}
+
+.name {
+  font-weight: 600;
+  color: var(--npst-color-action-primary);
+}
+
+.description {
+  font-size: 0.875rem;
+  color: var(--npst-color-text-muted);
+}

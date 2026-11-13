@@ -1,0 +1,27 @@
+/*
+ * Temporary theme variables for the shell.
+ * Step 3 replaces this file with the shared `design-tokens` library.
+ */
+:root {
+  --npst-font-family: system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  --npst-color-action-primary: #1d4ed8;
+  --npst-color-action-primary-hover: #1e40af;
+  --npst-color-text-default: #1f2937;
+  --npst-color-text-muted: #6b7280;
+  --npst-color-text-inverse: #ffffff;
+  --npst-color-surface-page: #f3f4f6;
+  --npst-color-surface-card: #ffffff;
+  --npst-color-border-default: #d1d5db;
+  --npst-color-header-bg: #0f172a;
+  --npst-color-nav-bg: #ffffff;
+  --npst-color-nav-active-bg: #dbeafe;
+
+  --npst-space-1: 0.25rem;
+  --npst-space-2: 0.5rem;
+  --npst-space-3: 1rem;
+  --npst-space-4: 1.5rem;
+  --npst-radius: 0.5rem;
+  --npst-header-height: 3.5rem;
+  --npst-nav-width: 14rem;
+}

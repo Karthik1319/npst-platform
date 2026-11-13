@@ -8,8 +8,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | ---- | ----------------------------------- | ------ |
 | 0    | Check setup                         | Done   |
 | 1    | Workspace                           | Done   |
-| 2    | Shell app                           | Next   |
-| 3    | Shared libs + platform contract     | –      |
+| 2    | Shell app                           | Done   |
+| 3    | Shared libs + platform contract     | Next   |
 | 4    | First React remote                  | –      |
 | 5    | Second React remote + communication | –      |
 | 6    | Angular remote                      | –      |
@@ -27,6 +27,10 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | Nx         | 24.0.6                                  |
 | TypeScript | 6.0.3 (strict)                          |
 | Prettier   | 3.10.1                                  |
+| React      | 19.3.1 (+ React Router 8.5.1)           |
+| Vite       | 8.3.8                                   |
+| Vitest     | 5.1.0 (jsdom 31.0.0)                    |
+| ESLint     | 10.14.0 (typescript-eslint 8.72.2)      |
 
 ## Step 0 – Check setup
 
@@ -71,3 +75,53 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 **Open issues:** none.
 
 **Next step:** Step 2 – React + Vite shell app (header with bell placeholder, Portal Home, app launcher, left nav, routed placeholder pages). No Module Federation yet.
+
+## Step 2 – Shell app
+
+**Done:** React + Vite + TypeScript shell in `apps/shell` (Nx project name `shell`, port 4200). Header with a bell placeholder, left nav (Home, React A, React B, Angular), Portal Home with an app launcher, a routed content area with placeholder pages and a not-found page. No Module Federation yet.
+
+**Files:**
+
+| File                                                        | Purpose                                                                                                                                |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/shell/package.json`                                   | Shell package: Nx name `shell`, scripts (`dev`, `build`, `preview`, `lint`, `test`), runtime deps `react`, `react-dom`, `react-router` |
+| `apps/shell/index.html`                                     | HTML page Vite serves; `#root` element and the entry script                                                                            |
+| `apps/shell/vite.config.ts`                                 | Vite + React plugin, `@/` alias, fixed port 4200, Vitest with jsdom                                                                    |
+| `apps/shell/tsconfig.json`                                  | Points to the app and test TypeScript configs                                                                                          |
+| `apps/shell/tsconfig.app.json`                              | TypeScript settings for app code (DOM, JSX, `@/*` path)                                                                                |
+| `apps/shell/tsconfig.spec.json`                             | TypeScript settings for tests and `vite.config.ts`                                                                                     |
+| `apps/shell/src/main.tsx`                                   | Entry: loads styles, mounts `<App />` inside `BrowserRouter`                                                                           |
+| `apps/shell/src/App.tsx`                                    | Route table: `/` home, `/<app>/*` placeholders, `*` not found                                                                          |
+| `apps/shell/src/config/apps.ts`                             | Static list of portal apps (id, name, description, path) used by nav and launcher                                                      |
+| `apps/shell/src/layout/Layout.tsx` + `.module.css`          | Page frame: header, left nav, routed content (`<Outlet />`)                                                                            |
+| `apps/shell/src/layout/Header.tsx` + `.module.css`          | Brand link and notification bell placeholder                                                                                           |
+| `apps/shell/src/layout/LeftNav.tsx` + `.module.css`         | Nav links with active highlighting                                                                                                     |
+| `apps/shell/src/components/AppLauncher.tsx` + `.module.css` | Grid of app tiles on Portal Home                                                                                                       |
+| `apps/shell/src/pages/HomePage.tsx`                         | Portal Home                                                                                                                            |
+| `apps/shell/src/pages/AppPlaceholderPage.tsx`               | Placeholder where each MFE will load                                                                                                   |
+| `apps/shell/src/pages/NotFoundPage.tsx`                     | Unknown routes                                                                                                                         |
+| `apps/shell/src/pages/Page.module.css`                      | Shared page title/intro styles                                                                                                         |
+| `apps/shell/src/styles/theme.css`                           | Temporary CSS variables (replaced by `design-tokens` in Step 3)                                                                        |
+| `apps/shell/src/styles/global.css`                          | Base page styles using the variables                                                                                                   |
+| `apps/shell/src/App.test.tsx`                               | Tests: home + launcher tiles, app route, not-found route                                                                               |
+| `eslint.config.mjs`                                         | Workspace ESLint rules (JS, TypeScript, React hooks, no inline styles)                                                                 |
+| `nx.json`                                                   | Cache settings for `build`, `lint`, `test`                                                                                             |
+| `tsconfig.json`                                             | References `apps/shell`                                                                                                                |
+| `package.json`                                              | Root dev tools added; `format` / `format:check` scripts                                                                                |
+
+**Decisions:**
+
+- **Hand-written app, no Nx React generator.** A dry run of `@nx/react:application` created 22 files (including an 858-line welcome page) and 26 packages, some outdated (React Router 6, ESLint 9) and with version ranges. Hand-written uses 15 packages at exact versions and no `@nx/react`, `@nx/vite`, `@nx/eslint` or `@nx/vitest` plugins.
+- **Nx runs package.json scripts as targets.** `build`, `lint`, `test`, `dev`, `preview` come from `apps/shell/package.json`; `typecheck` is inferred by the `@nx/js/typescript` plugin (`tsc --build`). Caching for `build`, `lint`, `test` is set in `nx.json` `targetDefaults`.
+- **Runtime deps per app, tooling at the root.** `react`, `react-dom`, `react-router` live in `apps/shell/package.json` because each app owns its runtime versions (needed for Module Federation sharing later); Vite, Vitest, ESLint and types live in the root `package.json` and are shared by all apps.
+- **CSS Modules** (`*.module.css`) for component styles so class names are unique per app and the shell's styles cannot leak into remotes. Colours and spacing come only from CSS variables.
+- **No inline styles enforced by lint** (`no-restricted-syntax` on the JSX `style` attribute).
+- **pnpm release-age policy kept on.** pnpm 12 rejects packages published less than one day ago (supply-chain protection). jsdom 31.0.1 was published the same day, so pnpm added a `minimumReleaseAgeExclude` exception automatically; instead of keeping it, jsdom is pinned to 31.0.0 and the exception was removed.
+- **Ports:** shell 4200; remotes will use 4201 (React A), 4202 (React B), 4203 (Angular).
+- **App routes end in `/*`** so each MFE can own its own sub-routes under its base path later.
+
+**Verified:** `pnpm nx run-many -t lint test typecheck build` passes (3 tests); dev server serves `/` and deep links such as `/react-a`; an inline `style` attribute fails lint.
+
+**Open issues:** none.
+
+**Next step:** Step 3 – shared libs (`shared-contracts`, `platform-mocks`, `design-tokens`) and the `PlatformApi` contract; the shell uses all three and the launcher filters apps by mock roles.

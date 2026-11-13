@@ -1,0 +1,12 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--npst-font-family);
+  color: var(--npst-color-text-default);
+  background: var(--npst-color-surface-page);
+}

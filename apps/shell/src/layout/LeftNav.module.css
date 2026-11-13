@@ -1,0 +1,30 @@
+.nav {
+  grid-area: nav;
+  padding: var(--npst-space-3) var(--npst-space-2);
+  background: var(--npst-color-nav-bg);
+  border-right: 1px solid var(--npst-color-border-default);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  display: block;
+  padding: var(--npst-space-2) var(--npst-space-3);
+  border-radius: var(--npst-radius);
+  color: var(--npst-color-text-default);
+  text-decoration: none;
+}
+
+.link:hover {
+  color: var(--npst-color-action-primary);
+}
+
+.active {
+  background: var(--npst-color-nav-active-bg);
+  color: var(--npst-color-action-primary-hover);
+  font-weight: 600;
+}
