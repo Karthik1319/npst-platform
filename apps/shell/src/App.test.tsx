@@ -129,6 +129,16 @@ describe('direct URL access', () => {
     },
   );
 
+  it('loads the remote for React A and passes it the host props', async () => {
+    renderSignedInAt('User 1', '/react-a');
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Remote stub' }),
+    ).toBeDefined();
+    expect(
+      screen.getByText('user=User 1 basePath=/react-a platformUser=User 1'),
+    ).toBeDefined();
+  });
+
   it('opens an allowed app', async () => {
     renderSignedInAt('User 3', '/angular');
     expect(

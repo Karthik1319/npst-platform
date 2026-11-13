@@ -11,6 +11,9 @@
     },
     {
       "path": "./libs/platform-mocks"
+    },
+    {
+      "path": "./apps/demo-react-a"
     }
   ],
   "compilerOptions": {}

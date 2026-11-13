@@ -1,0 +1,23 @@
+{
+  "name": "@npst/demo-react-a",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "nx": {
+    "name": "demo-react-a"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@npst/design-tokens": "workspace:*",
+    "@npst/platform-mocks": "workspace:*",
+    "@npst/shared-contracts": "workspace:*",
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  }
+}

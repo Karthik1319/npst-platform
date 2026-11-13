@@ -1,3 +1,4 @@
+import type { PortalApp } from '@npst/shared-contracts';
 import { Route, Routes } from 'react-router';
 import { Layout } from '@/layout/Layout';
 import { AccessDeniedPage } from '@/pages/AccessDeniedPage';
@@ -7,6 +8,8 @@ import { NotFoundPage } from '@/pages/NotFoundPage';
 import { usePlatform } from '@/platform/PlatformContext';
 import { RequireAppAccess } from '@/platform/RequireAppAccess';
 import { useAsyncData } from '@/platform/useAsyncData';
+import { RemoteAppPage } from '@/remotes/RemoteAppPage';
+import { remoteApps } from '@/remotes/registry';
 
 /** The signed-in portal: layout, Portal Home and one guarded route per app. */
 export function Portal() {
@@ -29,7 +32,7 @@ export function Portal() {
             path={`${app.path}/*`}
             element={
               <RequireAppAccess app={app}>
-                <AppPlaceholderPage app={app} />
+                <AppView app={app} />
               </RequireAppAccess>
             }
           />
@@ -43,5 +46,15 @@ export function Portal() {
         />
       </Route>
     </Routes>
+  );
+}
+
+/** A loaded remote if one is registered for the app, otherwise a placeholder. */
+function AppView({ app }: { app: PortalApp }) {
+  const Remote = remoteApps[app.id];
+  return Remote ? (
+    <RemoteAppPage app={app} Remote={Remote} />
+  ) : (
+    <AppPlaceholderPage app={app} />
   );
 }

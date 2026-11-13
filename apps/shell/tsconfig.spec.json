@@ -10,6 +10,12 @@
     "types": ["vite/client", "node"],
     "paths": { "@/*": ["./src/*"] }
   },
-  "include": ["vite.config.ts", "src/**/*.test.ts", "src/**/*.test.tsx"],
+  "include": [
+    "vite.config.ts",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/test/**/*.tsx",
+    "src/remotes/remote-modules.d.ts"
+  ],
   "references": [{ "path": "./tsconfig.app.json" }]
 }

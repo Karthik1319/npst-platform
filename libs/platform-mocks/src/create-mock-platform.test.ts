@@ -1,6 +1,9 @@
 import type { PlatformUser } from '@npst/shared-contracts';
 import { describe, expect, it, vi } from 'vitest';
-import { createMockPlatform } from './create-mock-platform';
+import {
+  createMockPlatform,
+  type MockPlatformOptions,
+} from './create-mock-platform';
 import { mockUsers } from './mock-data';
 
 function user(name: string): PlatformUser {
@@ -11,11 +14,17 @@ function user(name: string): PlatformUser {
 
 describe('createMockPlatform', () => {
   it('follows the current contract version', () => {
-    expect(createMockPlatform().version).toBe('1.0.0');
+    expect(createMockPlatform({ user: user('User 1') }).version).toBe('1.0.0');
   });
 
-  it('defaults to Admin User', () => {
-    expect(createMockPlatform().user.name).toBe('Admin User');
+  it('requires a user (no default user)', () => {
+    // No silent Admin default: calling without a user is an error.
+    expect(() =>
+      createMockPlatform(undefined as unknown as MockPlatformOptions),
+    ).toThrow('needs the signed-in user');
+    expect(() =>
+      createMockPlatform({} as unknown as MockPlatformOptions),
+    ).toThrow('needs the signed-in user');
   });
 
   it.each([
@@ -46,7 +55,7 @@ describe('createMockPlatform', () => {
 
   it('sends toasts to subscribers until they unsubscribe', () => {
     vi.spyOn(console, 'info').mockImplementation(() => undefined);
-    const platform = createMockPlatform();
+    const platform = createMockPlatform({ user: user('User 1') });
     const listener = vi.fn();
     const unsubscribe = platform.toasts.subscribe(listener);
 

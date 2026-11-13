@@ -10,12 +10,14 @@ import {
   mockInbox,
   mockReminders,
   mockRolePermissions,
-  mockUsers,
 } from './mock-data';
 
 export interface MockPlatformOptions {
-  /** The signed-in user. Defaults to Admin User (e.g. for standalone MFEs). */
-  user?: PlatformUser;
+  /**
+   * The signed-in user. Required on purpose: there is no default user, so
+   * nothing silently runs with more rights (e.g. Admin) than intended.
+   */
+  user: PlatformUser;
 }
 
 /**
@@ -23,9 +25,12 @@ export interface MockPlatformOptions {
  * The real platform modules will provide the same interface later.
  */
 export function createMockPlatform(
-  options: MockPlatformOptions = {},
+  options: MockPlatformOptions,
 ): ShellPlatformApi {
-  const user = options.user ?? mockUsers[0];
+  const user = options?.user;
+  if (!user) {
+    throw new Error('createMockPlatform() needs the signed-in user');
+  }
   const toastListeners = new Set<(toast: Toast) => void>();
   let nextToastId = 1;
 

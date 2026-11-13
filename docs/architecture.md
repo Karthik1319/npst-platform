@@ -22,7 +22,7 @@ The target is a React host with several React MFEs and one Angular MFE. React ap
 
 Nx is recommended only if NPST is ready to bring the apps and shared libraries into one monorepo. If teams keep separate repositories, MF and runtime CSS still work without Nx.
 
-**Scope:** portal shell and MFE integration, shared branding tokens and theme delivery, shared shell elements (header, notification bell/panel, app launcher), repository strategy and runtime remote loading.
+**Scope:** portal shell and MFE integration, centralised authentication and session, shared branding tokens and theme delivery, shared shell elements (header, notification bell/panel, app launcher), repository strategy and runtime remote loading.
 
 ## 2. Architecture
 
@@ -116,7 +116,59 @@ Apps use semantic and component tokens only; a lint rule blocks hard-coded colou
 
 Never overwrite a published file, bundle fallback CSS with every app, and set and test the cache policy so the time for a change to appear is known.
 
-## 5. Options considered
+## 5. Centralised authentication and session
+
+The NPST Host Portal is the single entry point for user authentication. Individual MFEs must not implement their own login mechanisms.
+
+### Authentication flow
+
+1. The user logs in through the Host Portal.
+2. The backend authenticates the user.
+3. The backend creates a central session and sets a secure session cookie in the browser.
+4. The Host Portal loads the authorised MFEs.
+5. All MFEs make backend API requests using the same browser-managed session cookie.
+6. The backend validates the session on every protected API request.
+7. Logging out from the Host Portal invalidates the central session, affecting all MFEs.
+
+```
+ User ──► Host Portal login ──► Backend: authenticate, create central session
+                                         │
+                                         └─► Set-Cookie: secure session cookie (browser-managed)
+
+ Host Portal ──► loads authorised MFEs (user + platform passed as props)
+ MFE A / MFE B / Angular MFE ──► API requests (browser sends the same cookie)
+                                         │
+                                         └─► Backend validates session + permissions on every request
+
+ Logout in Host Portal ──► Backend invalidates the central session ──► every MFE loses access
+```
+
+### Implementation rules
+
+| Rule                        | Meaning                                                                             |
+| --------------------------- | ----------------------------------------------------------------------------------- |
+| Central authentication      | Authentication and session creation are managed centrally (Host Portal + backend).  |
+| No MFE login                | MFEs do not maintain independent login sessions.                                    |
+| No session handling in MFEs | MFEs do not manually manage or store session identifiers.                           |
+| Browser-managed cookies     | Authenticated API requests use browser-managed cookies.                             |
+| Backend enforcement         | Backend APIs independently validate sessions and permissions.                       |
+| UI checks are not security  | Frontend permission checks only control UI visibility.                              |
+| Central logout              | Logging out invalidates access across all MFEs.                                     |
+| POC                         | The POC may use mock authentication, but must follow this centralised architecture. |
+
+Actual cookie configuration, CSRF protection, CORS and backend integration will be decided during authentication implementation.
+
+### How the POC follows this
+
+| Flow step   | POC (mock)                                                                                                                                                      | Later (real)                                                                                                       |
+| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Login       | Host Portal login page; the user picks a mock user (no password)                                                                                                | Host Portal login backed by the authentication backend                                                             |
+| Session     | The Host Portal keeps the mock user's id in tab storage, standing in for the backend session; MFEs never see or store it                                        | Secure, browser-managed session cookie set by the backend; the Host Portal reads the current user from the backend |
+| MFEs        | Receive `user` and `platform` from the Host Portal as props; no login screens or session code; standalone mode (development only) uses mock users without login | Same props; API calls carry the session cookie automatically                                                       |
+| Permissions | `platform.permissions.can()` shows or hides UI only                                                                                                             | Backend validates session and permissions on every request                                                         |
+| Logout      | Clears the mock session and removes all MFEs from the page                                                                                                      | Invalidates the central session for all MFEs                                                                       |
+
+## 6. Options considered
 
 Branding delivery is separate from the repository and runtime-composition decisions. Nx can be combined with several options; it does not replace MF.
 
@@ -152,7 +204,7 @@ Branding delivery is separate from the repository and runtime-composition decisi
 
 Framework independence comes from the component contract, not from MF: MF can load code from any framework, but a React component still needs React to render. A Web Component is a browser standard that any framework can consume.
 
-## 6. Why Nx + MF + runtime CSS
+## 7. Why Nx + MF + runtime CSS
 
 - Each need gets its own tool: Nx for engineering workflow, MF for runtime composition, CSS tokens for branding.
 - It fits a React host with several React MFEs, which share one compatible React copy through MF.
@@ -160,20 +212,21 @@ Framework independence comes from the component contract, not from MF: MF can lo
 - Visual brand changes are separated from code releases.
 - Nx gives one project graph and affected-only builds once apps are in the monorepo.
 
-## 7. Risks and controls
+## 8. Risks and controls
 
-| Risk                                        | Why it matters                                                  | Control                                                                                                       |
-| ------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Remote unavailable or slow                  | Part of the portal could go blank                               | Bundled fallback for critical shell UI; bounded retries and timeouts; health monitoring; remote-offline tests |
-| React version mismatch or duplicate runtime | Runtime errors                                                  | Pin compatible versions; singleton sharing; enforce required versions; test exact host/remote combinations    |
-| Angular lifecycle leaks                     | Repeated mounting leaves listeners, subscriptions or DOM behind | Documented mount/unmount contract; automated lifecycle tests; destroy resources on unmount                    |
-| Remote code security                        | Runtime-loaded code runs in the app's context                   | Internal origins only; CSP; protected CI publishing; access and integrity reviews                             |
-| Non-atomic releases and version drift       | Apps may get incompatible remote versions                       | Immutable versions, controlled pointers, staged rollout, compatibility checks, rollback                       |
-| Brand server unavailable                    | Apps miss the latest theme                                      | Bundled fallback CSS/assets; resilient hosting; deliberate cache policy                                       |
-| Monorepo migration and ownership            | Workflows and release responsibilities change                   | Pilot migration; code owners, access boundaries, independent pipelines, contribution standards                |
-| Nx cache strategy                           | Remote caching adds infrastructure and security concerns        | Start with local caching; assess an approved remote-cache option separately                                   |
+| Risk                                        | Why it matters                                                  | Control                                                                                                                              |
+| ------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Remote unavailable or slow                  | Part of the portal could go blank                               | Bundled fallback for critical shell UI; bounded retries and timeouts; health monitoring; remote-offline tests                        |
+| React version mismatch or duplicate runtime | Runtime errors                                                  | Pin compatible versions; singleton sharing; enforce required versions; test exact host/remote combinations                           |
+| Angular lifecycle leaks                     | Repeated mounting leaves listeners, subscriptions or DOM behind | Documented mount/unmount contract; automated lifecycle tests; destroy resources on unmount                                           |
+| Remote code security                        | Runtime-loaded code runs in the app's context                   | Internal origins only; CSP; protected CI publishing; access and integrity reviews                                                    |
+| Non-atomic releases and version drift       | Apps may get incompatible remote versions                       | Immutable versions, controlled pointers, staged rollout, compatibility checks, rollback                                              |
+| Brand server unavailable                    | Apps miss the latest theme                                      | Bundled fallback CSS/assets; resilient hosting; deliberate cache policy                                                              |
+| Monorepo migration and ownership            | Workflows and release responsibilities change                   | Pilot migration; code owners, access boundaries, independent pipelines, contribution standards                                       |
+| MFE handles its own login or session        | Inconsistent sessions; logout does not end access everywhere    | Host Portal is the only login; MFEs never store session identifiers; browser-managed session cookie; backend validates every request |
+| Nx cache strategy                           | Remote caching adds infrastructure and security concerns        | Start with local caching; assess an approved remote-cache option separately                                                          |
 
-## 8. Repository structure (example)
+## 9. Repository structure (example)
 
 ```
 npst-platform/
@@ -197,7 +250,7 @@ npst-platform/
 
 Keep framework-specific libraries separate.
 
-## 9. Roadmap
+## 10. Roadmap
 
 | Phase                   | Work                                                                                                          | Exit condition                                                                  |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
@@ -218,5 +271,6 @@ Keep framework-specific libraries separate.
 - A published `theme.css` change updates the host and pilot MFE without rebuilding either.
 - With the brand server down, apps render using the bundled fallback theme.
 - With a remote down, the host shows a defined fallback or error state, not a blank shell.
+- Users log in only through the Host Portal; logging out ends access in every MFE.
 - A remote version can be rolled back through a controlled release mechanism.
 - Authentication, routing, communication, logging and error behaviour are documented and tested.

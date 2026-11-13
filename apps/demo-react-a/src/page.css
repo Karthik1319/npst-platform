@@ -1,0 +1,7 @@
+/* Page styles when React A is opened directly (not inside the shell). */
+body {
+  margin: 0;
+  padding: var(--npst-space-5);
+  background: var(--npst-color-surface-page);
+  font-family: var(--npst-font-family);
+}

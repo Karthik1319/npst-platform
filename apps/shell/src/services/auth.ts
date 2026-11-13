@@ -2,14 +2,22 @@ import { mockAuth } from '@npst/platform-mocks';
 import type { PlatformUser } from '@npst/shared-contracts';
 
 /**
- * Sign-in for the portal. Mock for now: pick a predefined user, no password.
- * Real sign-in (identity provider) replaces this file only.
+ * Sign-in for the portal (the only login; MFEs never log in themselves).
+ * Mock for now: pick a predefined user, no password.
+ *
+ * Real flow (docs/architecture.md, section 5): the backend authenticates the
+ * user, creates a central session and sets a secure, browser-managed session
+ * cookie; this file then only calls the backend's login/logout and reads the
+ * current user. Only this file changes.
  *
  * Authentication only says WHO the user is. WHAT they may do is RBAC,
  * answered by `platform.permissions.can()`.
  */
 
-/** Browser-tab session only; cleared when the tab closes. */
+/**
+ * Mock only: the user's id in tab storage stands in for the backend session.
+ * It never reaches MFEs; the real session cookie is managed by the browser.
+ */
 export const SESSION_STORAGE_KEY = 'npst.session.userId';
 
 /** Users shown on the mock login page. */

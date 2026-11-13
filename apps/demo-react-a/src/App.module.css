@@ -1,0 +1,55 @@
+.app {
+  max-width: 40rem;
+  padding: var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-radius-lg);
+  background: var(--npst-color-surface-card);
+  box-shadow: var(--npst-shadow-card);
+  color: var(--npst-color-text-default);
+  font-family: var(--npst-font-family);
+}
+
+.title {
+  margin: 0 0 var(--npst-space-1);
+  color: var(--npst-color-text-strong);
+}
+
+.lead {
+  margin: 0 0 var(--npst-space-4);
+  color: var(--npst-color-text-muted);
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--npst-space-2) var(--npst-space-4);
+  margin: 0 0 var(--npst-space-4);
+}
+
+.facts dt {
+  color: var(--npst-color-text-muted);
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.button {
+  padding: var(--npst-space-2) var(--npst-space-3);
+  border: none;
+  border-radius: var(--npst-radius);
+  background: var(--npst-button-primary-bg);
+  color: var(--npst-button-primary-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--npst-button-primary-bg-hover);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: var(--npst-focus-ring);
+}

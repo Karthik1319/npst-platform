@@ -11,8 +11,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 2    | Shell app                           | Done   |
 | 3    | Shared libs + platform contract     | Done   |
 | 3b   | Mock login + RBAC (enhancement)     | Done   |
-| 4    | First React remote                  | Next   |
-| 5    | Second React remote + communication | –      |
+| 4    | First React remote                  | Done   |
+| 5    | Second React remote + communication | Next   |
 | 6    | Angular remote                      | –      |
 | 7    | Failure handling                    | –      |
 | 8    | Bundling review                     | –      |
@@ -21,23 +21,24 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 
 ## Toolchain
 
-| Tool       | Version                                 |
-| ---------- | --------------------------------------- |
-| Node.js    | 24.x (pinned by `.nvmrc` and `engines`) |
-| pnpm       | 12.18.0 (pinned by `packageManager`)    |
-| Nx         | 24.0.6                                  |
-| TypeScript | 6.0.3 (strict)                          |
-| Prettier   | 3.10.1                                  |
-| React      | 19.3.1 (+ React Router 8.5.1)           |
-| Vite       | 8.3.8                                   |
-| Vitest     | 5.1.0 (jsdom 31.0.0)                    |
-| ESLint     | 10.14.0 (typescript-eslint 8.72.2)      |
+| Tool              | Version                                           |
+| ----------------- | ------------------------------------------------- |
+| Node.js           | 24.x (pinned by `.nvmrc` and `engines`)           |
+| pnpm              | 12.18.0 (pinned by `packageManager`)              |
+| Nx                | 24.0.6                                            |
+| TypeScript        | 6.0.3 (strict)                                    |
+| Prettier          | 3.10.1                                            |
+| React             | 19.3.1 (+ React Router 8.5.1)                     |
+| Vite              | 8.3.8                                             |
+| Vitest            | 5.1.0 (jsdom 31.0.0)                              |
+| ESLint            | 10.14.0 (typescript-eslint 8.72.2)                |
+| Module Federation | `@module-federation/vite` 1.23.11 (runtime 2.9.3) |
 
 ## Step 0 – Check setup
 
 **Done:** Node 24, pnpm 12.18.0 and git confirmed on the development and review machines. Architecture read; plan for Step 1 agreed.
 
-**Decisions:** folder names follow the PoC plan (`apps/shell`, `libs/shared-contracts`, …), not the illustrative names in `architecture.md` section 8.
+**Decisions:** folder names follow the PoC plan (`apps/shell`, `libs/shared-contracts`, …), not the illustrative names in `architecture.md` section 9 (Repository structure).
 
 ## Step 1 – Workspace
 
@@ -225,7 +226,7 @@ Roles, permissions and app mappings live only in `mock-data.ts`.
 | `libs/shared-contracts/src/platform-api.ts`          | `ShellPlatformApi.apps.catalogue()` added (every hosted app, so the shell can tell "access denied" from "not found"); documented the `can('access', appId)` convention                                                                                                                     |
 | `libs/platform-mocks/src/mock-data.ts`               | Four mock users, role → permission table with per-app permissions, app catalogue without role fields                                                                                                                                                                                       |
 | `libs/platform-mocks/src/mock-auth.ts`               | New: mock sign-in (list users, find user, `signIn(userId)`); identifies the user only                                                                                                                                                                                                      |
-| `libs/platform-mocks/src/create-mock-platform.ts`    | `apps.allowed()` uses `can('access', app.id)`; `apps.catalogue()`; default user is Admin User (for standalone MFEs)                                                                                                                                                                        |
+| `libs/platform-mocks/src/create-mock-platform.ts`    | `apps.allowed()` uses `can('access', app.id)`; `apps.catalogue()`; the signed-in user is required (no default user, changed in Step 4)                                                                                                                                                     |
 | `libs/platform-mocks/src/index.ts`                   | Exports `mockAuth`, `mockUsers`                                                                                                                                                                                                                                                            |
 | `libs/platform-mocks/src/*.test.ts`                  | Visibility per user, catalogue, audit permission, mock sign-in                                                                                                                                                                                                                             |
 | `libs/design-tokens/src/theme.css`                   | Type scale, spacing, radius and card-shadow tokens; four accent tones (avatars and role tags); login brand-panel tokens (gradient, accent bar, feature tiles, dividers, wave colours) and sign-in panel tokens. No logo tokens                                                             |
@@ -263,6 +264,92 @@ Roles, permissions and app mappings live only in `mock-data.ts`.
 
 - Notifications, reminders and audit data are the same for every mock user.
 - The Angular app (Step 6) must compile `shared-contracts` from source; how the Angular build picks up workspace TypeScript libraries is checked when choosing the Angular build option.
-- Standalone MFEs (Step 4) need their own toast display and a mock user, since `ToastHost` and the login live in the shell; `createMockPlatform()` defaults to Admin User for this.
+- Standalone MFEs need their own toast display, since `ToastHost` lives in the shell (Step 5).
 
 **Next step:** Step 4 – first React remote `demo-react-a`: runs standalone with the mock platform, then becomes a Module Federation remote loaded by the shell on `/react-a` (inside the guarded route).
+
+## Step 4 – First React remote
+
+**Done:** new app `apps/demo-react-a` (Nx name `demo-react-a`, port 4201). In development it also runs on its own with the mock platform (standalone mode); it is a Module Federation **remote** that exposes one component, `./App`. The shell is now the **host**: on `/react-a` (still behind the access guard) it downloads React A from `http://localhost:4201` at runtime and renders it with the host props `{ user, basePath, bus, platform }`.
+
+**Concepts:**
+
+- **Host / remote:** the host (shell) is the page the user opens; a remote (React A) is a separately built and served app whose code the host downloads at runtime. The shell bundle contains nothing of React A.
+- **Exposes:** the list of modules a remote offers to hosts (`'./App': './src/App.tsx'`). The host imports it as `demoReactA/App`.
+- **Remote entry / manifest:** `remoteEntry.js` is the remote's entry file; `mf-manifest.json` describes the remote (entry, exposed modules and their JS/CSS files, shared packages). The shell points at the manifest.
+- **Shared singleton:** `react` and `react-dom` are declared `shared` with `singleton: true` in both apps, so only one copy runs on the page; `requiredVersion: '^19.3.1'` states which versions are acceptable. Sub-paths such as `react/jsx-runtime` and `react-dom/client` are shared automatically.
+- **`shareStrategy: 'loaded-first'`:** use a shared package that is already loaded (the shell's React) before downloading another copy.
+
+**Files:**
+
+| File                                                              | Purpose                                                                                                                                                                            |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package.json` (root)                                             | Dev dependency `@module-federation/vite` 1.23.11 (approved)                                                                                                                        |
+| `apps/demo-react-a/package.json`                                  | Package `@npst/demo-react-a`; scripts `dev`, `build`, `preview`, `lint`, `test`; runtime deps react, react-dom and the workspace libs                                              |
+| `apps/demo-react-a/vite.config.ts`                                | Port 4201; `federation()` remote: name `demoReactA`, `remoteEntry.js`, manifest, exposes `./App`, shared React singletons, `loaded-first`, no type generation                      |
+| `apps/demo-react-a/index.html`                                    | Page when React A is opened at its own address (standalone harness in development, portal notice in production)                                                                    |
+| `apps/demo-react-a/src/App.tsx` + `.module.css`                   | The exposed component: shows the user, base path, React version, the server it was loaded from, and a click counter (a React hook)                                                 |
+| `apps/demo-react-a/src/main.tsx`                                  | Direct-open entry: development → standalone harness (loaded only when `import.meta.env.DEV`); production → portal notice. Not used by the shell                                    |
+| `apps/demo-react-a/src/standalone/Standalone.tsx` + `.module.css` | Development-only harness: mock user from `?user=<id>` (default User 1), same access check as the shell (`can('access', 'react-a')`), user switcher                                 |
+| `apps/demo-react-a/src/PortalNotice.tsx` + `.module.css`          | Production page when opened directly: "React A is part of the NPST Portal…" with a link to the portal (`VITE_PORTAL_URL`, default `http://localhost:4200`)                         |
+| `apps/demo-react-a/src/config.ts`                                 | App id (`react-a`), name, portal URL                                                                                                                                               |
+| `apps/demo-react-a/src/page.css`                                  | Page background when opened directly                                                                                                                                               |
+| `apps/demo-react-a/src/App.test.tsx`                              | Renders the host props; hook works                                                                                                                                                 |
+| `apps/demo-react-a/src/standalone/Standalone.test.tsx`            | Standalone mode: default User 1 (not Admin), User 2/3 denied, User 1/Admin allowed, unknown user rejected                                                                          |
+| `apps/demo-react-a/src/PortalNotice.test.tsx`                     | Production notice: text and portal link, no app content                                                                                                                            |
+| `apps/demo-react-a/src/production-build.test.ts`                  | Runs a real production build and checks: still a remote (`remoteEntry.js`, `mf-manifest.json` exposing `./App`), no mock users or standalone harness in the output, notice present |
+| `apps/demo-react-a/tsconfig*.json`                                | TypeScript settings (same layout as the shell)                                                                                                                                     |
+| `apps/shell/vite.config.ts`                                       | `federation()` host: remote `demoReactA` → `http://localhost:4201/mf-manifest.json`, same shared React config; unit tests use a stub instead                                       |
+| `apps/shell/src/remotes/registry.ts`                              | App id → remote component (`react-a` → `import('demoReactA/App')`, loaded lazily)                                                                                                  |
+| `apps/shell/src/remotes/RemoteAppPage.tsx`                        | Renders a remote with the host props, loading message while it downloads                                                                                                           |
+| `apps/shell/src/remotes/RemoteErrorBoundary.tsx`                  | If the remote cannot load or crashes, only the content area shows a message                                                                                                        |
+| `apps/shell/src/remotes/remote-modules.d.ts`                      | TypeScript type for `demoReactA/App`: a component taking `MfeProps`                                                                                                                |
+| `apps/shell/src/services/bus.ts`                                  | The one event bus the shell passes to every MFE                                                                                                                                    |
+| `apps/shell/src/Portal.tsx`                                       | Allowed app with a registered remote → remote; otherwise placeholder                                                                                                               |
+| `apps/shell/src/test/RemoteStub.tsx`                              | Test stand-in for the remote                                                                                                                                                       |
+| `apps/shell/src/App.test.tsx`                                     | New test: `/react-a` renders the remote with the correct host props                                                                                                                |
+| `apps/shell/tsconfig.app.json`, `tsconfig.spec.json`              | Test stub excluded from the app build; remote type file visible to tests                                                                                                           |
+
+**Verified (built output and dev servers, in a browser):**
+
+- `/react-a` shows React A inside the shell; it reports "Served from http://localhost:4201", the signed-in user and base path `/react-a`.
+- **One React copy:** the click counter (a hook) works; the share scope lists React 19.3.1 for `demoReactA` as `from: "shell"`; the browser downloads only the manifest, `remoteEntry.js`, the App code, its CSS and Module Federation helper files from 4201. The remote's own React/react-dom fallback files (including the 207 kB `react-dom/client` chunk) are never requested.
+- The remote's CSS is loaded from 4201 (listed in the manifest); `bundleAllCSS` is not needed.
+- Opened directly: in development, standalone mode as User 1; `?user=u-2` shows "Access denied: User 2 (SOLUTIONS) does not have permission to open React A". In production, only the portal notice, whatever `?user=` says.
+- `pnpm nx run-many -t lint test typecheck build` passes for 4 projects (54 tests).
+- After the access-control fix, the shell still loads React A through `mf-manifest.json` → `remoteEntry.js` in both the dev servers and the production build (browser check).
+
+**What happens when the remote is stopped:** the shell still starts (remotes are only fetched when their route opens). Opening `/react-a` fails with `[ Federation Runtime ]: Failed to get manifest. #RUNTIME-003` in the console; the error boundary shows "React A is not available right now" in the content area while the header, bell, navigation and other routes keep working. Without an error boundary, React would remove the whole page on this error (blank shell). Step 7 adds timeout and retry.
+
+**Access-control issue found in review and fixed:**
+
+- _Observed:_ opening `http://localhost:4201` directly showed React A as Admin User, even for a user (User 2) who has no access to React A in the shell.
+- _Cause:_ the standalone entry (`main.tsx`) created the mock platform without a user, the mock defaulted to Admin User, and no access check ran. This harness was also part of the production build. The shell's sign-in cannot reach 4201: browser storage is separate per origin (4200 vs 4201), and the shell's guard only runs inside the shell.
+- _Fix 1 – standalone mode only in development:_ `main.tsx` loads the harness only when `import.meta.env.DEV` is true; production builds contain no mock users and show only a notice pointing to the portal. A test builds React A for production and fails if mock users or the harness appear in the output.
+- _Fix 2 – least privilege and the same RBAC:_ `createMockPlatform()` now requires the user (no default user; calling it without one throws). Standalone mode starts as User 1, can switch with `?user=<id>`, and runs the same check as the shell, `platform.permissions.can('access', 'react-a')`, before rendering React A.
+- _Fix 3 – production rules (security boundary):_
+  - Remote files (`remoteEntry.js`, `mf-manifest.json`, `assets/`) are static code the browser must download, so they cannot be secret. Serve them from internal origins only, with CORS limited to the portal origin.
+  - Real protection is on the backend: every MFE backend API checks the user's token and permissions on each request. The shell's route guard and the remote's checks are UX only.
+  - A remote's production build never contains mock users, mock platforms or a standalone harness (checked by a test for each remote).
+  - These rules go into `docs/adding-a-remote.md` in Step 10.
+
+**Architecture update (senior's input):** `docs/architecture.md` has a new section 5, "Centralised authentication and session": the Host Portal is the only login; the backend creates a central session with a secure, browser-managed cookie; MFEs never log in or store session identifiers; the backend validates session and permissions on every request; logout in the Host Portal ends access in every MFE. Later sections are renumbered (6–10); a risk row and a pilot acceptance criterion were added. The POC already follows this shape (mock login only in the shell, MFEs receive `user` and `platform` as props, sign-out removes all MFEs); the shell's `services/auth.ts` comment now describes the real flow. Cookie settings, CSRF, CORS and backend integration are decided during the real authentication work.
+
+**Decisions:**
+
+- Official `@module-federation/vite` plugin, configured directly (no Nx Module Federation helpers or generators).
+- The host points at the remote's **manifest** (`mf-manifest.json`), so the remote's JS and CSS file list comes from the remote itself.
+- Shared: only `react` and `react-dom` (singleton, `^19.3.1`). The router is not shared: React A does not use it yet.
+- Type generation (`dts`) off; the shell declares the remote module's type by hand from `MfeProps`.
+- The remote URL is fixed to `http://localhost:4201` for the POC; environment-specific URLs are handled with deployment (Step 8/10).
+- `build.target: 'esnext'` in both apps (the federation runtime uses modern JavaScript such as top-level `await`).
+- No Nx dependency between shell and `demo-react-a`: they are linked only at runtime, so changing the remote does not rebuild the shell (checked in Step 8).
+- A minimal error boundary is added now so a stopped remote never blanks the shell; timeout and retry stay in Step 7.
+
+**Open issues:**
+
+- The remote bundles its own copy of the Module Federation runtime (`dist-*.js`, about 66 kB). The plugin has an experimental option to share it from the host; to review in Step 8.
+- Standalone React A has no toast display yet; added in Step 5 when React A calls `platform.notify.toast()`.
+- Carried over: the Angular build must compile `shared-contracts` from source (Step 6).
+
+**Next step:** Step 5 – second React remote `demo-react-b` and communication: A sends a bus event, B displays it; both show the user from the host; A hides a button with `platform.permissions.can()` and calls `platform.notify.toast()`.

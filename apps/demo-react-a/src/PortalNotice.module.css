@@ -1,0 +1,23 @@
+.notice {
+  max-width: 32rem;
+  padding: var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-radius-lg);
+  background: var(--npst-color-surface-card);
+  color: var(--npst-color-text-default);
+}
+
+.title {
+  margin: 0 0 var(--npst-space-2);
+  color: var(--npst-color-text-strong);
+}
+
+.text {
+  margin: 0 0 var(--npst-space-3);
+  color: var(--npst-color-text-secondary);
+}
+
+.link {
+  color: var(--npst-color-action-primary);
+  font-weight: 600;
+}
