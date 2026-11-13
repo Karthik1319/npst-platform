@@ -1,0 +1,14 @@
+{
+  "name": "@npst/design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "nx": {
+    "name": "design-tokens"
+  },
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    "./theme.css": "./src/theme.css"
+  }
+}

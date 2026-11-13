@@ -1,4 +1,4 @@
-import type { PortalApp } from '@/config/apps';
+import type { PortalApp } from '@npst/shared-contracts';
 import styles from './Page.module.css';
 
 interface AppPlaceholderPageProps {

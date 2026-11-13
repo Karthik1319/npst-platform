@@ -5,6 +5,12 @@
   "references": [
     {
       "path": "./apps/shell"
+    },
+    {
+      "path": "./libs/shared-contracts"
+    },
+    {
+      "path": "./libs/platform-mocks"
     }
   ],
   "compilerOptions": {}

@@ -9,8 +9,9 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 0    | Check setup                         | Done   |
 | 1    | Workspace                           | Done   |
 | 2    | Shell app                           | Done   |
-| 3    | Shared libs + platform contract     | Next   |
-| 4    | First React remote                  | –      |
+| 3    | Shared libs + platform contract     | Done   |
+| 3b   | Mock login + RBAC (enhancement)     | Done   |
+| 4    | First React remote                  | Next   |
 | 5    | Second React remote + communication | –      |
 | 6    | Angular remote                      | –      |
 | 7    | Failure handling                    | –      |
@@ -125,3 +126,143 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 **Open issues:** none.
 
 **Next step:** Step 3 – shared libs (`shared-contracts`, `platform-mocks`, `design-tokens`) and the `PlatformApi` contract; the shell uses all three and the launcher filters apps by mock roles.
+
+## Step 3 – Shared libs + platform contract
+
+**Done:** three workspace libraries and the shell wired to them. The shell creates one mock platform object, shows the mock user and a bell (unread notifications + reminders), shows toasts sent through `platform.notify.toast()`, and lists only the apps the mock user's roles allow. The single mock user was replaced by the mock login in Step 3b.
+
+**Project graph:** `shell → design-tokens, platform-mocks, shared-contracts`; `platform-mocks → shared-contracts`.
+
+**Files – `libs/shared-contracts`** (framework-neutral types and the event bus; no React or Angular code):
+
+| File                                 | Purpose                                                                                                                                               |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package.json`                       | Package `@npst/shared-contracts`; exports `src/index.ts`                                                                                              |
+| `src/platform-api.ts`                | `PlatformApi` (what every MFE gets), `ShellPlatformApi` (adds bell, toast, launcher parts used only by the shell), data types, `PLATFORM_API_VERSION` |
+| `src/mount-contract.ts`              | `MfeProps` `{ user, basePath, bus, platform }` and `MountableMfe` (`mount` / `unmount`)                                                               |
+| `src/event-bus.ts`                   | Typed bus on `window` CustomEvents with the `npst:` prefix; `NpstEvents` registry of event names and payloads                                         |
+| `src/index.ts`                       | Public exports                                                                                                                                        |
+| `src/event-bus.test.ts`              | Bus tests, including two separate bus copies talking to each other                                                                                    |
+| `tsconfig*.json`, `vitest.config.ts` | TypeScript and test settings (jsdom for `window`)                                                                                                     |
+
+**Files – `libs/platform-mocks`** (mock implementation of `ShellPlatformApi`):
+
+| File                               | Purpose                                                                                                                 |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `package.json`                     | Package `@npst/platform-mocks`; depends on `shared-contracts`                                                           |
+| `src/mock-data.ts`                 | Mock users, role permissions, app catalogue, inbox, reminders, audit entries (users and permissions changed in Step 3b) |
+| `src/create-mock-platform.ts`      | `createMockPlatform()` builds the platform object from the mock data                                                    |
+| `src/index.ts`                     | Public exports                                                                                                          |
+| `src/create-mock-platform.test.ts` | Version, permissions, app filtering, toasts, permission-gated audit                                                     |
+| `tsconfig*.json`                   | TypeScript settings                                                                                                     |
+
+**Files – `libs/design-tokens`:**
+
+| File            | Purpose                                                       |
+| --------------- | ------------------------------------------------------------- |
+| `package.json`  | Package `@npst/design-tokens`; exports `theme.css`            |
+| `src/theme.css` | CSS variables in three layers: primitive, semantic, component |
+
+**Files – shell:**
+
+| File                                                                                  | Change                                                                                   |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `apps/shell/package.json`                                                             | Depends on the three libraries (`workspace:*`)                                           |
+| `src/services/platform.ts`                                                            | New: creates the one platform object (mock); the only file that changes for real modules |
+| `src/platform/PlatformContext.tsx`                                                    | New: React context, `PlatformProvider`, `usePlatform()`                                  |
+| `src/platform/useAsyncData.ts`                                                        | New: loading / ready / error state for async platform calls                              |
+| `src/components/NotificationBell.tsx` + `.module.css`                                 | New: bell with count and a panel listing notifications and reminders                     |
+| `src/components/ToastHost.tsx` + `.module.css`                                        | New: shows toasts for 4 seconds                                                          |
+| `src/main.tsx`                                                                        | Imports `@npst/design-tokens/theme.css`; wraps the app in `PlatformProvider`             |
+| `src/App.tsx`                                                                         | Routes only for allowed apps (from `platform.apps.allowed()`)                            |
+| `src/layout/*`, `src/components/AppLauncher.tsx`, `src/pages/*`                       | Use the app list from the platform; header shows user name and bell                      |
+| `src/App.test.tsx`                                                                    | Shell tests (rewritten in Step 3b)                                                       |
+| `src/styles/theme.css`, `src/config/apps.ts`                                          | Removed (replaced by `design-tokens` and the platform app list)                          |
+| `tsconfig.json`, `apps/shell/tsconfig*.json`, `libs/platform-mocks/tsconfig.lib.json` | Project references added by `nx sync`                                                    |
+
+**Decisions:**
+
+- **Two interfaces.** `PlatformApi` is what MFEs receive: branding, user, `permissions.can()`, `notify.toast()`, `audit.history()`. `ShellPlatformApi` extends it with the parts only the shell renders: inbox and reminders (bell), toast subscription, allowed apps (launcher). Together they cover all six platform modules. MFEs get the same object, typed as `PlatformApi`.
+- **Sensitive actions are not in the browser contract.** Sending email/SMS/OTP, writing audit events, provisioning and role changes stay backend-only.
+- **Contract version** `PLATFORM_API_VERSION = '1.0.0'`; additive changes only, a breaking change needs a new major version.
+- **Async where data will come from a backend** (`audit.history`, inbox, reminders, allowed apps); `user` and `permissions.can()` are synchronous because they are loaded once at sign-in.
+- **Libraries are bundled into each app, not shared at runtime.** Libraries are plain TypeScript/CSS source (no build step); Vite compiles them into each app. The bus still works across copies because all copies use the same `window`; `platform` is one object created by the shell and passed down.
+- **One `theme.css` is both the fallback and the runtime theme.** Each app bundles it (fallback); in Step 9 the same file is also served from a brand server and loaded after the bundled copy, so its values win.
+- **Only `services/platform.ts` knows it is a mock**; components get the platform through `usePlatform()`.
+- **TypeScript project references** between apps and libraries are maintained by `nx sync` from `package.json` dependencies.
+- **Mock role filtering:** replaced in Step 3b by per-app permissions and an Access Denied page.
+
+**Verified:** `pnpm nx run-many -t lint test typecheck build` passes for all projects (14 tests); theme variables are in the shell's built CSS; `pnpm prettier --check .` passes.
+
+## Step 3b – Mock login and RBAC (enhancement)
+
+**Done:** a mock login page is the entry point of the portal. The user picks one of four predefined users (no password), lands on Portal Home, and sees their name and role in the header with a **Sign out** button. Every portal route needs a session. Each application has its own permission; the left nav, the Portal Home tiles and direct URLs all follow the same `platform.permissions.can()` check, and a direct URL to a forbidden app redirects to an **Access denied** page. Still a POC: no real authentication, RBAC or branding backend.
+
+**Mock users and roles** (in `libs/platform-mocks/src/mock-data.ts`):
+
+| User       | Role        | Permissions                                                                                | Apps visible                             |
+| ---------- | ----------- | ------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| Admin User | `ADMIN`     | `access:react-a`, `access:react-b`, `access:angular`, `access:admin-console`, `view:audit` | React A, React B, Angular, Admin Console |
+| User 1     | `SALES`     | `access:react-a`, `access:react-b`                                                         | React A, React B                         |
+| User 2     | `SOLUTIONS` | `access:react-b`, `access:angular`                                                         | React B, Angular                         |
+| User 3     | `EMPLOYEE`  | `access:angular`                                                                           | Angular                                  |
+
+Roles, permissions and app mappings live only in `mock-data.ts`.
+
+**How a permission is checked (one mechanism):**
+
+1. Users have roles; roles grant permissions written `action:resource` (`mockRolePermissions`).
+2. Each application has its own permission: `access` on its app id, e.g. `access:react-a`.
+3. `platform.permissions.can('access', appId)` answers it. Nothing else decides access:
+   - `platform.apps.allowed()` (left nav + Portal Home tiles) filters the catalogue with `can('access', app.id)`;
+   - the shell route guard `RequireAppAccess` calls `can('access', app.id)` before rendering an app route.
+4. This is UX only. In production every backend API checks permissions again.
+
+**Files:**
+
+| File                                                 | Purpose                                                                                                                                                                                                                                                                                    |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `libs/shared-contracts/src/platform-api.ts`          | `ShellPlatformApi.apps.catalogue()` added (every hosted app, so the shell can tell "access denied" from "not found"); documented the `can('access', appId)` convention                                                                                                                     |
+| `libs/platform-mocks/src/mock-data.ts`               | Four mock users, role → permission table with per-app permissions, app catalogue without role fields                                                                                                                                                                                       |
+| `libs/platform-mocks/src/mock-auth.ts`               | New: mock sign-in (list users, find user, `signIn(userId)`); identifies the user only                                                                                                                                                                                                      |
+| `libs/platform-mocks/src/create-mock-platform.ts`    | `apps.allowed()` uses `can('access', app.id)`; `apps.catalogue()`; default user is Admin User (for standalone MFEs)                                                                                                                                                                        |
+| `libs/platform-mocks/src/index.ts`                   | Exports `mockAuth`, `mockUsers`                                                                                                                                                                                                                                                            |
+| `libs/platform-mocks/src/*.test.ts`                  | Visibility per user, catalogue, audit permission, mock sign-in                                                                                                                                                                                                                             |
+| `libs/design-tokens/src/theme.css`                   | Type scale, spacing, radius and card-shadow tokens; four accent tones (avatars and role tags); login brand-panel tokens (gradient, accent bar, feature tiles, dividers, wave colours) and sign-in panel tokens. No logo tokens                                                             |
+| `apps/shell/src/services/auth.ts`                    | New: sign-in / sign-out / restore, session kept in `sessionStorage` (browser tab only)                                                                                                                                                                                                     |
+| `apps/shell/src/services/platform.ts`                | `createPlatform(user)` builds the platform for the signed-in user                                                                                                                                                                                                                          |
+| `apps/shell/src/session/SessionContext.tsx`          | New: who is signed in (`user`, `signIn`, `signOut`); no permission logic                                                                                                                                                                                                                   |
+| `apps/shell/src/session/RequireSession.tsx`          | New: no session → `/login`; otherwise creates the platform for the user and provides it                                                                                                                                                                                                    |
+| `apps/shell/src/platform/RequireAppAccess.tsx`       | New: route guard using `platform.permissions.can('access', app.id)` → `/access-denied`                                                                                                                                                                                                     |
+| `apps/shell/src/App.tsx`                             | Top-level routes: `/login` public, everything else behind `RequireSession`                                                                                                                                                                                                                 |
+| `apps/shell/src/Portal.tsx`                          | New: the signed-in portal routes (moved from `App.tsx`), one guarded route per catalogue app                                                                                                                                                                                               |
+| `apps/shell/src/main.tsx`                            | `SessionProvider`; theme imported once for login and portal                                                                                                                                                                                                                                |
+| `apps/shell/src/pages/LoginPage.tsx` + `.module.css` | New: mock login page built to the agreed design: brand panel ("NPST Platform" heading, accent bar, tagline, three feature tiles, decorative waves) and sign-in panel (user cards with initials, email, role tag, tone colours 1–4); stacks on small screens; theme variables only, no logo |
+| `apps/shell/src/pages/AccessDeniedPage.tsx`          | New: names the app that was refused, link back to Portal Home                                                                                                                                                                                                                              |
+| `apps/shell/src/layout/Header.tsx` + `.module.css`   | Shows name and role; Sign out button                                                                                                                                                                                                                                                       |
+| `apps/shell/src/App.test.tsx`                        | Login, sign-in as each user, visibility per role, direct URL, access denied, logout, protected routes, bell                                                                                                                                                                                |
+| `apps/shell/src/components/ToastHost.test.tsx`       | New: toast shown through `platform.notify.toast()`                                                                                                                                                                                                                                         |
+| `apps/shell/src/pages/LoginPage.theme.test.ts`       | New: login CSS and SVG markup use only `design-tokens` variables, no hard-coded colours, no logo anywhere (theme, CSS, page), theme loaded at the app entry                                                                                                                                |
+
+**Decisions:**
+
+- **Authentication separate from RBAC.** `services/auth.ts` + `SessionContext` answer _who_ is signed in; `platform.permissions.can()` answers _what_ they may do. Sign-in never checks permissions, and the guards never read roles directly.
+- **One platform object per signed-in user,** created in `RequireSession` with `createPlatform(user)`. MFEs will receive this user and platform through the existing host contract (`MfeProps`), unchanged.
+- **Access denied vs not found.** The shell creates a route for every catalogue app and guards it; a forbidden app redirects to `/access-denied`, a path that is not an app shows "Page not found".
+- **Contract change is additive:** `apps.catalogue()` added to `ShellPlatformApi` (shell-only part); `PlatformApi` for MFEs is unchanged. The contract has not been released yet, so the version stays `1.0.0`.
+- **Session in `sessionStorage`:** survives a page reload in the same tab, ends when the tab closes. Only the user id is stored; the user is looked up again from the mock data.
+- **Login page branding:** login and portal are one app and load the same bundled `theme.css` once at the entry (`main.tsx`), so they always share the theme. The login page uses theme variables only (checked by a test). No runtime branding is claimed: when the brand server's hosted `theme.css` is added (Step 9), it is loaded at the same entry point and applies to the login page automatically; the bundled theme stays as the fallback.
+- **Login buttons have explicit labels** (`Sign in as User 1 (SALES)`) for screen readers.
+- **No logo (intentional design decision, not a placeholder).** The login page and portal show no NPST or company logo: no image, SVG mark, or text-based logo. The placeholder logo files and logo tokens were removed, and a test fails if a logo is reintroduced. The "NPST Platform" heading is page text. **Branding Server requirement:** the branding system must not inject or display a logo automatically; logo support, if ever added, is optional, disabled by default and reserves no space. Colours, fonts, themes and component styles stay configurable through the Branding Server.
+- **Login design driven by theme variables.** Every colour, gradient, wave colour, accent tone, font size, radius and shadow on the login page is a `theme.css` variable, so a runtime `theme.css` from the Branding Server can restyle the page without a rebuild. Inline SVG icons and waves use `currentColor` or CSS classes, never colour attributes. Avatar and role-tag colours cycle through four theme tones by list position, so no role is hard-coded in the component.
+- **Responsive login:** side-by-side panels on wide screens; below 64rem the brand panel stacks on top. Compared with the design image at 1440 px wide (1.13× zoom, same size as the image) and checked at a true 390 px phone width (no horizontal scrolling). Remaining difference from the design: the design uses a wider typeface; the theme font (`--npst-font-family`, system fonts) is kept because a web font would be a new dependency.
+
+**Verified:** `pnpm nx run-many -t lint test typecheck build` passes for all projects (41 tests: shared-contracts 4, platform-mocks 12, shell 25); a hard-coded colour added to the login CSS makes the theme test fail.
+
+**Open issues:**
+
+- Notifications, reminders and audit data are the same for every mock user.
+- The Angular app (Step 6) must compile `shared-contracts` from source; how the Angular build picks up workspace TypeScript libraries is checked when choosing the Angular build option.
+- Standalone MFEs (Step 4) need their own toast display and a mock user, since `ToastHost` and the login live in the shell; `createMockPlatform()` defaults to Admin User for this.
+
+**Next step:** Step 4 – first React remote `demo-react-a`: runs standalone with the mock platform, then becomes a Module Federation remote loaded by the shell on `/react-a` (inside the guarded route).

@@ -1,0 +1,19 @@
+{
+  "name": "@npst/platform-mocks",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "nx": {
+    "name": "platform-mocks"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@npst/shared-contracts": "workspace:*"
+  }
+}

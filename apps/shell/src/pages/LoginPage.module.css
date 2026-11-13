@@ -1,0 +1,382 @@
+/*
+ * Theme variables only: colours, gradients, waves, fonts, sizes, radii and
+ * shadows all come from @npst/design-tokens, so a runtime theme.css can
+ * restyle this page without a rebuild. Layout sizes are not branding.
+ * Intentionally no logo.
+ */
+.page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  min-height: 100vh;
+  font-family: var(--npst-font-family);
+}
+
+/* ---------- Brand panel ---------- */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: var(--npst-space-6) var(--npst-space-7);
+  background: var(--npst-login-hero-bg);
+  color: var(--npst-login-hero-text);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  margin-top: var(--npst-space-7);
+}
+
+.heroTitle {
+  margin: 0;
+  font-size: var(--npst-font-size-display);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.accentBar {
+  display: block;
+  width: 4.5rem;
+  height: 0.3rem;
+  margin: var(--npst-space-4) 0;
+  border-radius: var(--npst-radius-round);
+  background: var(--npst-login-accent-bar);
+}
+
+.heroText {
+  margin: 0;
+  font-size: var(--npst-font-size-2xl);
+  line-height: 1.5;
+  color: var(--npst-login-hero-text-muted);
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 11.5rem));
+  margin: var(--npst-space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--npst-space-3);
+  padding: 0 var(--npst-space-3);
+  text-align: center;
+}
+
+.feature + .feature {
+  border-left: 1px solid var(--npst-login-divider);
+}
+
+.featureTile {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 1px solid var(--npst-login-feature-tile-border);
+  border-radius: var(--npst-radius-lg);
+  background: var(--npst-login-feature-tile-bg);
+}
+
+.featureIcon {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.featureLabel {
+  max-width: 7rem;
+  font-size: var(--npst-font-size-lg);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Decorative waves (colours from theme variables). */
+.waveTop,
+.waveBottom {
+  position: absolute;
+  right: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+.waveTop {
+  top: 0;
+  height: 45%;
+}
+
+.waveBottom {
+  bottom: 0;
+  height: 24%;
+}
+
+.waveLine {
+  fill: none;
+  stroke: var(--npst-login-wave-line);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.waveBack {
+  fill: var(--npst-login-wave-back);
+}
+
+.waveFront {
+  fill: var(--npst-login-wave-front);
+}
+
+.waveHighlight {
+  fill: none;
+  stroke: var(--npst-login-wave-highlight);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ---------- Sign-in panel ---------- */
+
+.panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  padding: var(--npst-space-6) var(--npst-space-7) var(--npst-space-6)
+    var(--npst-space-6);
+  background: var(--npst-login-panel-bg);
+}
+
+.content {
+  width: 100%;
+  max-width: var(--npst-login-list-width);
+}
+
+.title {
+  margin: 0 0 var(--npst-space-2);
+  font-size: var(--npst-font-size-3xl);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--npst-color-text-strong);
+}
+
+.subtitle {
+  margin: 0 0 var(--npst-space-5);
+  font-size: var(--npst-font-size-xl);
+  color: var(--npst-color-text-secondary);
+}
+
+.users {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--npst-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Avatar and role tag colours cycle through the theme's four accent tones. */
+.userItem:nth-child(4n + 1) {
+  --login-tone-bg: var(--npst-tone-1-bg);
+  --login-tone-text: var(--npst-tone-1-text);
+}
+
+.userItem:nth-child(4n + 2) {
+  --login-tone-bg: var(--npst-tone-2-bg);
+  --login-tone-text: var(--npst-tone-2-text);
+}
+
+.userItem:nth-child(4n + 3) {
+  --login-tone-bg: var(--npst-tone-3-bg);
+  --login-tone-text: var(--npst-tone-3-text);
+}
+
+.userItem:nth-child(4n + 4) {
+  --login-tone-bg: var(--npst-tone-4-bg);
+  --login-tone-text: var(--npst-tone-4-text);
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-4);
+  width: 100%;
+  padding: var(--npst-space-3) var(--npst-space-4) var(--npst-space-3)
+    var(--npst-space-3);
+  border: 1px solid var(--npst-login-card-border);
+  border-radius: var(--npst-radius-lg);
+  background: var(--npst-login-card-bg);
+  box-shadow: var(--npst-login-card-shadow);
+  color: var(--npst-color-text-strong);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 120ms ease;
+}
+
+.user:hover {
+  border-color: var(--npst-color-action-primary);
+  box-shadow: var(--npst-login-card-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.user:focus-visible {
+  outline: none;
+  border-color: var(--npst-color-action-primary);
+  box-shadow: var(--npst-focus-ring);
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--npst-radius-round);
+  background: var(--login-tone-bg);
+  color: var(--login-tone-text);
+  font-size: var(--npst-font-size-xl);
+  font-weight: 700;
+}
+
+.userText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--npst-space-1);
+  min-width: 0;
+}
+
+.userName {
+  font-size: var(--npst-font-size-xl);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.userEmail {
+  overflow: hidden;
+  font-size: var(--npst-font-size-md);
+  color: var(--npst-color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.role {
+  flex: none;
+  padding: var(--npst-space-1) var(--npst-space-3);
+  border-radius: var(--npst-radius-round);
+  background: var(--login-tone-bg);
+  color: var(--login-tone-text);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.chevron {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--npst-color-action-primary);
+  stroke-width: 2.2;
+}
+
+.footnote {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--npst-space-3);
+  margin: var(--npst-space-5) 0 0;
+  padding-left: var(--npst-space-1);
+  font-size: var(--npst-font-size-md);
+  line-height: 1.5;
+  color: var(--npst-color-text-secondary);
+}
+
+.infoIcon {
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* ---------- Smaller screens: panels stack ---------- */
+
+@media (max-width: 64rem) {
+  .page {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero {
+    padding: var(--npst-space-6) var(--npst-space-4) var(--npst-space-7);
+  }
+
+  .heroContent {
+    margin-top: 0;
+  }
+
+  .heroTitle {
+    font-size: var(--npst-font-size-3xl);
+  }
+
+  .heroText {
+    font-size: var(--npst-font-size-lg);
+  }
+
+  .heroText br {
+    display: none;
+  }
+
+  .waveTop {
+    display: none;
+  }
+
+  .features {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: var(--npst-space-5);
+  }
+
+  .featureLabel {
+    font-size: var(--npst-font-size-sm);
+  }
+
+  .panel {
+    align-items: start;
+    padding: var(--npst-space-5) var(--npst-space-3);
+  }
+
+  .user {
+    gap: var(--npst-space-3);
+    padding: var(--npst-space-3);
+  }
+
+  .avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: var(--npst-font-size-md);
+  }
+
+  .userName {
+    font-size: var(--npst-font-size-lg);
+  }
+
+  .userEmail {
+    font-size: var(--npst-font-size-sm);
+  }
+
+  .role {
+    padding: var(--npst-space-1) var(--npst-space-2);
+    font-size: var(--npst-font-size-xs);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .user {
+    transition: none;
+  }
+
+  .user:hover {
+    transform: none;
+  }
+}

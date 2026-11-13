@@ -1,5 +1,5 @@
+import type { PortalApp } from '@npst/shared-contracts';
 import { Link } from 'react-router';
-import type { PortalApp } from '@/config/apps';
 import styles from './AppLauncher.module.css';
 
 interface AppLauncherProps {

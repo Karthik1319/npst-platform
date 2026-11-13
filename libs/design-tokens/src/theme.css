@@ -1,0 +1,149 @@
+/*
+ * NPST theme: the only source of colours, fonts and spacing for every app.
+ *
+ * Apps import this file at build time, so a bundled copy (the fallback) is
+ * always present. Step 9 also serves it from a separate brand server at
+ * runtime; that copy loads after the bundled one and its values win.
+ *
+ * Layers (see docs/architecture.md, "Token layers"):
+ *   1. Primitive: raw palette. Only used inside this file.
+ *   2. Semantic:  meaning-based values. Apps use these.
+ *   3. Component: values for shared shell components.
+ *
+ * No logo tokens: the portal intentionally shows no company logo.
+ */
+:root {
+  /* 1. Primitive */
+  --npst-blue-100: #dbeafe;
+  --npst-blue-200: #bfdbfe;
+  --npst-blue-500: #2f6fed;
+  --npst-blue-600: #1d4ed8;
+  --npst-blue-800: #1e40af;
+  --npst-indigo-800: #1e2ba3;
+  --npst-sky-300: #7dd3fc;
+  --npst-sky-400: #38bdf8;
+  --npst-slate-50: #f8fafc;
+  --npst-slate-100: #f1f5f9;
+  --npst-slate-200: #e2e8f0;
+  --npst-slate-700: #334155;
+  --npst-slate-900: #0f172a;
+  --npst-gray-100: #f3f4f6;
+  --npst-gray-300: #d1d5db;
+  --npst-gray-500: #6b7280;
+  --npst-gray-800: #1f2937;
+  --npst-white: #ffffff;
+  --npst-white-a15: rgb(255 255 255 / 0.15);
+  --npst-white-a25: rgb(255 255 255 / 0.25);
+  --npst-red-600: #dc2626;
+  --npst-green-100: #dcfce7;
+  --npst-green-700: #15803d;
+  --npst-purple-100: #ede9fe;
+  --npst-purple-700: #6d28d9;
+  --npst-orange-100: #ffedd5;
+  --npst-orange-700: #c2410c;
+  --npst-amber-600: #d97706;
+
+  /* 2. Semantic */
+  --npst-font-family: system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
+  --npst-font-size-xs: 0.75rem;
+  --npst-font-size-sm: 0.875rem;
+  --npst-font-size-md: 1rem;
+  --npst-font-size-lg: 1.125rem;
+  --npst-font-size-xl: 1.25rem;
+  --npst-font-size-2xl: 1.5rem;
+  --npst-font-size-3xl: 2.75rem;
+  --npst-font-size-display: 3.5rem;
+  --npst-color-action-primary: var(--npst-blue-600);
+  --npst-color-action-primary-hover: var(--npst-blue-800);
+  --npst-color-text-default: var(--npst-gray-800);
+  --npst-color-text-strong: var(--npst-slate-900);
+  --npst-color-text-secondary: var(--npst-slate-700);
+  --npst-color-text-muted: var(--npst-gray-500);
+  --npst-color-text-inverse: var(--npst-white);
+  --npst-color-surface-page: var(--npst-gray-100);
+  --npst-color-surface-card: var(--npst-white);
+  --npst-color-border-default: var(--npst-gray-300);
+  --npst-color-border-subtle: var(--npst-slate-200);
+  --npst-color-status-info: var(--npst-blue-600);
+  --npst-color-status-success: var(--npst-green-700);
+  --npst-color-status-warning: var(--npst-amber-600);
+  --npst-color-status-error: var(--npst-red-600);
+  /* Accent tones for avatars and tags, used in order 1 → 4. */
+  --npst-tone-1-bg: var(--npst-blue-100);
+  --npst-tone-1-text: var(--npst-blue-600);
+  --npst-tone-2-bg: var(--npst-green-100);
+  --npst-tone-2-text: var(--npst-green-700);
+  --npst-tone-3-bg: var(--npst-purple-100);
+  --npst-tone-3-text: var(--npst-purple-700);
+  --npst-tone-4-bg: var(--npst-orange-100);
+  --npst-tone-4-text: var(--npst-orange-700);
+  --npst-space-1: 0.25rem;
+  --npst-space-2: 0.5rem;
+  --npst-space-3: 1rem;
+  --npst-space-4: 1.5rem;
+  --npst-space-5: 2rem;
+  --npst-space-6: 3rem;
+  --npst-space-7: 6rem;
+  --npst-radius: 0.5rem;
+  --npst-radius-lg: 0.875rem;
+  --npst-radius-round: 999px;
+  --npst-shadow-raised: 0 4px 12px rgb(15 23 42 / 0.15);
+  --npst-shadow-card:
+    0 1px 2px rgb(15 23 42 / 0.04), 0 6px 16px rgb(15 23 42 / 0.05);
+
+  /* 3. Component */
+  --npst-header-bg: var(--npst-slate-900);
+  --npst-header-height: 3.5rem;
+  --npst-nav-bg: var(--npst-white);
+  --npst-nav-active-bg: var(--npst-blue-100);
+  --npst-nav-width: 14rem;
+  --npst-badge-bg: var(--npst-red-600);
+  --npst-badge-text: var(--npst-white);
+  --npst-toast-bg: var(--npst-slate-900);
+  --npst-toast-text: var(--npst-white);
+  --npst-button-primary-bg: var(--npst-color-action-primary);
+  --npst-button-primary-bg-hover: var(--npst-color-action-primary-hover);
+  --npst-button-primary-text: var(--npst-color-text-inverse);
+  --npst-focus-ring: 0 0 0 3px var(--npst-blue-200);
+
+  /* Login: brand panel */
+  --npst-login-hero-bg:
+    radial-gradient(
+      60% 45% at 65% 42%,
+      rgb(56 189 248 / 0.22) 0%,
+      transparent 70%
+    ),
+    linear-gradient(
+      155deg,
+      var(--npst-indigo-800) 0%,
+      var(--npst-blue-600) 55%,
+      var(--npst-blue-500) 100%
+    );
+  --npst-login-hero-text: var(--npst-white);
+  --npst-login-hero-text-muted: var(--npst-blue-200);
+  --npst-login-accent-bar: linear-gradient(
+    90deg,
+    var(--npst-sky-400),
+    var(--npst-sky-300)
+  );
+  --npst-login-feature-tile-bg: var(--npst-white-a15);
+  --npst-login-feature-tile-border: var(--npst-white-a25);
+  --npst-login-divider: var(--npst-white-a25);
+  --npst-login-wave-line: rgb(125 211 252 / 0.35);
+  --npst-login-wave-back: rgb(56 189 248 / 0.2);
+  --npst-login-wave-front: rgb(59 143 255 / 0.6);
+  --npst-login-wave-highlight: rgb(125 211 252 / 0.75);
+
+  /* Login: sign-in panel */
+  --npst-login-panel-bg: linear-gradient(
+    160deg,
+    var(--npst-white) 0%,
+    var(--npst-slate-50) 50%,
+    var(--npst-slate-100) 100%
+  );
+  --npst-login-card-bg: var(--npst-color-surface-card);
+  --npst-login-card-border: var(--npst-color-border-subtle);
+  --npst-login-card-shadow: var(--npst-shadow-card);
+  --npst-login-card-shadow-hover: var(--npst-shadow-raised);
+  --npst-login-list-width: 36rem;
+}

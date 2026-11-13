@@ -1,0 +1,16 @@
+{
+  "name": "@npst/shared-contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "nx": {
+    "name": "shared-contracts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest run"
+  }
+}

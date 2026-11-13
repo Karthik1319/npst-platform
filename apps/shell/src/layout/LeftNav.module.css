@@ -1,7 +1,7 @@
 .nav {
   grid-area: nav;
   padding: var(--npst-space-3) var(--npst-space-2);
-  background: var(--npst-color-nav-bg);
+  background: var(--npst-nav-bg);
   border-right: 1px solid var(--npst-color-border-default);
 }
 
@@ -24,7 +24,7 @@
 }
 
 .active {
-  background: var(--npst-color-nav-active-bg);
+  background: var(--npst-nav-active-bg);
   color: var(--npst-color-action-primary-hover);
   font-weight: 600;
 }
