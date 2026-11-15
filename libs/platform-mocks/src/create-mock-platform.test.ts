@@ -46,6 +46,23 @@ describe('createMockPlatform', () => {
     }
   });
 
+  it('grants the in-app permission export:react-a only to ADMIN', () => {
+    expect(
+      createMockPlatform({ user: user('Admin User') }).permissions.can(
+        'export',
+        'react-a',
+      ),
+    ).toBe(true);
+    for (const name of ['User 1', 'User 2', 'User 3']) {
+      expect(
+        createMockPlatform({ user: user(name) }).permissions.can(
+          'export',
+          'react-a',
+        ),
+      ).toBe(false);
+    }
+  });
+
   it('lists all four apps in the catalogue for every user', async () => {
     const catalogue = await createMockPlatform({
       user: user('User 3'),

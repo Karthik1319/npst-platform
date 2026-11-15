@@ -11,4 +11,5 @@ export const remoteApps: Readonly<
   Record<string, LazyExoticComponent<ComponentType<MfeProps>>>
 > = {
   'react-a': lazy(() => import('demoReactA/App')),
+  'react-b': lazy(() => import('demoReactB/App')),
 };

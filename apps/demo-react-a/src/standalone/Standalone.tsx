@@ -1,9 +1,9 @@
 import { createMockPlatform, mockAuth } from '@npst/platform-mocks';
-import { createEventBus } from '@npst/shared-contracts';
 import { useMemo } from 'react';
 import { App } from '@/App';
 import { APP_ID, APP_NAME } from '@/config';
 import styles from './Standalone.module.css';
+import { StandaloneToasts } from './StandaloneToasts';
 
 /** Least privilege: standalone mode starts as a normal user, never Admin. */
 export const DEFAULT_USER_ID = 'u-1';
@@ -25,7 +25,6 @@ export function Standalone({ search }: StandaloneProps) {
     () => (user ? createMockPlatform({ user }) : null),
     [user],
   );
-  const bus = useMemo(() => createEventBus(), []);
 
   let content;
   if (!user || !platform) {
@@ -41,7 +40,7 @@ export function Standalone({ search }: StandaloneProps) {
       </section>
     );
   } else {
-    content = <App user={user} basePath="/" bus={bus} platform={platform} />;
+    content = <App user={user} basePath="/" platform={platform} />;
   }
 
   return (
@@ -63,6 +62,7 @@ export function Standalone({ search }: StandaloneProps) {
         </ul>
       </div>
       {content}
+      {platform && <StandaloneToasts platform={platform} />}
     </>
   );
 }

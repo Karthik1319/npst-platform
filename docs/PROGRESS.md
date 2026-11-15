@@ -4,20 +4,20 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 
 ## Current status
 
-| Step | Title                               | Status |
-| ---- | ----------------------------------- | ------ |
-| 0    | Check setup                         | Done   |
-| 1    | Workspace                           | Done   |
-| 2    | Shell app                           | Done   |
-| 3    | Shared libs + platform contract     | Done   |
-| 3b   | Mock login + RBAC (enhancement)     | Done   |
-| 4    | First React remote                  | Done   |
-| 5    | Second React remote + communication | Next   |
-| 6    | Angular remote                      | –      |
-| 7    | Failure handling                    | –      |
-| 8    | Bundling review                     | –      |
-| 9    | Runtime theme                       | –      |
-| 10   | Integration guides                  | –      |
+| Step | Title                                           | Status |
+| ---- | ----------------------------------------------- | ------ |
+| 0    | Check setup                                     | Done   |
+| 1    | Workspace                                       | Done   |
+| 2    | Shell app                                       | Done   |
+| 3    | Shared libs + platform contract                 | Done   |
+| 3b   | Mock login + RBAC (enhancement)                 | Done   |
+| 4    | First React remote                              | Done   |
+| 5    | Second React remote + Shell ↔ MFE communication | Done   |
+| 6    | Angular remote                                  | Next   |
+| 7    | Failure handling                                | –      |
+| 8    | Bundling review                                 | –      |
+| 9    | Runtime theme                                   | –      |
+| 10   | Integration guides                              | –      |
 
 ## Toolchain
 
@@ -201,12 +201,12 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 
 **Mock users and roles** (in `libs/platform-mocks/src/mock-data.ts`):
 
-| User       | Role        | Permissions                                                                                | Apps visible                             |
-| ---------- | ----------- | ------------------------------------------------------------------------------------------ | ---------------------------------------- |
-| Admin User | `ADMIN`     | `access:react-a`, `access:react-b`, `access:angular`, `access:admin-console`, `view:audit` | React A, React B, Angular, Admin Console |
-| User 1     | `SALES`     | `access:react-a`, `access:react-b`                                                         | React A, React B                         |
-| User 2     | `SOLUTIONS` | `access:react-b`, `access:angular`                                                         | React B, Angular                         |
-| User 3     | `EMPLOYEE`  | `access:angular`                                                                           | Angular                                  |
+| User       | Role        | Permissions                                                                                                                    | Apps visible                             |
+| ---------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+| Admin User | `ADMIN`     | `access:react-a`, `access:react-b`, `access:angular`, `access:admin-console`, `view:audit`, `export:react-a` (added in Step 5) | React A, React B, Angular, Admin Console |
+| User 1     | `SALES`     | `access:react-a`, `access:react-b`                                                                                             | React A, React B                         |
+| User 2     | `SOLUTIONS` | `access:react-b`, `access:angular`                                                                                             | React B, Angular                         |
+| User 3     | `EMPLOYEE`  | `access:angular`                                                                                                               | Angular                                  |
 
 Roles, permissions and app mappings live only in `mock-data.ts`.
 
@@ -352,4 +352,91 @@ Roles, permissions and app mappings live only in `mock-data.ts`.
 - Standalone React A has no toast display yet; added in Step 5 when React A calls `platform.notify.toast()`.
 - Carried over: the Angular build must compile `shared-contracts` from source (Step 6).
 
-**Next step:** Step 5 – second React remote `demo-react-b` and communication: A sends a bus event, B displays it; both show the user from the host; A hides a button with `platform.permissions.can()` and calls `platform.notify.toast()`.
+**Next step:** Step 5 – second React remote `demo-react-b` and communication (revised before it was committed; see "Direction change").
+
+## Direction change (before Step 5 was committed)
+
+Senior's review of the first Step 5 draft (which added an MFE ↔ MFE event bus):
+
+- The NPST MFEs (Keka, Salesforce, LMS, NPST DealDesk — Sales and Solutions are one MFE) are independent and do not depend on each other. An MFE ↔ MFE event bus is **not needed** now.
+- The POC must show **two-way parent–child communication** (Shell ↔ MFE), consistent across React and Angular, with the simplest approach.
+- Future MFE ↔ MFE communication (e.g. OpenProject ↔ Keka) is **documented only** (`docs/architecture.md`, "Communication"), not implemented.
+- Module Federation loading and bundling validation stays unchanged; loading and communication are separate concerns.
+
+What changed as a result, and why:
+
+| Change                                                                                                                                                                 | Reason                                                                                                                                                                  |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Removed the event bus (`shared-contracts/src/event-bus.ts` + its tests) and `bus` from `MfeProps`                                                                      | No current use case; a required, global channel in the contract invites hidden coupling between MFEs. The code stays in git history (added in Step 3, commit `7b5199b`) |
+| Moved the `Unsubscribe` type into `platform-api.ts`                                                                                                                    | It was the only thing `PlatformApi` used from the bus file; same type, no API change                                                                                    |
+| Removed the shell's `services/bus.ts`, the Communication demo page, its route and the "Demos" nav section                                                              | They only existed to show the bus                                                                                                                                       |
+| React A's message form and React B's message list replaced by a "Send a notification" action                                                                           | Shows MFE → Shell through `platform` instead of MFE → MFE                                                                                                               |
+| No new mechanism added (a proposed `HostApi { navigate, setTitle }` was rejected)                                                                                      | No real use case: each MFE manages its own pages under `basePath`; anything new an MFE needs from the shell goes into `PlatformApi` as a versioned change               |
+| Kept unchanged: React B as second remote, Module Federation setup, `export:react-a` permission, toasts, standalone mode, production-build tests, RBAC and session work | Still needed for loading/bundling validation and the platform contract                                                                                                  |
+
+The Step 3 and Step 4 entries below still mention the bus as it was then; this note supersedes them.
+
+## Step 5 – Second React remote and Shell ↔ MFE communication
+
+**Done:** new remote `apps/demo-react-b` (Nx name `demo-react-b`, port 4202), built like React A: Module Federation remote exposing `./App`, standalone mode in development only (default User 1, same access check as the shell), portal notice in production, production-build test. The shell loads React B on `/react-b`. Both remotes show **two-way parent–child communication** through the existing contract: they display what the shell passes in (user, base path) and ask the shell to show a notification through `platform.notify.toast()`. React A shows an **Export report** button only with the `export:react-a` permission. The event bus was removed (see "Direction change" above).
+
+**Concepts:**
+
+- **Parent–child communication:** the shell (parent) and each MFE (child) talk only through the typed contract in `shared-contracts`. **Shell → MFE:** props `{ user, basePath, platform }`. **MFE → Shell:** calls on `platform`, e.g. `platform.notify.toast()`; the shell's toast area shows the message. The same props reach Angular through `mount(element, props)` in Step 6.
+- **Why no extra channel:** `platform` is one object created by the shell and passed down, so an MFE calling it is already talking to the shell. New needs are added to `PlatformApi` (versioned, additive), not as a new mechanism.
+- **Each MFE owns its pages:** the shell routes everything under `basePath` (e.g. `/react-b/*`) to the MFE; the MFE handles its own internal navigation.
+- **Permission-gated UI:** `platform.permissions.can()` hides the button (UX only); the backend must check `export:react-a` again.
+- **Contract type test:** `expectTypeOf` checks in `contracts.test.ts` run during `typecheck`, so changing `MfeProps`, `MountableMfe` or `PlatformApi` fails the build until the test (and every MFE) is updated on purpose.
+
+**Files** (compared with Step 4):
+
+| File                                                                                      | Purpose                                                                                                                                                                                                                                                                          |
+| ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `libs/shared-contracts/src/mount-contract.ts`                                             | `MfeProps` is now `{ user, basePath, platform }` (no `bus`); documents the two directions                                                                                                                                                                                        |
+| `libs/shared-contracts/src/platform-api.ts`, `index.ts`                                   | `Unsubscribe` moved here from the removed bus file; bus exports removed                                                                                                                                                                                                          |
+| `libs/shared-contracts/src/event-bus.ts`, `event-bus.test.ts`                             | **Deleted** (see Direction change)                                                                                                                                                                                                                                               |
+| `libs/shared-contracts/src/contracts.test.ts`, `vitest.config.ts`                         | New contract tests (exact props, mount/unmount signature, `PlatformApi` members, version format); tests run in Node (no browser needed)                                                                                                                                          |
+| `libs/platform-mocks/src/mock-data.ts`, `create-mock-platform.test.ts`                    | `export:react-a` permission for `ADMIN`; only Admin has it                                                                                                                                                                                                                       |
+| `apps/demo-react-a/src/App.tsx` + `.module.css`                                           | "From the portal" (props), "To the portal" (notification via `platform`), Export report gated by `can('export', 'react-a')`                                                                                                                                                      |
+| `apps/demo-react-a/src/standalone/StandaloneToasts.tsx` + `.module.css`, `Standalone.tsx` | Toast display for standalone mode (development only; inside the portal the shell shows toasts)                                                                                                                                                                                   |
+| `apps/demo-react-a/src/App.test.tsx`, `standalone/Standalone.test.tsx`                    | Props shown, notification sent, Export hidden for User 1 / shown for Admin, standalone toast shown                                                                                                                                                                               |
+| `apps/demo-react-b/*`                                                                     | New remote, same structure as React A: `package.json`, `vite.config.ts` (port 4202, remote `demoReactB`), `index.html`, `tsconfig*.json`, `src/config.ts`, `src/main.tsx`, `src/page.css`, `src/App.*`, `src/PortalNotice.*`, `src/standalone/*`, `src/production-build.test.ts` |
+| `apps/shell/vite.config.ts`, `src/remotes/remote-modules.d.ts`, `registry.ts`             | Remote `demoReactB` → `http://localhost:4202/mf-manifest.json`; its type and registry entry; test stub alias                                                                                                                                                                     |
+| `apps/shell/src/remotes/RemoteAppPage.tsx`                                                | Passes `{ user, basePath, platform }` (no bus)                                                                                                                                                                                                                                   |
+| `apps/shell/src/services/bus.ts`                                                          | **Deleted**                                                                                                                                                                                                                                                                      |
+| `apps/shell/src/test/RemoteStub.tsx`, `src/App.test.tsx`                                  | Stub uses the contract both ways; tests below                                                                                                                                                                                                                                    |
+| `tsconfig.json`, `pnpm-lock.yaml`                                                         | Project reference and workspace entry for `demo-react-b`                                                                                                                                                                                                                         |
+
+**Tests for the communication contract:**
+
+- Shell → MFE: React A and React B receive the signed-in user and their own `basePath`; the `platform` passed in reflects the signed-in user's permissions (`canExport` false for User 1, true for Admin).
+- MFE → Shell: a toast requested by the remote appears in the **shell's** toast area.
+- Central sign-out while an MFE is open removes it and shows the login page.
+- React A / React B call `platform.notify.toast()`; standalone mode shows those toasts itself.
+- Contract type tests in `shared-contracts`.
+- All earlier tests kept (RBAC, access guard, login, standalone, production-build, Module Federation stub routing). Removed only the bus and demo-page tests, together with the code they tested.
+
+**Verified in a browser (production builds and dev servers):**
+
+- User 1 on `/react-a`: "From the portal" shows User 1 (SALES), `/react-a`, React 19.3.1 and the remote's own server; two clicks on "Send a notification" show "Hello from React A (#1)" and "(#2)" in the shell; Export report is hidden with the reason. Nav shows only Home, React A, React B (no Demos section).
+- Sign out while React A is open → login page; React A is gone.
+- Admin on `/react-a`: Export report visible; clicking it shows "Export started (demo)."
+- User 2 on `/react-b`: props shown; "Hello from React B (#1)" shown by the shell. The old `/demo/communication` URL shows Page not found.
+- **One React copy:** the share scope lists React for `shell` and `demoReactA` as provided by `shell`; no React file is downloaded from the remotes; the manifest and remote entry are loaded. No console errors or warnings.
+- React B stopped: `/react-b` shows "React B is not available right now. Please try again later."; React A still works.
+- `pnpm nx run-many -t lint test typecheck build` passes for 5 projects (75 tests).
+
+**Decisions:**
+
+- **Shell ↔ MFE only, through props and `PlatformApi`.** No event bus, no `HostApi`, no extra props. Future MFE ↔ MFE needs are designed per use case (`docs/architecture.md`, "Communication").
+- **`MfeProps` change is not a `PlatformApi` version bump.** `PlatformApi` itself did not change (still `1.0.0`); `bus` was removed from the mount props before any external MFE used them.
+- **In-app permission naming:** `action:appId`, e.g. `export:react-a`, next to `access:appId` for opening the app.
+- **React B copies React A's structure** (standalone harness, notice, build test) on purpose, so the pattern for adding a remote stays the same; Step 10 documents it as a checklist.
+
+**Open issues:**
+
+- The standalone harness, portal notice and production-build test are duplicated in each React remote; a shared development-only helper library could replace the copies once more remotes exist.
+- Session expiry reported by an MFE's API call (send the user back to the portal login) is a likely future `PlatformApi` addition; decided with the real authentication work.
+- Carried over: the remotes bundle their own copy of the Module Federation runtime (Step 8); the Angular build must compile `shared-contracts` from source (Step 6).
+
+**Next step:** Step 6 – Angular remote: first propose the build options with trade-offs and let you choose; then `demo-angular` with `mount` / `unmount`, mounted by the shell on `/angular`, receiving the same props `{ user, basePath, platform }` and calling the shell through `platform` (e.g. a toast).

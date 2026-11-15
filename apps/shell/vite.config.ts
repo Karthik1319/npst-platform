@@ -21,6 +21,11 @@ export default defineConfig(({ mode }) => ({
             name: 'demoReactA',
             entry: 'http://localhost:4201/mf-manifest.json',
           },
+          demoReactB: {
+            type: 'module',
+            name: 'demoReactB',
+            entry: 'http://localhost:4202/mf-manifest.json',
+          },
         },
         shared: {
           react: { singleton: true, requiredVersion: '^19.3.1' },
@@ -40,6 +45,9 @@ export default defineConfig(({ mode }) => ({
   build: { outDir: 'dist', emptyOutDir: true, target: 'esnext' },
   test: {
     environment: 'jsdom',
-    alias: { 'demoReactA/App': src('test/RemoteStub.tsx') },
+    alias: {
+      'demoReactA/App': src('test/RemoteStub.tsx'),
+      'demoReactB/App': src('test/RemoteStub.tsx'),
+    },
   },
 }));

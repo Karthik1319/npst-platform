@@ -1,5 +1,5 @@
-import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { act, cleanup, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Standalone } from '@/standalone/Standalone';
 
 afterEach(cleanup);
@@ -39,6 +39,15 @@ describe('standalone mode (development only)', () => {
       screen.getByRole('heading', { level: 1, name: 'React A' }),
     ).toBeDefined();
     expect(screen.getByText(who)).toBeDefined();
+  });
+
+  it('shows toasts itself (no shell in standalone mode)', async () => {
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    render(<Standalone search="?user=u-1" />);
+    act(() =>
+      screen.getByRole('button', { name: 'Send a notification' }).click(),
+    );
+    expect(await screen.findByText('Hello from React A (#1)')).toBeDefined();
   });
 
   it('rejects an unknown mock user', () => {

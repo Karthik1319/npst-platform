@@ -8,3 +8,11 @@ declare module 'demoReactA/App' {
   const App: ComponentType<MfeProps>;
   export default App;
 }
+
+declare module 'demoReactB/App' {
+  import type { MfeProps } from '@npst/shared-contracts';
+  import type { ComponentType } from 'react';
+
+  const App: ComponentType<MfeProps>;
+  export default App;
+}

@@ -47,6 +47,8 @@ export const mockRolePermissions: Readonly<Record<string, readonly string[]>> =
       'access:angular',
       'access:admin-console',
       'view:audit',
+      // In-app action permission: only Admin may export reports in React A.
+      'export:react-a',
     ],
     SALES: ['access:react-a', 'access:react-b'],
     SOLUTIONS: ['access:react-b', 'access:angular'],

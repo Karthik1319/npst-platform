@@ -85,7 +85,41 @@ const remote = await loadRemote('angularMfe/entry');
 await remote.mount(containerElement, props);
 ```
 
-MF does not supply this contract; We must define and test inputs, outputs/events, error reporting, authentication context, navigation and cleanup.
+MF does not supply this contract; We must define and test inputs (props), outputs (platform calls), error reporting, authentication context, navigation and cleanup.
+
+### Communication
+
+Loading an MFE (Module Federation: remote entry, manifest, shared dependencies) and communicating with it are separate concerns. This section covers communication only.
+
+**Current scope: parent–child (Shell ↔ MFE), two-way.** The NPST MFEs (e.g. Keka, Salesforce, LMS, NPST DealDesk) are independent applications that do not depend on each other, so the only communication needed is between the Host Portal (parent) and each MFE (child). It uses the typed contract in `shared-contracts`, the same for React and Angular:
+
+| Direction   | How                                                                     | Examples                                                                                          |
+| ----------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Shell → MFE | Props: `{ user, basePath, platform }` (React props, or Angular `mount`) | Signed-in user; route prefix; `platform.permissions.can()` to show or hide UI                     |
+| MFE → Shell | Calls on the `platform` object (`PlatformApi`)                          | `platform.notify.toast()` shows a toast in the Host Portal; `platform.audit.history()` reads data |
+
+```ts
+// shared-contracts (simplified)
+interface MfeProps {
+  user: PlatformUser;
+  basePath: string; // e.g. '/keka'
+  platform: PlatformApi; // versioned; additive changes only
+}
+```
+
+Rules:
+
+- Each MFE manages its own internal pages and navigation below `basePath`; the Host Portal only routes `basePath/*` to it.
+- No extra channel (event bus, global state, `window` messages) is added for the current scope. If an MFE needs something new from the Host Portal, it is added to `PlatformApi` as a versioned change, only for a real use case. Example to settle during the real authentication work: when an API call reports an expired session, the Host Portal sends the user to its login page.
+- MFEs never import the Host Portal or each other.
+
+**Future scope (not implemented): MFE ↔ MFE.** Some future MFEs may need to exchange information, for example OpenProject and Keka (an OpenProject task referring to an employee or leave in Keka). Recommended approach when such a case is confirmed:
+
+- **Deep links first:** "open this item in the other app" is a portal URL (e.g. `/keka/leave/42`); the target MFE reads its own route. No runtime coupling.
+- **Shared data through backends:** data one app needs from another is fetched server-to-server through the owning app's API, with the user's permissions checked there. This also covers other users and persistence, which browser messages cannot.
+- **Live in-browser notifications only if needed:** a typed, versioned, shell-mediated channel added to `PlatformApi` (the Host Portal relays messages and owns the message types), not a free-form global bus. Each message type has one owner, a version and contract tests.
+
+The decision, message types and owners are agreed per use case before any implementation.
 
 ## 4. Centralised branding
 
@@ -224,6 +258,7 @@ Framework independence comes from the component contract, not from MF: MF can lo
 | Brand server unavailable                    | Apps miss the latest theme                                      | Bundled fallback CSS/assets; resilient hosting; deliberate cache policy                                                              |
 | Monorepo migration and ownership            | Workflows and release responsibilities change                   | Pilot migration; code owners, access boundaries, independent pipelines, contribution standards                                       |
 | MFE handles its own login or session        | Inconsistent sessions; logout does not end access everywhere    | Host Portal is the only login; MFEs never store session identifiers; browser-managed session cookie; backend validates every request |
+| Hidden coupling between MFEs                | One app's change silently breaks another                        | Shell ↔ MFE contract only; no global event bus; future MFE ↔ MFE needs agreed per use case with typed, versioned, owned contracts    |
 | Nx cache strategy                           | Remote caching adds infrastructure and security concerns        | Start with local caching; assess an approved remote-cache option separately                                                          |
 
 ## 9. Repository structure (example)
@@ -252,15 +287,15 @@ Keep framework-specific libraries separate.
 
 ## 10. Roadmap
 
-| Phase                   | Work                                                                                                          | Exit condition                                                                  |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| 1. Validate topology    | Confirm app inventory, framework versions, deployment ownership, repos, routing and identity flow             | Agreed target topology and migration boundary                                   |
-| 2. Nx proof of concept  | Small workspace with React host, one React remote, one Angular remote; test orchestration and affected builds | Developers run and test the pilot consistently                                  |
-| 3. MF proof of concept  | React sharing, remote entry points, version compatibility, failure handling, Angular mount/unmount            | Host loads React and Angular remotes; navigation, props/events and cleanup work |
-| 4. Branding foundation  | Token layers, `theme.css` build, versioned hosting, fallback CSS, cache policy                                | A brand change appears in host and pilot remote without rebuilding              |
-| 5. Shell widget pilot   | One shared widget with API integration, loading states, fallback, telemetry, contract tests                   | Widget updates independently and rolls back safely                              |
-| 6. Production hardening | Security controls, CI gates, visual regression, browser tests, runbooks, monitoring                           | Operational readiness sign-off                                                  |
-| 7. Incremental adoption | Migrate further apps and libraries in planned waves                                                           | Adoption driven by pilot results, no big-bang migration                         |
+| Phase                   | Work                                                                                                          | Exit condition                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| 1. Validate topology    | Confirm app inventory, framework versions, deployment ownership, repos, routing and identity flow             | Agreed target topology and migration boundary                                            |
+| 2. Nx proof of concept  | Small workspace with React host, one React remote, one Angular remote; test orchestration and affected builds | Developers run and test the pilot consistently                                           |
+| 3. MF proof of concept  | React sharing, remote entry points, version compatibility, failure handling, Angular mount/unmount            | Host loads React and Angular remotes; navigation, props, platform calls and cleanup work |
+| 4. Branding foundation  | Token layers, `theme.css` build, versioned hosting, fallback CSS, cache policy                                | A brand change appears in host and pilot remote without rebuilding                       |
+| 5. Shell widget pilot   | One shared widget with API integration, loading states, fallback, telemetry, contract tests                   | Widget updates independently and rolls back safely                                       |
+| 6. Production hardening | Security controls, CI gates, visual regression, browser tests, runbooks, monitoring                           | Operational readiness sign-off                                                           |
+| 7. Incremental adoption | Migrate further apps and libraries in planned waves                                                           | Adoption driven by pilot results, no big-bang migration                                  |
 
 ### Pilot acceptance criteria
 
@@ -273,4 +308,4 @@ Keep framework-specific libraries separate.
 - With a remote down, the host shows a defined fallback or error state, not a blank shell.
 - Users log in only through the Host Portal; logging out ends access in every MFE.
 - A remote version can be rolled back through a controlled release mechanism.
-- Authentication, routing, communication, logging and error behaviour are documented and tested.
+- Authentication, routing, Shell ↔ MFE communication, logging and error behaviour are documented and tested.

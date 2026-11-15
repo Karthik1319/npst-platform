@@ -1,6 +1,6 @@
 import { act, cleanup, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
 import { SESSION_STORAGE_KEY } from '@/services/auth';
 import { SessionProvider } from '@/session/SessionContext';
@@ -139,6 +139,15 @@ describe('direct URL access', () => {
     ).toBeDefined();
   });
 
+  it('loads the remote for React B and passes it the host props', async () => {
+    renderSignedInAt('User 2', '/react-b');
+    expect(
+      await screen.findByText(
+        'user=User 2 basePath=/react-b platformUser=User 2',
+      ),
+    ).toBeDefined();
+  });
+
   it('opens an allowed app', async () => {
     renderSignedInAt('User 3', '/angular');
     expect(
@@ -151,6 +160,46 @@ describe('direct URL access', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Page not found' }),
     ).toBeDefined();
+  });
+});
+
+describe('shell ↔ MFE communication', () => {
+  it('shell → MFE: the remote gets a platform for the signed-in user', async () => {
+    renderSignedInAt('User 1', '/react-a');
+    expect(await screen.findByText('canExport=false')).toBeDefined();
+    cleanup();
+    sessionStorage.clear();
+
+    renderSignedInAt('Admin User', '/react-a');
+    expect(await screen.findByText('canExport=true')).toBeDefined();
+  });
+
+  it('MFE → shell: a toast requested by the remote is shown by the shell', async () => {
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    renderSignedInAt('User 1', '/react-a');
+    const button = await screen.findByRole('button', {
+      name: 'Notify the portal',
+    });
+
+    act(() => button.click());
+
+    // The toast region belongs to the shell's layout, not to the remote.
+    const toasts = screen.getByRole('status');
+    expect(within(toasts).getByText('Hello from /react-a')).toBeDefined();
+  });
+
+  it('central sign-out removes the open remote', async () => {
+    renderSignedInAt('User 1', '/react-a');
+    await screen.findByRole('heading', { level: 1, name: 'Remote stub' });
+
+    act(() => screen.getByRole('button', { name: 'Sign out' }).click());
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Sign in' }),
+    ).toBeDefined();
+    expect(
+      screen.queryByRole('heading', { level: 1, name: 'Remote stub' }),
+    ).toBeNull();
   });
 });
 

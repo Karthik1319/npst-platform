@@ -1,4 +1,4 @@
 import { defineConfig } from 'vitest/config';
 
-// jsdom provides `window`, which the event bus uses.
-export default defineConfig({ test: { environment: 'jsdom' } });
+// Plain types and constants: no browser needed.
+export default defineConfig({ test: { environment: 'node' } });

@@ -1,5 +1,3 @@
-import type { Unsubscribe } from './event-bus';
-
 /**
  * Version of the platform contract.
  * Additive changes bump the minor version; a breaking change bumps the major
@@ -8,6 +6,9 @@ import type { Unsubscribe } from './event-bus';
 export const PLATFORM_API_VERSION = '1.0.0';
 
 // ---------- Shared data types ----------
+
+/** Call it to stop listening. */
+export type Unsubscribe = () => void;
 
 export interface PlatformUser {
   id: string;

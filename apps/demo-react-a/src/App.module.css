@@ -15,7 +15,7 @@
 }
 
 .lead {
-  margin: 0 0 var(--npst-space-4);
+  margin: 0;
   color: var(--npst-color-text-muted);
 }
 
@@ -23,7 +23,7 @@
   display: grid;
   grid-template-columns: max-content 1fr;
   gap: var(--npst-space-2) var(--npst-space-4);
-  margin: 0 0 var(--npst-space-4);
+  margin: 0;
 }
 
 .facts dt {
@@ -52,4 +52,15 @@
 .button:focus-visible {
   outline: none;
   box-shadow: var(--npst-focus-ring);
+}
+
+.heading {
+  margin: var(--npst-space-4) 0 var(--npst-space-2);
+  font-size: var(--npst-font-size-lg);
+  color: var(--npst-color-text-strong);
+}
+
+.note {
+  margin: 0 0 var(--npst-space-2);
+  color: var(--npst-color-text-muted);
 }
