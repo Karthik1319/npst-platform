@@ -7,13 +7,33 @@ import { SessionProvider } from '@/session/SessionContext';
 import { mountStub } from '@/test/mount-stub';
 
 // Non-React remotes: a fake mount-contract module instead of a real server.
-const esmRemote = vi.hoisted(() => ({ down: false }));
+const esmRemote = vi.hoisted(() => ({ down: false, loads: 0 }));
 vi.mock('@/remotes/load-esm-remote', () => ({
-  loadEsmRemote: () =>
-    esmRemote.down
+  loadEsmRemote: () => {
+    esmRemote.loads += 1;
+    return esmRemote.down
       ? Promise.reject(new Error('Failed to fetch'))
-      : Promise.resolve(mountStub),
+      : Promise.resolve(mountStub);
+  },
 }));
+
+// Same timeout/retry logic, with short limits so failure tests stay fast.
+vi.mock('@/remotes/load-with-retry', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('@/remotes/load-with-retry')>();
+  return {
+    ...actual,
+    loadWithRetry: <T,>(
+      load: () => Promise<T>,
+      options: Parameters<typeof actual.loadWithRetry>[1] = {},
+    ) =>
+      actual.loadWithRetry(load, {
+        ...options,
+        timeoutMs: 500,
+        retryDelayMs: 0,
+      }),
+  };
+});
 
 const USER_IDS: Record<string, string> = {
   'Admin User': 'u-admin',
@@ -184,18 +204,28 @@ describe('direct URL access', () => {
 });
 
 describe('non-React remotes (mount contract)', () => {
-  it('shows the fallback when the remote cannot be loaded', async () => {
+  it('retries once, then shows a fallback with Try again that reloads the remote', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     esmRemote.down = true;
+    esmRemote.loads = 0;
     try {
       renderSignedInAt('User 3', '/angular');
       expect(
-        await screen.findByText(
-          'Angular is not available right now. Please try again later.',
-        ),
+        await screen.findByText('Angular is not available right now.'),
       ).toBeDefined();
+      expect(esmRemote.loads).toBe(2); // first attempt + one automatic retry
       // The rest of the portal keeps working.
       expect(screen.getByRole('navigation', { name: 'Main' })).toBeDefined();
+
+      // The remote is back: "Try again" loads it without a page reload.
+      esmRemote.down = false;
+      act(() => screen.getByRole('button', { name: 'Try again' }).click());
+
+      expect(
+        await screen.findByRole('heading', { level: 1, name: 'Mount stub' }),
+      ).toBeDefined();
+      expect(esmRemote.loads).toBe(3);
     } finally {
       esmRemote.down = false;
     }

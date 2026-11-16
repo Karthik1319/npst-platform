@@ -1,7 +1,10 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import styles from './RemoteErrorBoundary.module.css';
 
 interface Props {
   appName: string;
+  /** Starts a fresh load of the remote (the parent re-creates this boundary). */
+  onRetry: () => void;
   children: ReactNode;
 }
 
@@ -10,9 +13,9 @@ interface State {
 }
 
 /**
- * Keeps the shell usable when a remote cannot be loaded or crashes:
- * only this area shows a message, the header and navigation stay.
- * (Step 7 adds timeout and retry.)
+ * Keeps the shell usable when a remote cannot be loaded (after its timeout
+ * and automatic retry) or crashes while rendering: only this area shows a
+ * message with "Try again"; the header and navigation stay.
  */
 export class RemoteErrorBoundary extends Component<Props, State> {
   override state: State = { failed: false };
@@ -32,10 +35,18 @@ export class RemoteErrorBoundary extends Component<Props, State> {
   override render() {
     if (this.state.failed) {
       return (
-        <p role="alert">
-          {this.props.appName} is not available right now. Please try again
-          later.
-        </p>
+        <section className={styles.fallback} role="alert">
+          <p className={styles.text}>
+            {this.props.appName} is not available right now.
+          </p>
+          <button
+            type="button"
+            className={styles.button}
+            onClick={this.props.onRetry}
+          >
+            Try again
+          </button>
+        </section>
       );
     }
     return this.props.children;

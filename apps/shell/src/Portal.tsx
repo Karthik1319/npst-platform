@@ -9,7 +9,7 @@ import { usePlatform } from '@/platform/PlatformContext';
 import { RequireAppAccess } from '@/platform/RequireAppAccess';
 import { useAsyncData } from '@/platform/useAsyncData';
 import { RemoteAppPage } from '@/remotes/RemoteAppPage';
-import { mountRemotes, remoteApps } from '@/remotes/registry';
+import { remotes } from '@/remotes/registry';
 
 /** The signed-in portal: layout, Portal Home and one guarded route per app. */
 export function Portal() {
@@ -51,9 +51,11 @@ export function Portal() {
 
 /** A loaded remote if one is registered for the app, otherwise a placeholder. */
 function AppView({ app }: { app: PortalApp }) {
-  const Remote = remoteApps[app.id];
-  const load = mountRemotes[app.id];
-  if (Remote) return <RemoteAppPage app={app} Remote={Remote} />;
-  if (load) return <RemoteAppPage app={app} load={load} />;
-  return <AppPlaceholderPage app={app} />;
+  const remote = remotes[app.id];
+  return remote ? (
+    // Keyed by app: switching apps never reuses another app's loading state.
+    <RemoteAppPage key={app.id} app={app} remote={remote} />
+  ) : (
+    <AppPlaceholderPage app={app} />
+  );
 }

@@ -14,8 +14,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 4    | First React remote                              | Done   |
 | 5    | Second React remote + Shell ↔ MFE communication | Done   |
 | 6    | Angular remote                                  | Done   |
-| 7    | Failure handling                                | Next   |
-| 8    | Bundling review                                 | –      |
+| 7    | Failure handling                                | Done   |
+| 8    | Bundling review                                 | Next   |
 | 9    | Runtime theme                                   | –      |
 | 10   | Integration guides                              | –      |
 
@@ -513,3 +513,49 @@ The Step 3 and Step 4 entries below still mention the bus as it was then; this n
 - Step 7 adds a timeout and one retry for both remote types.
 
 **Next step:** Step 7 – failure handling: stop each remote in turn; the shell shows a fallback, not a blank page (error boundary, timeout, one retry).
+
+## Step 7 – Failure handling
+
+**Done:** every remote, React (Module Federation) or Angular (plain ES module), now loads with a **time limit** and **one automatic retry**. If it still fails, or crashes while rendering, only its area shows "_App_ is not available right now." with a **Try again** button. The button starts a fresh load, so a remote that is back opens without reloading the page. The header, navigation and other apps keep working.
+
+**Concepts:**
+
+- **Timeout:** a remote whose server accepts the connection but never answers would otherwise leave "Loading…" on screen forever. Each attempt counts as failed after 8 seconds.
+- **Retry:** one automatic retry after a 1-second pause covers short interruptions (e.g. a remote restarting during a deployment). More retries would only make the user wait longer before seeing the fallback.
+- **Fresh load on "Try again":** the Module Federation loader forgets a failed attempt, so a new `import()` really goes back to the network; the shell keeps the load in state outside the Suspense boundary and starts a new one on "Try again".
+
+**Files:**
+
+| File                                                             | Purpose                                                                                                               |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `apps/shell/src/remotes/load-with-retry.ts` + `.test.ts`         | Time limit (8 s), one retry (after 1 s), `RemoteTimeoutError`; tests for success, retry, giving up and a hung remote  |
+| `apps/shell/src/remotes/registry.ts`                             | One `remotes` table for both kinds (`react` / `mount`), each with a `load` function                                   |
+| `apps/shell/src/remotes/RemoteAppPage.tsx`                       | Starts the load with timeout and retry; React remotes read it with `use()`; "Try again" starts a new load             |
+| `apps/shell/src/remotes/RemoteErrorBoundary.tsx` + `.module.css` | Fallback card with "Try again" (theme variables only)                                                                 |
+| `apps/shell/src/Portal.tsx`                                      | Uses the single registry; the remote page is keyed by app, so switching apps never reuses another app's loading state |
+| `apps/shell/src/App.test.tsx`                                    | Short limits in tests; Angular down → 2 attempts → fallback → "Try again" after it is back → loaded (3rd attempt)     |
+
+**Verified in a browser (production builds; each remote stopped in turn):**
+
+| Remote  | Stopped                                             | Back + "Try again"               | Hangs (connects, never answers)    | Fixed + "Try again" |
+| ------- | --------------------------------------------------- | -------------------------------- | ---------------------------------- | ------------------- |
+| React A | Fallback after ~1.0 s (1 retry); portal still works | Loaded in ~0.4 s, no page reload | Fallback after ~16.9 s (8 + 1 + 8) | Loaded in ~0.4 s    |
+| React B | Fallback after ~1.0 s; portal still works           | Loaded in ~0.4 s, no page reload | –                                  | –                   |
+| Angular | Fallback after ~1.0 s; portal still works           | Loaded in ~0.2 s, no page reload | Fallback after ~16.9 s             | Loaded in ~0.2 s    |
+
+- Dev servers: React A/B and Angular checks from Steps 5 and 6 still pass (one React copy, toasts, sign-out, Angular routing and lifecycle), no console problems.
+- `pnpm nx run-many -t lint test typecheck build` passes for 6 projects (95 tests + Angular production-build check).
+
+**Decisions:**
+
+- **Same handling for both remote types**, in one place in the shell; remotes need nothing for it.
+- **8 s timeout, 1 retry after 1 s:** constants in `load-with-retry.ts`; worst case before the fallback is about 17 s for a hung server, about 1 s for a stopped one.
+- **No automatic retries in the background** after the fallback: the user decides with "Try again".
+
+**Open issues:**
+
+- Tune the timeout with real network data (and consider showing "still loading…" earlier for slow connections).
+- Failures are only logged to the browser console; production needs error reporting/monitoring (architecture: "health monitoring").
+- A remote that loads but its own API calls fail is the remote's responsibility (its own error states); the shell only covers loading and rendering.
+
+**Next step:** Step 8 – bundling review: production build of all apps; report bundle sizes and what is shared; confirm one React copy; change only one remote, rebuild only it (`nx affected`), and the host picks it up without a rebuild.
