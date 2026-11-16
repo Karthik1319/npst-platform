@@ -185,3 +185,93 @@ When the app lives in this Nx workspace (as the demo apps do):
 4. **Before merging,** check with `pnpm nx run-many -t lint test typecheck build` and `pnpm nx run-many -t dev`.
 
 An app that stays in its own repository uses the published contract package and the same checklist; only the build pipeline differs.
+
+## 7. Worked example: adding the HRMS ("Keka") to this portal
+
+A step-by-step for this repository, with app id `keka` and path `/keka`. Replace the names for any other app.
+
+### Before you start
+
+1. **Confirm Keka is an application your team builds** (you have its source code and can change its `main.ts`).
+   - If it is a commercial product you only use (for example a hosted HRMS service), neither route in this guide applies: you cannot add `mount` / `unmount` or Module Federation to another company's product.
+   - The options are then a portal link that opens it with single sign-on, an embedded frame if the vendor allows it, or new portal screens that use its APIs. Agree on that with the architecture owner first.
+2. **Find out:**
+   - its framework and version (Angular, React, …);
+   - how it is built (`ng build`, Vite, webpack, …);
+   - which address and port it runs on in development.
+3. **Choose the route** (section 1): Angular or anything not React → route B (mount contract). React → route A (Module Federation).
+
+### Files to change in the portal (this repository)
+
+| What                                                     | File                                                | Change                                                                                                                                                        |
+| -------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| App list (Portal Home shortcut, left navigation, search) | `libs/platform-mocks/src/mock-data.ts` → `mockApps` | Add `{ id: 'keka', name: 'Keka HRMS', description: '…', path: '/keka' }`                                                                                      |
+| Who may open it                                          | same file → `mockRolePermissions`                   | Add `'access:keka'` to the roles that may use it (at least `ADMIN`)                                                                                           |
+| Icon and colour                                          | `apps/shell/src/ui/app-visuals.ts` → `VISUALS`      | Add `keka: { icon: 'people', tone: 3, short: 'Keka' }`. The icon must be a name defined in `apps/shell/src/ui/Icon.tsx`                                       |
+| How the portal loads it, route B                         | `apps/shell/src/remotes/registry.ts`                | `keka: { kind: 'mount', load: () => loadEsmRemote(KEKA_URL) }`, with `const KEKA_URL: string = import.meta.env['VITE_KEKA_URL'] ?? 'http://localhost:4205/';` |
+| How the portal loads it, route A (React)                 | `apps/shell/vite.config.ts`                         | Add a `federation.remotes.keka` entry (`type: 'module'`, its `mf-manifest.json` URL) and a test alias `'keka/App'` → `src/test/RemoteStub.tsx`                |
+|                                                          | `apps/shell/src/remotes/remote-modules.d.ts`        | Declare `keka/App` like `demoReactA/App`                                                                                                                      |
+|                                                          | `apps/shell/src/remotes/registry.ts`                | `keka: { kind: 'react', load: () => import('keka/App') }`                                                                                                     |
+
+The portal routes `/keka/*` to the app and checks `access:keka` automatically, once the app is in `mockApps`.
+
+### Changes in the Keka app (route B, Angular)
+
+Model them on `apps/demo-angular`. The build configuration stays the same.
+
+1. **`src/main.ts`** exports `mount(element, props)` and `unmount(element)`:
+   - `createApplication` with the app's providers;
+   - `{ provide: MFE_PROPS, useValue: props }`;
+   - `{ provide: APP_BASE_HREF, useValue: props.basePath }`;
+   - then `appRef.bootstrap(App, host)`.
+
+   `unmount` calls `appRef.destroy()`. When the app is opened directly, it still starts on its own.
+
+2. **`MFE_PROPS` injection token** (copy `apps/demo-angular/src/app/mfe-props.ts`): components read `user` and `platform` from it.
+3. **Routes:** add `{ path: '**', children: [] }` as the last route.
+4. **Styles:**
+   - use theme variables (`var(--npst-…)`) instead of fixed colours;
+   - keep styles in components, or scope them below one root class (see `apps/demo-angular/src/app/app.ts`);
+   - the global `styles.css` is not loaded inside the portal.
+5. **Contract types:** add `@npst/shared-contracts`.
+   - Inside this monorepo: `"@npst/shared-contracts": "workspace:*"`, then `pnpm install`, `pnpm nx sync`, plus the `angular.json` and `nx.json` changes from section 6.
+   - Outside it: copy `libs/shared-contracts/src/` until the contract is published as a package.
+
+### Tests to update in the portal
+
+Adding an app changes the app lists these tests expect:
+
+- `libs/platform-mocks/src/create-mock-platform.test.ts`: the allowed app ids per user, and the catalogue length (currently 4).
+- `apps/shell/src/App.test.tsx`: "application visibility per role" (the expected app names per user).
+
+Add a test that a role without `access:keka` gets **Access denied** at `/keka`, as for the other apps.
+
+### Run and check
+
+```bash
+# Terminal 1: the portal and the demo apps
+pnpm nx run-many -t dev
+# Terminal 2: Keka's own dev server on a free port, e.g.
+ng serve --port 4205
+```
+
+1. Open http://localhost:4200, sign in as **Admin User**: Keka appears on Portal Home and in the left navigation.
+2. Open it: it renders in the content area with the portal's header and navigation around it.
+3. Navigate inside Keka, use the browser's back button, then click **Home**. In the console, Keka is destroyed (no second instance when you open it again).
+4. Sign in as a user without `access:keka`: Keka is not listed, and http://localhost:4200/keka shows **Access denied**.
+5. Stop Keka's server and open it: **"Keka HRMS is not available right now"** with Try again; the rest of the portal works.
+6. Run `pnpm nx run-many -t lint test typecheck build`.
+
+### If it does not load
+
+The portal shows "Keka HRMS is not available right now". The browser console (F12) says why:
+
+| Console message                                                               | Cause                                                                   | Fix                                                                                                |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `Failed to fetch` / connection refused                                        | Wrong address or port, or Keka's server is not running                  | Check `VITE_KEKA_URL` (default `http://localhost:4205/`) and that Keka's dev server is up          |
+| `blocked by CORS policy`                                                      | Keka's server does not allow the portal's address                       | Allow `http://localhost:4200` (and later the real portal address) for its `index.html` and scripts |
+| `Remote must have exactly one entry exporting mount() and unmount(), found 0` | `main.ts` does not export them, or `index.html` points to another entry | Export both from the entry file that `index.html` loads                                            |
+| `… found 2`                                                                   | Two module scripts export `mount` / `unmount`                           | Export them from one entry only                                                                    |
+| `Remote did not load within 8000 ms`                                          | Keka's server is too slow or does not answer                            | Check the server; the first dev start can be slow, so click Try again                              |
+| Keka shows but pages are wrong or blank                                       | Router does not use `basePath`, or no catch-all route                   | Set `APP_BASE_HREF` to `props.basePath`; add `{ path: '**', children: [] }`                        |
+| Keka shows but colours or layout of the portal change                         | Global CSS from Keka leaks into the page                                | Move styles into components or scope them below Keka's root class                                  |
