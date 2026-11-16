@@ -1,0 +1,56 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-1);
+  padding: 0.125rem var(--npst-space-2);
+  border-radius: var(--npst-radius-round);
+  font-size: var(--npst-font-size-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.success {
+  background: var(--npst-status-success-bg);
+  color: var(--npst-status-success-text);
+}
+.warning {
+  background: var(--npst-status-warning-bg);
+  color: var(--npst-status-warning-text);
+}
+.error {
+  background: var(--npst-status-error-bg);
+  color: var(--npst-status-error-text);
+}
+.info {
+  background: var(--npst-status-info-bg);
+  color: var(--npst-status-info-text);
+}
+.neutral {
+  background: var(--npst-status-neutral-bg);
+  color: var(--npst-status-neutral-text);
+}
+.accent {
+  background: var(--npst-status-accent-bg);
+  color: var(--npst-status-accent-text);
+}
+.tone1 {
+  background: var(--npst-tone-1-bg);
+  color: var(--npst-tone-1-text);
+}
+.tone2 {
+  background: var(--npst-tone-2-bg);
+  color: var(--npst-tone-2-text);
+}
+.tone3 {
+  background: var(--npst-tone-3-bg);
+  color: var(--npst-tone-3-text);
+}
+.tone4 {
+  background: var(--npst-tone-4-bg);
+  color: var(--npst-tone-4-text);
+}
+.tone5 {
+  background: var(--npst-tone-5-bg);
+  color: var(--npst-tone-5-text);
+}

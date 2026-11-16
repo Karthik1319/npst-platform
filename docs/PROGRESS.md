@@ -18,8 +18,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 8    | Bundling review                                 | Done   |
 | 9    | Runtime theme                                   | Done   |
 | 10   | Business portal: Portal Home dashboard          | Done   |
-| 11   | Sales Hub (React remote)                        | Next   |
-| 12   | Projects & Delivery (React remote)              |        |
+| 11   | Sales Hub (React remote)                        | Done   |
+| 12   | Projects & Delivery (React remote)              | Next   |
 | 13   | People & HR (Angular remote)                    |        |
 | 14   | Cross-application workflow and demo polish      |        |
 | 15   | Integration guides                              |        |
@@ -744,3 +744,48 @@ Folder and Nx project names stay the same, so build, Module Federation names and
 - `localStorage` stands in for the backends: data is per browser. "Reset demo data" is added in Step 14.
 
 **Next step:** Step 11 – Sales Hub (React remote `demo-react-a`).
+
+## Step 11 – Sales Hub (React remote `demo-react-a`)
+
+**Done:** React A is now the **Sales Hub**, a practical CRM with five pages below `/sales`:
+
+| Page                | Path                           | What it shows                                                                                                                                                                                                                                              |
+| ------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dashboard           | `/sales`                       | Total leads, qualified leads, active opportunities, proposals submitted, won deals, pipeline value; pipeline value by stage; follow-ups due; top open opportunities; recent sales activities                                                               |
+| Leads               | `/sales/leads`                 | Company, contact, source, industry, sales executive, status, value, created date; search, four filters, 10 per page; **Add lead** dialog (with `create:lead`)                                                                                              |
+| Opportunities       | `/sales/opportunities`         | Stage bar Lead → Qualified → Opportunity → Proposal → Negotiation → Won/Lost (click a stage to filter); table with value, stage, owner, expected close, probability, next action; 10 per page                                                              |
+| Opportunity details | `/sales/opportunities/OP-1043` | Customer, overview, requirements, current stage, assigned team, activity timeline, comments/notes (add with `edit:opportunity`), related tasks of any team, documents/proposals, change history (only with `view:audit`, through `platform.audit.history`) |
+| Tasks & follow-ups  | `/sales/tasks`                 | Overdue / due today / next 7 days / later, filter by person, show completed, **Mark done**                                                                                                                                                                 |
+
+**Concepts:**
+
+- **In-app routing without a dependency:** a small router (`src/routing/router.tsx`) reads the URL below `basePath`, uses normal links (open in new tab works), and listens to `popstate`. After its own navigation it fires `popstate`, so the portal's router (nav highlight, breadcrumbs) follows too. `react-router` was not added (it would be a new dependency and would clash with the portal's router if shared).
+- **MFE → portal:** saving a lead, a note or completing a task asks the portal for a toast through `platform.notify.toast()`; permissions come from `platform.permissions.can()`; change history from `platform.audit.history()`. No new contract capability was needed.
+- **Data:** only `src/services/sales.ts` talks to the (simulated) Sales Hub backend.
+
+**Files:**
+
+| File                                                     | Purpose                                                                                                                                 |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/demo-react-a/src/App.tsx`                          | Exposed component: props → portal context, router, layout, pages                                                                        |
+| `src/routing/router.tsx`, `src/portal.tsx`               | Router and the portal props for every page                                                                                              |
+| `src/layout/SalesLayout.*`                               | App title and page tabs                                                                                                                 |
+| `src/pages/*`                                            | Dashboard, Leads (+ Add lead dialog), Opportunities, Opportunity details, Tasks; shared page styles                                     |
+| `src/services/sales.ts`, `useLoad.ts`                    | Backend calls; loading state                                                                                                            |
+| `src/ui/*`                                               | Same small UI kit as the portal (icons, badge, panel, KPI, pagination, dialog, form/table styles), theme variables only                 |
+| `src/*.test.tsx`, `standalone/*.test.tsx`                | 23 tests: pages, filters, pagination, add lead + toast, notes, audit only for Admin, tasks, popstate, standalone mode, production build |
+| `libs/mock-backend/src/api/sales.ts`, `work.ts`          | Write side: create lead, add note, change task status (Recent Activity and opportunity timeline updated); lead counts per status        |
+| `libs/design-tokens/src/theme.css` (+ brand server copy) | `--npst-overlay-bg` for dialogs                                                                                                         |
+
+**Verified in a browser** (production builds, spare ports): all five pages for User 1 (Sales) and Admin; Admin sees Change history, Sales does not; Add lead dialog; layout at 1440 and 820 px; no console errors.
+
+**Decisions:**
+
+- **Each MFE has its own copy of the small UI kit** (it is not a shared library): teams stay independent, and the look stays consistent because every style uses the same theme variables.
+- **Tasks can be completed only by their team or named owner** (e.g. a Sales user cannot complete the Management team's discount approval). UI only; the backend checks again.
+
+**Open issues:**
+
+- "Upload document" and editing an opportunity's stage are not in this preview.
+
+**Next step:** Step 12 – Projects & Delivery (React remote `demo-react-b`).

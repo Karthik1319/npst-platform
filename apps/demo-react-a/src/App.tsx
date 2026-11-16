@@ -1,78 +1,57 @@
 import type { MfeProps } from '@npst/shared-contracts';
-import { useState, version as reactVersion } from 'react';
-import { APP_ID } from '@/config';
-import styles from './App.module.css';
-
-/** Where this code was loaded from (shows the remote's own server when inside the shell). */
-const servedFrom = new URL(import.meta.url).origin;
+import { SalesLayout } from '@/layout/SalesLayout';
+import { DashboardPage } from '@/pages/DashboardPage';
+import { LeadsPage } from '@/pages/LeadsPage';
+import { OpportunitiesPage } from '@/pages/OpportunitiesPage';
+import { OpportunityDetailsPage } from '@/pages/OpportunityDetailsPage';
+import { TasksPage } from '@/pages/TasksPage';
+import { PortalProvider } from '@/portal';
+import { Link, Router, useRouter } from '@/routing/router';
+import controls from '@/ui/controls.module.css';
 
 /**
- * React A micro-frontend. Two-way communication with the shell:
- * - Shell → MFE: everything arrives as `MfeProps` (user, basePath, platform).
- * - MFE → Shell: calls on `platform`, e.g. `notify.toast()`, which the shell shows.
- * It never imports shell code or other MFEs.
+ * Sales Hub micro-frontend (exposed as `./App` through Module Federation).
+ * - Portal → Sales Hub: `MfeProps` (signed-in user, base path, platform).
+ * - Sales Hub → portal: calls on `platform` (toasts, permission checks, audit).
+ * - Its own pages live below `basePath` (e.g. `/sales/leads`).
+ * Business data comes from the Sales Hub backend (see `services/sales.ts`).
  */
 export function App({ user, basePath, platform }: MfeProps) {
-  // A hook: if the shell and this remote had two different React copies,
-  // React would throw "Invalid hook call" here.
-  const [sent, setSent] = useState(0);
-  // UI only: the backend must check this permission again.
-  const canExport = platform.permissions.can('export', APP_ID);
-
-  function notifyPortal() {
-    const count = sent + 1;
-    setSent(count);
-    platform.notify.toast(`Hello from React A (#${count})`, {
-      kind: 'success',
-    });
-  }
-
   return (
-    <section className={styles.app}>
-      <h1 className={styles.title}>React A</h1>
-      <p className={styles.lead}>Demo React micro-frontend.</p>
-
-      <h2 className={styles.heading}>From the portal</h2>
-      <dl className={styles.facts}>
-        <dt>Signed-in user</dt>
-        <dd>
-          {user.name} ({user.roles.join(', ')})
-        </dd>
-        <dt>Base path</dt>
-        <dd>{basePath}</dd>
-        <dt>React version</dt>
-        <dd>{reactVersion}</dd>
-        <dt>Served from</dt>
-        <dd>{servedFrom}</dd>
-      </dl>
-
-      <h2 className={styles.heading}>To the portal</h2>
-      <p className={styles.note}>
-        Asks the portal to show a notification through the platform.
-      </p>
-      <button type="button" className={styles.button} onClick={notifyPortal}>
-        Send a notification
-      </button>
-
-      <h2 className={styles.heading}>Reports</h2>
-      {canExport ? (
-        <button
-          type="button"
-          className={styles.button}
-          onClick={() =>
-            platform.notify.toast('Export started (demo).', { kind: 'info' })
-          }
-        >
-          Export report
-        </button>
-      ) : (
-        <p className={styles.note}>
-          Export is hidden: your role does not have the{' '}
-          <code>export:{APP_ID}</code> permission.
-        </p>
-      )}
-    </section>
+    <PortalProvider value={{ user, platform }}>
+      <Router basePath={basePath}>
+        <SalesLayout>
+          <Pages />
+        </SalesLayout>
+      </Router>
+    </PortalProvider>
   );
+}
+
+function Pages() {
+  const { path } = useRouter();
+  const [section, id] = path.split('/').filter(Boolean);
+  switch (section) {
+    case undefined:
+      return <DashboardPage />;
+    case 'leads':
+      return <LeadsPage />;
+    case 'opportunities':
+      return id ? (
+        <OpportunityDetailsPage key={id} id={decodeURIComponent(id)} />
+      ) : (
+        <OpportunitiesPage />
+      );
+    case 'tasks':
+      return <TasksPage />;
+    default:
+      return (
+        <p className={controls.empty}>
+          This page does not exist.{' '}
+          <Link to="/">Go to the Sales Hub dashboard</Link>
+        </p>
+      );
+  }
 }
 
 export default App;

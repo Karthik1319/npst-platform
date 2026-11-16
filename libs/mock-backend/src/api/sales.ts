@@ -1,12 +1,25 @@
-import { readData } from '../store';
+import { nextId, readData, updateData } from '../store';
 import type {
+  Actor,
   Customer,
   Lead,
   LeadStatus,
+  Note,
   Opportunity,
   OpportunityStage,
+  TimelineEntry,
 } from '../types';
-import { clone, matches, paginate, type Page } from './common';
+import { clone, matches, paginate, recordActivity, type Page } from './common';
+
+/** What a user enters for a new lead. */
+export type NewLead = Omit<Lead, 'id' | 'createdAt' | 'status'>;
+
+/** One entry of the Sales Hub's activity feed. */
+export interface SalesActivity extends TimelineEntry {
+  opportunityId: string;
+  opportunityName: string;
+  customerName: string;
+}
 
 export const OPEN_STAGES: readonly OpportunityStage[] = [
   'Opportunity',
@@ -32,6 +45,8 @@ export interface SalesSummary {
   pipelineChangePercent: number;
   /** How many records reached each stage (a funnel). */
   funnel: { stage: FunnelStage; count: number }[];
+  /** How many leads have each status right now. */
+  leadsByStatus: Record<LeadStatus, number>;
   /** How many opportunities are in each stage right now. */
   byStage: { stage: OpportunityStage; count: number; value: number }[];
 }
@@ -88,6 +103,13 @@ export const salesApi = {
         { stage: 'Negotiation', count: count(['Negotiation', 'Won']) },
         { stage: 'Won', count: won.length },
       ],
+      leadsByStatus: {
+        New: leads.filter((l) => l.status === 'New').length,
+        Contacted: leads.filter((l) => l.status === 'Contacted').length,
+        Qualified: leads.filter((l) => l.status === 'Qualified').length,
+        Unqualified: leads.filter((l) => l.status === 'Unqualified').length,
+        Converted: leads.filter((l) => l.status === 'Converted').length,
+      },
       byStage: (
         ['Opportunity', 'Proposal', 'Negotiation', 'Won', 'Lost'] as const
       ).map((stage) => {
@@ -139,5 +161,71 @@ export const salesApi = {
 
   async customers(): Promise<Customer[]> {
     return clone(readData().customers);
+  },
+
+  /** Latest timeline entries across all opportunities. */
+  async recentActivity(limit = 8): Promise<SalesActivity[]> {
+    return readData()
+      .opportunities.flatMap((o) =>
+        o.timeline.map((entry) => ({
+          ...entry,
+          opportunityId: o.id,
+          opportunityName: o.name,
+          customerName: o.customerName,
+        })),
+      )
+      .sort((a, b) => b.at.localeCompare(a.at))
+      .slice(0, limit);
+  },
+
+  /** Sales executives who own leads or deals. */
+  async owners(): Promise<string[]> {
+    const { leads, opportunities } = readData();
+    return [
+      ...new Set([...leads, ...opportunities].map((r) => r.owner)),
+    ].sort();
+  },
+
+  // ---------- Write side (the real backend checks `create:lead` / `edit:opportunity`) ----------
+
+  async createLead(input: NewLead, actor: Actor): Promise<Lead> {
+    return updateData((data) => {
+      const lead: Lead = {
+        ...input,
+        id: nextId(data, 'LD', 2301),
+        status: 'New',
+        createdAt: new Date().toISOString(),
+      };
+      data.leads.unshift(lead);
+      recordActivity(data, {
+        appId: 'sales-hub',
+        actor: actor.name,
+        text: `New lead “${lead.company}” added`,
+        link: '/sales/leads',
+      });
+      return clone(lead);
+    });
+  },
+
+  async addNote(
+    opportunityId: string,
+    text: string,
+    actor: Actor,
+  ): Promise<Note> {
+    return updateData((data) => {
+      const opportunity = data.opportunities.find(
+        (o) => o.id === opportunityId,
+      );
+      if (!opportunity)
+        throw new Error(`Opportunity ${opportunityId} not found`);
+      const note: Note = {
+        id: nextId(data, 'NOTE', 1),
+        at: new Date().toISOString(),
+        author: actor.name,
+        text,
+      };
+      opportunity.notes.unshift(note);
+      return clone(note);
+    });
   },
 };

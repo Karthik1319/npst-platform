@@ -1,0 +1,36 @@
+.person {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-2);
+  min-width: 0;
+}
+
+.avatar {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--npst-radius-round);
+  background: var(--npst-avatar-bg);
+  color: var(--npst-avatar-text);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.name {
+  color: var(--npst-color-text-default);
+  white-space: nowrap;
+}
+
+.detail {
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+}

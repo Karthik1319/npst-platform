@@ -22,7 +22,9 @@ export { OPEN_STAGES, salesApi } from './api/sales';
 export type {
   FunnelStage,
   LeadQuery,
+  NewLead,
   OpportunityQuery,
+  SalesActivity,
   SalesSummary,
 } from './api/sales';
 export { taskLink, workApi } from './api/work';

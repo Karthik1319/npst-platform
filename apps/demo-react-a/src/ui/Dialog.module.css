@@ -1,0 +1,49 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: var(--npst-space-3);
+  background: var(--npst-overlay-bg);
+}
+
+.dialog {
+  width: min(40rem, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: var(--npst-space-4);
+  border-radius: var(--npst-card-radius);
+  background: var(--npst-color-surface-card);
+  box-shadow: var(--npst-shadow-raised);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--npst-space-3);
+}
+
+.title {
+  margin: 0;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-xl);
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: var(--npst-radius);
+  background: transparent;
+  color: var(--npst-color-text-muted);
+  cursor: pointer;
+}
+
+.close:hover {
+  background: var(--npst-color-surface-subtle);
+  color: var(--npst-color-text-strong);
+}

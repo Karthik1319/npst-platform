@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  activityService,
   generateDemoData,
   hrApi,
   notificationService,
@@ -134,5 +135,67 @@ describe('workApi', () => {
       ),
     ).toBe(true);
     expect(tasks.every((t) => t.status !== 'Done')).toBe(true);
+  });
+});
+
+describe('Sales Hub write operations', () => {
+  const actor = { id: 'viewer-sales', name: 'Sales Tester', roles: ['SALES'] };
+
+  it('creates a lead as New and records it in Recent Activity', async () => {
+    const lead = await salesApi.createLead(
+      {
+        company: 'Harbor Urban Co-op Bank',
+        contactName: 'Asha Rao',
+        contactTitle: 'Head of IT',
+        email: 'asha.rao@harbor.example',
+        phone: '+91 98200 00000',
+        source: 'Referral',
+        industry: 'Co-operative bank',
+        city: 'Pune',
+        owner: 'Sneha Patil',
+        interest: 'UPI Switch',
+        estimatedValue: 5_000_000,
+      },
+      actor,
+    );
+    expect(lead.status).toBe('New');
+    const first = (await salesApi.listLeads()).items[0];
+    expect(first?.id).toBe(lead.id);
+    const [latest] = await activityService.recent({
+      appIds: ['sales-hub'],
+      limit: 1,
+    });
+    expect(latest?.text).toBe('New lead “Harbor Urban Co-op Bank” added');
+  });
+
+  it('adds a note to an opportunity', async () => {
+    await salesApi.addNote(
+      'OP-1043',
+      'Pricing call booked for Thursday.',
+      actor,
+    );
+    const found = await salesApi.getOpportunity('OP-1043');
+    expect(found?.opportunity.notes[0]?.text).toBe(
+      'Pricing call booked for Thursday.',
+    );
+  });
+
+  it('completes a task and adds it to the opportunity timeline', async () => {
+    const [task] = await workApi.list({
+      opportunityId: 'OP-1043',
+      team: 'SALES',
+    });
+    if (!task) throw new Error('expected a sales task for OP-1043');
+
+    const done = await workApi.updateStatus(task.id, 'Done', actor);
+
+    expect(done.completedBy).toBe('Sales Tester');
+    const found = await salesApi.getOpportunity('OP-1043');
+    expect(found?.opportunity.timeline[0]?.text).toBe(
+      `Task completed: ${task.title}`,
+    );
+    expect((await workApi.forUser(actor)).some((t) => t.id === task.id)).toBe(
+      false,
+    );
   });
 });

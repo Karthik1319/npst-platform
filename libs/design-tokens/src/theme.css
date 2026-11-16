@@ -34,6 +34,7 @@
   --npst-white: #ffffff;
   --npst-white-a15: rgb(255 255 255 / 0.15);
   --npst-white-a25: rgb(255 255 255 / 0.25);
+  --npst-slate-900-a45: rgb(15 23 42 / 0.45);
   --npst-red-600: #dc2626;
   --npst-green-100: #dcfce7;
   --npst-green-700: #15803d;
@@ -163,6 +164,7 @@
   --npst-progress-track: var(--npst-slate-200);
   --npst-progress-fill: var(--npst-color-action-primary);
   --npst-input-border: var(--npst-slate-300);
+  --npst-overlay-bg: var(--npst-slate-900-a45);
   --npst-button-secondary-bg: var(--npst-white);
   --npst-button-secondary-border: var(--npst-slate-300);
   --npst-button-secondary-text: var(--npst-slate-700);

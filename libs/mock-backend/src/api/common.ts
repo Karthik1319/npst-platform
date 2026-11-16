@@ -1,3 +1,5 @@
+import type { Activity } from '../types';
+
 /** One page of a longer list. */
 export interface Page<T> {
   items: T[];
@@ -39,3 +41,17 @@ export function today(): string {
 }
 
 export const clone = <T>(value: T): T => structuredClone(value);
+
+/** Adds a line to the portal's Recent Activity (newest first). */
+export function recordActivity(
+  data: { activity: Activity[]; counters: Record<string, number> },
+  entry: Omit<Activity, 'id' | 'at'>,
+): void {
+  const number = data.counters['A'] ?? 7101;
+  data.counters['A'] = number + 1;
+  data.activity.unshift({
+    ...entry,
+    id: `A-${number}`,
+    at: new Date().toISOString(),
+  });
+}
