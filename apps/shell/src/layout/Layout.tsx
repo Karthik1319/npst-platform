@@ -3,6 +3,7 @@ import { Outlet } from 'react-router';
 import { ToastHost } from '@/components/ToastHost';
 import { Header } from '@/layout/Header';
 import { LeftNav } from '@/layout/LeftNav';
+import { InboxProvider } from '@/platform/InboxContext';
 import { useNotifyMfeRouters } from '@/remotes/useNotifyMfeRouters';
 import styles from './Layout.module.css';
 
@@ -15,13 +16,15 @@ export function Layout({ apps }: LayoutProps) {
   useNotifyMfeRouters();
 
   return (
-    <div className={styles.layout}>
-      <Header />
-      <LeftNav apps={apps} />
-      <main className={styles.content}>
-        <Outlet />
-      </main>
-      <ToastHost />
-    </div>
+    <InboxProvider>
+      <div className={styles.layout}>
+        <Header />
+        <LeftNav apps={apps} />
+        <main className={styles.content}>
+          <Outlet />
+        </main>
+        <ToastHost />
+      </div>
+    </InboxProvider>
   );
 }

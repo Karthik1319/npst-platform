@@ -5,7 +5,7 @@ describe('portal notice (production build opened directly)', () => {
     const root = document.createElement('div');
     showPortalNotice(root);
     expect(root.textContent).toContain(
-      'Angular is part of the NPST Portal and opens only inside it.',
+      'People & HR is part of the NPST Portal and opens only inside it.',
     );
     expect(root.querySelector('a')?.getAttribute('href')).toBe(
       'http://localhost:4200',

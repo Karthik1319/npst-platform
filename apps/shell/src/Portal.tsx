@@ -4,7 +4,9 @@ import { Layout } from '@/layout/Layout';
 import { AccessDeniedPage } from '@/pages/AccessDeniedPage';
 import { AppPlaceholderPage } from '@/pages/AppPlaceholderPage';
 import { HomePage } from '@/pages/HomePage';
+import { MyTasksPage } from '@/pages/MyTasksPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { NotificationsPage } from '@/pages/NotificationsPage';
 import { usePlatform } from '@/platform/PlatformContext';
 import { RequireAppAccess } from '@/platform/RequireAppAccess';
 import { useAsyncData } from '@/platform/useAsyncData';
@@ -37,6 +39,8 @@ export function Portal() {
             }
           />
         ))}
+        <Route path="/notifications" element={<NotificationsPage />} />
+        <Route path="/my-tasks" element={<MyTasksPage />} />
         <Route path="/access-denied" element={<AccessDeniedPage />} />
         <Route
           path="*"

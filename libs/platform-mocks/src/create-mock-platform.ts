@@ -4,13 +4,8 @@ import {
   type ShellPlatformApi,
   type Toast,
 } from '@npst/shared-contracts';
-import {
-  mockApps,
-  mockAuditEntries,
-  mockInbox,
-  mockReminders,
-  mockRolePermissions,
-} from './mock-data';
+import { notificationService } from '@npst/mock-backend';
+import { mockApps, mockAuditEntries, mockRolePermissions } from './mock-data';
 
 export interface MockPlatformOptions {
   /**
@@ -68,10 +63,15 @@ export function createMockPlatform(
       },
     },
 
+    // Notification Service: the user's inbox, filled by backends
+    // (server to server) and read here for the shell's bell.
     inbox: {
       async list() {
-        return mockInbox;
+        return notificationService.inbox(user);
       },
+      markRead: (id) => notificationService.markRead(id, user),
+      markAllRead: () => notificationService.markAllRead(user),
+      subscribe: (listener) => notificationService.subscribe(listener),
     },
 
     toasts: {
@@ -85,7 +85,14 @@ export function createMockPlatform(
 
     reminders: {
       async list() {
-        return mockReminders;
+        return (await notificationService.reminders(user)).map(
+          ({ id, title, dueAt, link }) => ({
+            id,
+            title,
+            dueAt,
+            ...(link ? { link } : {}),
+          }),
+        );
       },
     },
 

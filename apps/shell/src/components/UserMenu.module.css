@@ -1,0 +1,132 @@
+.wrapper {
+  position: relative;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-2);
+  padding: var(--npst-space-1) var(--npst-space-2);
+  border: none;
+  border-radius: var(--npst-radius);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.trigger:hover,
+.trigger[aria-expanded='true'] {
+  background: var(--npst-header-control-bg);
+}
+
+.trigger:focus-visible {
+  outline: none;
+  box-shadow: var(--npst-focus-ring);
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.2;
+}
+
+.name {
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+}
+
+.role {
+  color: var(--npst-header-text-muted);
+  font-size: var(--npst-font-size-xs);
+  letter-spacing: 0.04em;
+}
+
+.avatar,
+.avatarLarge {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--npst-radius-round);
+  background: var(--npst-avatar-bg);
+  color: var(--npst-avatar-text);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 700;
+}
+
+.avatarLarge {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + var(--npst-space-2));
+  right: 0;
+  width: 16rem;
+  padding: var(--npst-space-2);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-card-radius);
+  background: var(--npst-color-surface-card);
+  color: var(--npst-color-text-default);
+  box-shadow: var(--npst-shadow-raised);
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-2);
+  padding: var(--npst-space-2);
+  border-bottom: 1px solid var(--npst-color-border-subtle);
+}
+
+.profileName {
+  display: block;
+  color: var(--npst-color-text-strong);
+  font-weight: 600;
+}
+
+.profileEmail {
+  display: block;
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+}
+
+.items {
+  margin: var(--npst-space-1) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-2);
+  width: 100%;
+  padding: var(--npst-space-2);
+  border: none;
+  border-radius: var(--npst-radius);
+  background: transparent;
+  color: var(--npst-color-text-default);
+  font: inherit;
+  font-size: var(--npst-font-size-sm);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.item:hover,
+.item:focus-visible {
+  outline: none;
+  background: var(--npst-color-surface-subtle);
+  color: var(--npst-color-action-primary);
+}
+
+@media (max-width: 720px) {
+  .who {
+    display: none;
+  }
+}

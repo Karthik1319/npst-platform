@@ -1,8 +1,205 @@
+/* Shared layout for the portal's own pages. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-4);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--npst-space-3);
+}
+
 .title {
-  margin: 0 0 var(--npst-space-2);
+  margin: 0 0 var(--npst-space-1);
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-2xl);
 }
 
 .intro {
-  margin: 0 0 var(--npst-space-4);
+  margin: 0;
+  color: var(--npst-color-text-secondary);
+}
+
+.intro a {
+  color: var(--npst-color-action-primary);
+  font-weight: 600;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(16rem, 1fr);
+  gap: var(--npst-space-4);
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.panel {
+  min-width: 0;
+  padding: var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-card-radius);
+  background: var(--npst-color-surface-card);
+  box-shadow: var(--npst-shadow-subtle);
+}
+
+.panelTitle {
+  margin: var(--npst-space-2) 0;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-lg);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--npst-space-1);
+  margin-bottom: var(--npst-space-2);
+}
+
+.tabs button {
+  padding: var(--npst-space-1) var(--npst-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--npst-radius-round);
+  background: transparent;
+  color: var(--npst-color-text-secondary);
+  font: inherit;
+  font-size: var(--npst-font-size-sm);
+  cursor: pointer;
+}
+
+.tabs button[aria-pressed='true'] {
+  border-color: var(--npst-nav-active-bg);
+  background: var(--npst-nav-active-bg);
+  color: var(--npst-color-action-primary-hover);
+  font-weight: 600;
+}
+
+.divided {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.divided > li + li {
+  border-top: 1px solid var(--npst-color-border-subtle);
+}
+
+.reminder {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.125rem var(--npst-space-2);
+  padding: var(--npst-space-2) 0;
+  color: var(--npst-color-text-default);
+  font-size: var(--npst-font-size-sm);
+}
+
+.reminder .muted {
+  grid-column: 2;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-1);
+  padding: var(--npst-space-2) var(--npst-space-3);
+  border: 1px solid var(--npst-button-secondary-border);
+  border-radius: var(--npst-radius);
+  background: var(--npst-button-secondary-bg);
+  color: var(--npst-button-secondary-text);
+  font: inherit;
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.secondaryButton:hover {
+  border-color: var(--npst-color-action-primary);
+  color: var(--npst-color-action-primary);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--npst-font-size-sm);
+}
+
+.table th {
+  padding: var(--npst-space-2) var(--npst-space-3);
+  background: var(--npst-table-header-bg);
+  color: var(--npst-color-text-secondary);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--npst-space-3);
+  border-bottom: 1px solid var(--npst-color-border-subtle);
+  vertical-align: top;
+}
+
+.table tbody tr:hover {
+  background: var(--npst-table-row-hover-bg);
+}
+
+.rowLink {
+  color: var(--npst-color-text-strong);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rowLink:hover {
+  color: var(--npst-color-action-primary);
+  text-decoration: underline;
+}
+
+.subtext {
+  display: block;
+  margin-top: 0.125rem;
   color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+}
+
+.muted {
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-sm);
+  white-space: nowrap;
+}
+
+.urgent {
+  color: var(--npst-status-error-text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.empty {
+  margin: var(--npst-space-3) 0;
+  color: var(--npst-color-text-muted);
+}
+
+.planned {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--npst-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--npst-color-action-primary);
+}
+
+.planned .muted {
+  margin: 0;
+  white-space: normal;
 }

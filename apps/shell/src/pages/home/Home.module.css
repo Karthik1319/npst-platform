@@ -1,0 +1,640 @@
+/* Portal Home dashboard. Colours come only from theme variables. */
+
+.dashboard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: var(--npst-space-4);
+  align-items: start;
+}
+
+.main,
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-4);
+  min-width: 0;
+}
+
+/* Lets cards adapt to the width of the main column, not the window. */
+.main {
+  container-type: inline-size;
+}
+
+@media (max-width: 1280px) {
+  .dashboard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    align-items: start;
+  }
+}
+
+/* ---------- Greeting ---------- */
+
+.greeting {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 8rem;
+  overflow: hidden;
+  padding: var(--npst-space-4) var(--npst-space-5);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-card-radius);
+  background: var(--npst-greeting-bg);
+}
+
+.greetingHello {
+  margin: 0;
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-lg);
+}
+
+.greetingName {
+  margin: var(--npst-space-1) 0;
+  color: var(--npst-color-text-strong);
+  font-size: 2rem;
+  line-height: 1.15;
+}
+
+.greetingText {
+  margin: 0;
+  color: var(--npst-color-text-secondary);
+}
+
+.greetingDate {
+  margin: var(--npst-space-2) 0 0;
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-sm);
+}
+
+.greetingArt {
+  flex: none;
+  width: 15rem;
+  height: 7.5rem;
+  margin: calc(var(--npst-space-4) * -1) calc(var(--npst-space-5) * -1)
+    calc(var(--npst-space-4) * -1) 0;
+  fill: none;
+  stroke: var(--npst-greeting-art);
+  stroke-width: 1.5;
+}
+
+.greetingArt rect {
+  fill: var(--npst-greeting-art);
+  stroke: none;
+  opacity: 0.7;
+}
+
+@media (max-width: 720px) {
+  .greetingArt {
+    display: none;
+  }
+}
+
+/* ---------- Sections ---------- */
+
+.sectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--npst-space-3);
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-xl);
+}
+
+/* ---------- Application shortcuts ---------- */
+
+.apps,
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+  gap: var(--npst-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Four in a row when there is room, otherwise two by two (never three and one). */
+@container (min-width: 44rem) {
+  .kpis:has(> li:nth-child(4)),
+  .apps:has(> li:nth-child(4)) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@container (max-width: 44rem) {
+  .kpis:has(> li:nth-child(4)),
+  .apps:has(> li:nth-child(4)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.appCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-1);
+  height: 100%;
+  padding: var(--npst-space-4) var(--npst-space-5) var(--npst-space-4)
+    var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-card-radius);
+  box-shadow: var(--npst-shadow-subtle);
+  color: var(--npst-color-text-default);
+  text-decoration: none;
+  transition:
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.appCard:hover {
+  box-shadow: var(--npst-shadow-card);
+  transform: translateY(-1px);
+}
+
+.appCard:focus-visible,
+.kpi:focus-visible {
+  outline: none;
+  box-shadow: var(--npst-focus-ring);
+}
+
+.tint1 {
+  background: linear-gradient(
+    160deg,
+    var(--npst-tone-1-tint),
+    var(--npst-color-surface-card) 70%
+  );
+}
+.tint2 {
+  background: linear-gradient(
+    160deg,
+    var(--npst-tone-2-tint),
+    var(--npst-color-surface-card) 70%
+  );
+}
+.tint3 {
+  background: linear-gradient(
+    160deg,
+    var(--npst-tone-3-tint),
+    var(--npst-color-surface-card) 70%
+  );
+}
+.tint4 {
+  background: linear-gradient(
+    160deg,
+    var(--npst-tone-4-tint),
+    var(--npst-color-surface-card) 70%
+  );
+}
+.tint5 {
+  background: var(--npst-color-surface-card);
+}
+
+.appIcon,
+.kpiIcon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: var(--npst-space-2);
+  border-radius: var(--npst-radius);
+}
+
+.tone1 {
+  background: var(--npst-tone-1-bg);
+  color: var(--npst-tone-1-text);
+}
+.tone2 {
+  background: var(--npst-tone-2-bg);
+  color: var(--npst-tone-2-text);
+}
+.tone3 {
+  background: var(--npst-tone-3-bg);
+  color: var(--npst-tone-3-text);
+}
+.tone4 {
+  background: var(--npst-tone-4-bg);
+  color: var(--npst-tone-4-text);
+}
+.tone5 {
+  background: var(--npst-tone-5-bg);
+  color: var(--npst-tone-5-text);
+}
+
+.text1 {
+  color: var(--npst-tone-1-text);
+}
+.text2 {
+  color: var(--npst-tone-2-text);
+}
+.text3 {
+  color: var(--npst-tone-3-text);
+}
+.text4 {
+  color: var(--npst-tone-4-text);
+}
+.text5 {
+  color: var(--npst-tone-5-text);
+}
+
+.appName {
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-lg);
+  font-weight: 700;
+}
+
+.appDescription {
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-sm);
+  line-height: 1.4;
+}
+
+.appChevron {
+  position: absolute;
+  right: var(--npst-space-3);
+  bottom: var(--npst-space-4);
+  color: var(--npst-color-text-muted);
+}
+
+/* ---------- KPIs ---------- */
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-1);
+  height: 100%;
+  padding: var(--npst-space-3) var(--npst-space-3) var(--npst-space-3)
+    var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-card-radius);
+  background: var(--npst-color-surface-card);
+  box-shadow: var(--npst-shadow-subtle);
+  color: var(--npst-color-text-default);
+  text-decoration: none;
+}
+
+.kpi:hover {
+  box-shadow: var(--npst-shadow-card);
+}
+
+.kpiTop {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-3);
+}
+
+.kpiIcon {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0;
+  border-radius: var(--npst-radius-round);
+}
+
+.kpiValue {
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-2xl);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.kpiLabel {
+  margin-top: var(--npst-space-1);
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-sm);
+}
+
+.kpiTrend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-1);
+  font-size: var(--npst-font-size-xs);
+  font-weight: 600;
+}
+
+.good {
+  color: var(--npst-status-success-text);
+}
+.bad {
+  color: var(--npst-status-error-text);
+}
+.flat {
+  color: var(--npst-color-text-muted);
+}
+
+/* ---------- Charts ---------- */
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: var(--npst-space-4);
+}
+
+.chartRow {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-4);
+  flex: 1;
+}
+
+.funnel {
+  flex: 1 1 45%;
+  max-width: 14rem;
+  height: auto;
+}
+
+.funnel1 {
+  fill: var(--npst-chart-scale-1);
+  background: var(--npst-chart-scale-1);
+}
+.funnel2 {
+  fill: var(--npst-chart-scale-2);
+  background: var(--npst-chart-scale-2);
+}
+.funnel3 {
+  fill: var(--npst-chart-scale-3);
+  background: var(--npst-chart-scale-3);
+}
+.funnel4 {
+  fill: var(--npst-chart-scale-4);
+  background: var(--npst-chart-scale-4);
+}
+.funnel5 {
+  fill: var(--npst-chart-scale-5);
+  background: var(--npst-chart-scale-5);
+}
+.funnel6 {
+  fill: var(--npst-chart-good);
+  background: var(--npst-chart-good);
+}
+
+.legend {
+  display: flex;
+  flex: 1 1 55%;
+  flex-direction: column;
+  gap: var(--npst-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--npst-font-size-sm);
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-2);
+}
+
+.legendDot {
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--npst-radius-round);
+}
+
+.legendLabel {
+  flex: 1;
+  color: var(--npst-color-text-secondary);
+  white-space: nowrap;
+}
+
+.legendValue {
+  color: var(--npst-color-text-strong);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.legendShare {
+  color: var(--npst-color-text-muted);
+  font-weight: 400;
+}
+
+.donut {
+  flex: none;
+  width: 9.5rem;
+  height: 9.5rem;
+}
+
+.donutTrack {
+  fill: none;
+  stroke: var(--npst-chart-track);
+  stroke-width: 5;
+}
+
+.donutPart {
+  fill: none;
+  stroke-width: 5;
+}
+
+.donutPart.good {
+  stroke: var(--npst-chart-good);
+}
+.donutPart.watch {
+  stroke: var(--npst-chart-watch);
+}
+.donutPart.bad {
+  stroke: var(--npst-chart-bad);
+}
+.legendDot.good {
+  background: var(--npst-chart-good);
+}
+.legendDot.watch {
+  background: var(--npst-chart-watch);
+}
+.legendDot.bad {
+  background: var(--npst-chart-bad);
+}
+
+.donutValue,
+.donutLabel {
+  fill: var(--npst-color-text-strong);
+  text-anchor: middle;
+  font-family: var(--npst-font-family);
+}
+
+.donutValue {
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.donutLabel {
+  fill: var(--npst-color-text-muted);
+  font-size: 0.25rem;
+}
+
+.chartFoot {
+  margin: var(--npst-space-3) 0 0;
+  padding-top: var(--npst-space-3);
+  border-top: 1px solid var(--npst-color-border-subtle);
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-sm);
+}
+
+.chartFoot strong {
+  color: var(--npst-color-text-strong);
+}
+
+/* ---------- Workforce ---------- */
+
+.workforceTotals {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--npst-space-3);
+  margin-bottom: var(--npst-space-3);
+}
+
+.bigNumber {
+  display: block;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-2xl);
+  font-weight: 700;
+}
+
+.smallLabel {
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+}
+
+.departments {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-2);
+  margin: var(--npst-space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--npst-font-size-sm);
+}
+
+.departments li {
+  display: grid;
+  grid-template-columns: 9rem 1fr 2rem;
+  align-items: center;
+  gap: var(--npst-space-2);
+  color: var(--npst-color-text-secondary);
+}
+
+/* ---------- Lists in the side column ---------- */
+
+.stack,
+.tasks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stack li + li,
+.tasks li + li {
+  border-top: 1px solid var(--npst-color-border-subtle);
+}
+
+.tasks li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--npst-space-3);
+  padding: var(--npst-space-2) 0;
+}
+
+.taskIcon {
+  display: grid;
+  place-items: center;
+}
+
+.taskTitle {
+  min-width: 0;
+  color: var(--npst-color-text-default);
+  font-size: var(--npst-font-size-sm);
+  line-height: 1.35;
+  text-decoration: none;
+}
+
+a.taskTitle:hover {
+  color: var(--npst-color-action-primary);
+  text-decoration: underline;
+}
+
+.celebrationKind {
+  display: block;
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+}
+
+.due {
+  padding: 0.125rem var(--npst-space-2);
+  border-radius: var(--npst-radius);
+  background: var(--npst-status-neutral-bg);
+  color: var(--npst-status-neutral-text);
+  font-size: var(--npst-font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dueToday {
+  background: var(--npst-status-error-bg);
+  color: var(--npst-status-error-text);
+}
+
+/* ---------- Recent activity ---------- */
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--npst-font-size-sm);
+}
+
+.table th {
+  padding: var(--npst-space-2) var(--npst-space-3);
+  background: var(--npst-table-header-bg);
+  color: var(--npst-color-text-secondary);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--npst-space-2) var(--npst-space-3);
+  border-bottom: 1px solid var(--npst-color-border-subtle);
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table a {
+  color: var(--npst-color-text-default);
+  text-decoration: none;
+}
+
+.table a:hover {
+  color: var(--npst-color-action-primary);
+  text-decoration: underline;
+}
+
+.activityText {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-2);
+}
+
+.muted {
+  color: var(--npst-color-text-muted);
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 0;
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-sm);
+}

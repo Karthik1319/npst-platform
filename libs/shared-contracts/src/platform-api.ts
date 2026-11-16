@@ -3,7 +3,7 @@
  * Additive changes bump the minor version; a breaking change bumps the major
  * version and needs a migration note.
  */
-export const PLATFORM_API_VERSION = '1.0.0';
+export const PLATFORM_API_VERSION = '1.1.0';
 
 // ---------- Shared data types ----------
 
@@ -46,6 +46,14 @@ export interface InboxItem {
   /** ISO 8601 timestamp. */
   createdAt: string;
   read: boolean;
+  /** One or two sentences of detail. Added in 1.1.0. */
+  description?: string;
+  /** How the bell styles the item. Added in 1.1.0. */
+  kind?: ToastKind;
+  /** Id of the app the notification is about. Added in 1.1.0. */
+  appId?: string;
+  /** Portal path that opens the related record. Added in 1.1.0. */
+  link?: string;
 }
 
 export interface Reminder {
@@ -53,6 +61,8 @@ export interface Reminder {
   title: string;
   /** ISO 8601 timestamp. */
   dueAt: string;
+  /** Portal path that opens the related page. Added in 1.1.0. */
+  link?: string;
 }
 
 /** An application the portal can open (from the App Launcher module). */
@@ -114,7 +124,18 @@ export interface PlatformApi {
 export interface ShellPlatformApi extends PlatformApi {
   /** Notification Services: inbox shown in the bell panel. */
   readonly inbox: {
+    /** The signed-in user's notifications, newest first. */
     list(): Promise<readonly InboxItem[]>;
+    /** Added in 1.1.0. */
+    markRead(id: string): Promise<void>;
+    /** Added in 1.1.0. */
+    markAllRead(): Promise<void>;
+    /**
+     * Called when the inbox may have changed (a new notification arrived or
+     * one was read), so the bell can reload it. Stands in for the
+     * Notification Service's push channel. Added in 1.1.0.
+     */
+    subscribe(listener: () => void): Unsubscribe;
   };
 
   /** Notification Services: toasts requested through `notify.toast()`. */

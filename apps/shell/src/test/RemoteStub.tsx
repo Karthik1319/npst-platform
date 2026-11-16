@@ -6,7 +6,7 @@ import type { MfeProps } from '@npst/shared-contracts';
  * toast (MFE → shell).
  */
 export default function RemoteStub({ user, basePath, platform }: MfeProps) {
-  const canExport = platform.permissions.can('export', 'react-a');
+  const canExport = platform.permissions.can('export', 'sales-hub');
 
   return (
     <section>

@@ -1,9 +1,7 @@
 import type {
   AuditEntry,
-  InboxItem,
   PlatformUser,
   PortalApp,
-  Reminder,
 } from '@npst/shared-contracts';
 
 /** Mock users offered on the mock login page. */
@@ -36,80 +34,65 @@ export const mockUsers: readonly PlatformUser[] = [
 
 /**
  * Mock RBAC: the permissions each role grants, written `action:resource`.
- * App permissions use the app id as the resource, e.g. `access:react-a`,
+ * App permissions use the app id as the resource, e.g. `access:sales-hub`,
  * so every application has its own permission, independent of role names.
+ * In-app permissions only show or hide UI; backends check them again.
  */
 export const mockRolePermissions: Readonly<Record<string, readonly string[]>> =
   {
     ADMIN: [
-      'access:react-a',
-      'access:react-b',
-      'access:angular',
+      'access:sales-hub',
+      'access:projects',
+      'access:people-hr',
       'access:admin-console',
       'view:audit',
-      // In-app action permission: only Admin may export reports in React A.
-      'export:react-a',
+      'export:sales-hub',
+      'create:lead',
+      'edit:opportunity',
+      'update:project-task',
+      'approve:leave',
+      'apply:leave',
     ],
-    SALES: ['access:react-a', 'access:react-b'],
-    SOLUTIONS: ['access:react-b', 'access:angular'],
-    EMPLOYEE: ['access:angular'],
+    SALES: [
+      'access:sales-hub',
+      'access:projects',
+      'create:lead',
+      'edit:opportunity',
+    ],
+    SOLUTIONS: [
+      'access:projects',
+      'access:people-hr',
+      'update:project-task',
+      'apply:leave',
+    ],
+    EMPLOYEE: ['access:people-hr', 'apply:leave'],
   };
 
 /** Mock App Launcher catalogue: every app the portal hosts. */
 export const mockApps: readonly PortalApp[] = [
   {
-    id: 'react-a',
-    name: 'React A',
-    description: 'Demo React micro-frontend (remote A).',
-    path: '/react-a',
+    id: 'sales-hub',
+    name: 'Sales Hub',
+    description: 'Manage leads, opportunities and the sales pipeline',
+    path: '/sales',
   },
   {
-    id: 'react-b',
-    name: 'React B',
-    description: 'Demo React micro-frontend (remote B).',
-    path: '/react-b',
+    id: 'projects',
+    name: 'Projects & Delivery',
+    description: 'Track delivery, milestones, tasks and resources',
+    path: '/projects',
   },
   {
-    id: 'angular',
-    name: 'Angular',
-    description: 'Demo Angular micro-frontend (mount/unmount).',
-    path: '/angular',
+    id: 'people-hr',
+    name: 'People & HR',
+    description: 'Employee directory, leave and attendance',
+    path: '/people',
   },
   {
     id: 'admin-console',
     name: 'Admin Console',
-    description: 'Portal administration (placeholder).',
+    description: 'Users, roles and portal settings',
     path: '/admin',
-  },
-];
-
-export const mockInbox: readonly InboxItem[] = [
-  {
-    id: 'n-1',
-    title: 'Your leave request was approved',
-    createdAt: '2026-11-12T09:30:00Z',
-    read: false,
-  },
-  {
-    id: 'n-2',
-    title: 'New policy document published',
-    createdAt: '2026-11-11T14:00:00Z',
-    read: false,
-  },
-  {
-    id: 'n-3',
-    title: 'Welcome to the NPST portal',
-    createdAt: '2026-11-01T08:00:00Z',
-    read: true,
-  },
-];
-
-export const mockReminders: readonly Reminder[] = [
-  { id: 'r-1', title: 'Submit timesheet', dueAt: '2026-11-14T17:00:00Z' },
-  {
-    id: 'r-2',
-    title: 'Review team leave requests',
-    dueAt: '2026-11-15T10:00:00Z',
   },
 ];
 
@@ -131,5 +114,32 @@ export const mockAuditEntries: readonly AuditEntry[] = [
     changedBy: 'User 2',
     changedAt: '2026-11-12T09:30:00Z',
     summary: 'Status changed from Pending to Approved',
+  },
+  {
+    id: 'a-3',
+    entity: 'opportunity',
+    entityId: 'OP-1043',
+    action: 'updated',
+    changedBy: 'Rahul Kulkarni',
+    changedAt: '2026-10-21T11:05:00Z',
+    summary: 'Estimated value changed from ₹3.2 Cr to ₹3.8 Cr',
+  },
+  {
+    id: 'a-4',
+    entity: 'opportunity',
+    entityId: 'OP-1043',
+    action: 'updated',
+    changedBy: 'Rahul Kulkarni',
+    changedAt: '2026-11-02T16:40:00Z',
+    summary: 'Stage changed from Opportunity to Proposal',
+  },
+  {
+    id: 'a-5',
+    entity: 'opportunity',
+    entityId: 'OP-1043',
+    action: 'updated',
+    changedBy: 'Arjun Mehta',
+    changedAt: '2026-11-12T10:15:00Z',
+    summary: 'Probability changed from 50% to 60%',
   },
 ];

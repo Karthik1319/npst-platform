@@ -23,7 +23,7 @@ describe('standalone mode (development only)', () => {
       screen.getByRole('heading', { level: 1, name: 'Access denied' }),
     ).toBeDefined();
     expect(
-      screen.getByText(`${who} does not have permission to open React A.`),
+      screen.getByText(`${who} does not have permission to open Sales Hub.`),
     ).toBeDefined();
     expect(
       screen.queryByRole('heading', { level: 1, name: 'React A' }),

@@ -1,0 +1,41 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-card-radius);
+  background: var(--npst-color-surface-card);
+  box-shadow: var(--npst-shadow-subtle);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--npst-space-3);
+  margin-bottom: var(--npst-space-3);
+}
+
+.title {
+  flex: 1;
+  margin: 0;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-lg);
+  font-weight: 700;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-1);
+  color: var(--npst-color-action-primary);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: var(--npst-color-action-primary-hover);
+  text-decoration: underline;
+}

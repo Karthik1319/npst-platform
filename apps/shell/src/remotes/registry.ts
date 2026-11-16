@@ -17,18 +17,23 @@ export type RemoteDefinition =
     }
   | { kind: 'mount'; load: () => Promise<MountableMfe> };
 
-/** Where the Angular remote is served (its own server). */
+/** Where the Angular remote (People & HR) is served (its own server). */
 const DEMO_ANGULAR_URL: string =
   import.meta.env['VITE_DEMO_ANGULAR_URL'] ?? 'http://localhost:4203/';
 
 /**
- * Which app id is served by which remote. `import('demoReactA/App')` is
+ * Which app id is served by which remote:
+ * - Sales Hub → `demo-react-a` (React, Module Federation)
+ * - Projects & Delivery → `demo-react-b` (React, Module Federation)
+ * - People & HR → `demo-angular` (Angular CLI build, mount contract)
+ *
+ * `import('demoReactA/App')` is
  * resolved by Module Federation at runtime: it downloads the remote's code
  * from its own server when the route is opened (again on retry, if it failed).
  * Apps not listed here still show a placeholder page.
  */
 export const remotes: Readonly<Record<string, RemoteDefinition>> = {
-  'react-a': { kind: 'react', load: () => import('demoReactA/App') },
-  'react-b': { kind: 'react', load: () => import('demoReactB/App') },
-  angular: { kind: 'mount', load: () => loadEsmRemote(DEMO_ANGULAR_URL) },
+  'sales-hub': { kind: 'react', load: () => import('demoReactA/App') },
+  projects: { kind: 'react', load: () => import('demoReactB/App') },
+  'people-hr': { kind: 'mount', load: () => loadEsmRemote(DEMO_ANGULAR_URL) },
 };

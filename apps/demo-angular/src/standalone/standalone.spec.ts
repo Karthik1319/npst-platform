@@ -33,7 +33,7 @@ describe('standalone mode (development only)', () => {
     await startStandalone(root, '?user=u-1', fakeMount);
     expect(mounted).toEqual([]);
     expect(root.textContent).toContain(
-      'User 1 (SALES) does not have permission to open Angular.',
+      'User 1 (SALES) does not have permission to open People & HR.',
     );
   });
 

@@ -14,6 +14,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@npst/shared-contracts": "workspace:*"
+    "@npst/shared-contracts": "workspace:*",
+    "@npst/mock-backend": "workspace:*"
   }
 }

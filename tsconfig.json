@@ -17,6 +17,9 @@
     },
     {
       "path": "./apps/demo-react-b"
+    },
+    {
+      "path": "./libs/mock-backend"
     }
   ],
   "compilerOptions": {}

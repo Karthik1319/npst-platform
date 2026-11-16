@@ -21,7 +21,7 @@ describe('standalone mode (development only)', () => {
     ).toBeDefined();
     expect(
       screen.getByText(
-        'User 3 (EMPLOYEE) does not have permission to open React B.',
+        'User 3 (EMPLOYEE) does not have permission to open Projects & Delivery.',
       ),
     ).toBeDefined();
     expect(

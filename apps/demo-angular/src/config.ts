@@ -1,6 +1,6 @@
 /** This app's id in the portal (its permission is `access` on this id). */
-export const APP_ID = 'angular';
-export const APP_NAME = 'Angular';
+export const APP_ID = 'people-hr';
+export const APP_NAME = 'People & HR';
 
 /**
  * Portal address used on the production page. Change it per environment

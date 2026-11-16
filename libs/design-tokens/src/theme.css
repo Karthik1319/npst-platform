@@ -42,6 +42,28 @@
   --npst-orange-100: #ffedd5;
   --npst-orange-700: #c2410c;
   --npst-amber-600: #d97706;
+  --npst-amber-100: #fef3c7;
+  --npst-amber-400: #fbbf24;
+  --npst-amber-700: #b45309;
+  --npst-blue-50: #eff6ff;
+  --npst-blue-300: #93c5fd;
+  --npst-blue-400: #60a5fa;
+  --npst-navy-900: #0b1d3a;
+  --npst-navy-800: #15305a;
+  --npst-navy-700: #234476;
+  --npst-slate-300: #cbd5e1;
+  --npst-slate-400: #94a3b8;
+  --npst-slate-500: #64748b;
+  --npst-slate-600: #475569;
+  --npst-green-50: #f0fdf4;
+  --npst-green-500: #22c55e;
+  --npst-red-50: #fef2f2;
+  --npst-red-100: #fee2e2;
+  --npst-red-700: #b91c1c;
+  --npst-purple-50: #f5f3ff;
+  --npst-orange-50: #fff7ed;
+  --npst-teal-100: #ccfbf1;
+  --npst-teal-700: #0f766e;
 
   /* 2. Semantic */
   --npst-font-family: system-ui, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -60,14 +82,39 @@
   --npst-color-text-secondary: var(--npst-slate-700);
   --npst-color-text-muted: var(--npst-gray-500);
   --npst-color-text-inverse: var(--npst-white);
-  --npst-color-surface-page: var(--npst-gray-100);
+  --npst-color-surface-page: var(--npst-slate-100);
   --npst-color-surface-card: var(--npst-white);
+  /* Table headers, hovered rows, inset panels. */
+  --npst-color-surface-subtle: var(--npst-slate-50);
   --npst-color-border-default: var(--npst-gray-300);
   --npst-color-border-subtle: var(--npst-slate-200);
   --npst-color-status-info: var(--npst-blue-600);
   --npst-color-status-success: var(--npst-green-700);
   --npst-color-status-warning: var(--npst-amber-600);
   --npst-color-status-error: var(--npst-red-600);
+  /* Status badges: background + text pairs with readable contrast. */
+  --npst-status-success-bg: var(--npst-green-100);
+  --npst-status-success-text: var(--npst-green-700);
+  --npst-status-warning-bg: var(--npst-amber-100);
+  --npst-status-warning-text: var(--npst-amber-700);
+  --npst-status-error-bg: var(--npst-red-100);
+  --npst-status-error-text: var(--npst-red-700);
+  --npst-status-info-bg: var(--npst-blue-100);
+  --npst-status-info-text: var(--npst-blue-800);
+  --npst-status-neutral-bg: var(--npst-slate-100);
+  --npst-status-neutral-text: var(--npst-slate-600);
+  --npst-status-accent-bg: var(--npst-purple-100);
+  --npst-status-accent-text: var(--npst-purple-700);
+  /* Charts: a blue scale for ordered data (e.g. a funnel), status colours for health. */
+  --npst-chart-scale-1: var(--npst-blue-600);
+  --npst-chart-scale-2: var(--npst-blue-500);
+  --npst-chart-scale-3: var(--npst-blue-400);
+  --npst-chart-scale-4: var(--npst-blue-300);
+  --npst-chart-scale-5: var(--npst-blue-200);
+  --npst-chart-good: var(--npst-green-500);
+  --npst-chart-watch: var(--npst-amber-400);
+  --npst-chart-bad: var(--npst-red-600);
+  --npst-chart-track: var(--npst-slate-200);
   /* Accent tones for avatars and tags, used in order 1 → 4. */
   --npst-tone-1-bg: var(--npst-blue-100);
   --npst-tone-1-text: var(--npst-blue-600);
@@ -77,6 +124,13 @@
   --npst-tone-3-text: var(--npst-purple-700);
   --npst-tone-4-bg: var(--npst-orange-100);
   --npst-tone-4-text: var(--npst-orange-700);
+  --npst-tone-5-bg: var(--npst-teal-100);
+  --npst-tone-5-text: var(--npst-teal-700);
+  /* Soft card tints for the four tones (application shortcuts). */
+  --npst-tone-1-tint: var(--npst-blue-50);
+  --npst-tone-2-tint: var(--npst-green-50);
+  --npst-tone-3-tint: var(--npst-purple-50);
+  --npst-tone-4-tint: var(--npst-orange-50);
   --npst-space-1: 0.25rem;
   --npst-space-2: 0.5rem;
   --npst-space-3: 1rem;
@@ -90,13 +144,36 @@
   --npst-shadow-raised: 0 4px 12px rgb(15 23 42 / 0.15);
   --npst-shadow-card:
     0 1px 2px rgb(15 23 42 / 0.04), 0 6px 16px rgb(15 23 42 / 0.05);
+  --npst-shadow-subtle: 0 1px 2px rgb(15 23 42 / 0.06);
 
   /* 3. Component */
-  --npst-header-bg: var(--npst-slate-900);
-  --npst-header-height: 3.5rem;
+  --npst-header-bg: var(--npst-navy-900);
+  --npst-header-height: 4rem;
+  --npst-header-control-bg: var(--npst-navy-800);
+  --npst-header-control-border: var(--npst-navy-700);
+  --npst-header-text-muted: var(--npst-slate-300);
   --npst-nav-bg: var(--npst-white);
   --npst-nav-active-bg: var(--npst-blue-100);
-  --npst-nav-width: 14rem;
+  --npst-nav-width: 15rem;
+  --npst-avatar-bg: var(--npst-blue-100);
+  --npst-avatar-text: var(--npst-blue-800);
+  --npst-card-radius: var(--npst-radius-lg);
+  --npst-table-header-bg: var(--npst-slate-50);
+  --npst-table-row-hover-bg: var(--npst-slate-50);
+  --npst-progress-track: var(--npst-slate-200);
+  --npst-progress-fill: var(--npst-color-action-primary);
+  --npst-input-border: var(--npst-slate-300);
+  --npst-button-secondary-bg: var(--npst-white);
+  --npst-button-secondary-border: var(--npst-slate-300);
+  --npst-button-secondary-text: var(--npst-slate-700);
+  /* Portal Home greeting banner. */
+  --npst-greeting-bg: linear-gradient(
+    100deg,
+    var(--npst-white) 0%,
+    var(--npst-blue-50) 55%,
+    var(--npst-blue-100) 100%
+  );
+  --npst-greeting-art: var(--npst-blue-200);
   --npst-badge-bg: var(--npst-red-600);
   --npst-badge-text: var(--npst-white);
   --npst-toast-bg: var(--npst-slate-900);

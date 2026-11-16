@@ -14,14 +14,14 @@ export function AccessDeniedPage() {
   const appName = deniedAppName(useLocation().state);
 
   return (
-    <section>
+    <section className={styles.panel}>
       <h1 className={styles.title}>Access denied</h1>
       <p className={styles.intro}>
         {appName
           ? `You do not have permission to open ${appName}.`
           : 'You do not have permission to open this page.'}
       </p>
-      <p>
+      <p className={styles.intro}>
         <Link to="/">Back to Portal Home</Link>
       </p>
     </section>

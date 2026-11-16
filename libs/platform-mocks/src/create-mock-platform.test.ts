@@ -14,7 +14,7 @@ function user(name: string): PlatformUser {
 
 describe('createMockPlatform', () => {
   it('follows the current contract version', () => {
-    expect(createMockPlatform({ user: user('User 1') }).version).toBe('1.0.0');
+    expect(createMockPlatform({ user: user('User 1') }).version).toBe('1.1.0');
   });
 
   it('requires a user (no default user)', () => {
@@ -28,10 +28,10 @@ describe('createMockPlatform', () => {
   });
 
   it.each([
-    ['Admin User', ['react-a', 'react-b', 'angular', 'admin-console']],
-    ['User 1', ['react-a', 'react-b']],
-    ['User 2', ['react-b', 'angular']],
-    ['User 3', ['angular']],
+    ['Admin User', ['sales-hub', 'projects', 'people-hr', 'admin-console']],
+    ['User 1', ['sales-hub', 'projects']],
+    ['User 2', ['projects', 'people-hr']],
+    ['User 3', ['people-hr']],
   ])('%s may access exactly %j', async (name, expectedIds) => {
     const platform = createMockPlatform({ user: user(name) });
 
@@ -46,20 +46,23 @@ describe('createMockPlatform', () => {
     }
   });
 
-  it('grants the in-app permission export:react-a only to ADMIN', () => {
-    expect(
-      createMockPlatform({ user: user('Admin User') }).permissions.can(
-        'export',
-        'react-a',
-      ),
-    ).toBe(true);
-    for (const name of ['User 1', 'User 2', 'User 3']) {
+  it.each([
+    ['export:sales-hub', ['Admin User']],
+    ['create:lead', ['Admin User', 'User 1']],
+    ['edit:opportunity', ['Admin User', 'User 1']],
+    ['update:project-task', ['Admin User', 'User 2']],
+    ['approve:leave', ['Admin User']],
+    ['apply:leave', ['Admin User', 'User 2', 'User 3']],
+  ])('grants the in-app permission %s only to %j', (permission, names) => {
+    const [action = '', resource = ''] = permission.split(':');
+    for (const candidate of mockUsers) {
       expect(
-        createMockPlatform({ user: user(name) }).permissions.can(
-          'export',
-          'react-a',
+        createMockPlatform({ user: candidate }).permissions.can(
+          action,
+          resource,
         ),
-      ).toBe(false);
+        candidate.name,
+      ).toBe(names.includes(candidate.name));
     }
   });
 
@@ -83,6 +86,34 @@ describe('createMockPlatform', () => {
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener).toHaveBeenCalledWith(
       expect.objectContaining({ message: 'Saved', kind: 'success' }),
+    );
+  });
+
+  it("lists the notifications addressed to the user's role, and marks them read", async () => {
+    const platform = createMockPlatform({ user: user('User 1') });
+    const inbox = await platform.inbox.list();
+    expect(inbox.length).toBeGreaterThan(0);
+    expect(inbox.some((item) => item.title.includes('Meridian'))).toBe(true);
+    // Not for Sales: addressed to the Solutions team.
+    expect(inbox.some((item) => item.title.includes('Trident'))).toBe(false);
+
+    const unread = inbox.filter((item) => !item.read);
+    const first = unread[0];
+    if (!first) throw new Error('expected an unread notification');
+    await platform.inbox.markRead(first.id);
+    const after = await platform.inbox.list();
+    expect(after.filter((item) => !item.read)).toHaveLength(unread.length - 1);
+
+    await platform.inbox.markAllRead();
+    expect((await platform.inbox.list()).every((item) => item.read)).toBe(true);
+  });
+
+  it("lists the reminders for the user's role", async () => {
+    const reminders = await createMockPlatform({
+      user: user('User 3'),
+    }).reminders.list();
+    expect(reminders.map((reminder) => reminder.title)).toContain(
+      'Submit timesheet',
     );
   });
 

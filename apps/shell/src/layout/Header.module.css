@@ -1,55 +1,34 @@
 .header {
   grid-area: header;
+  position: sticky;
+  top: 0;
+  z-index: 30;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--npst-space-4);
   padding: 0 var(--npst-space-4);
   background: var(--npst-header-bg);
   color: var(--npst-color-text-inverse);
 }
 
 .brand {
+  flex: none;
   color: inherit;
-  font-weight: 600;
-  font-size: 1.125rem;
+  font-size: var(--npst-font-size-xl);
+  font-weight: 700;
+  letter-spacing: 0.01em;
   text-decoration: none;
+}
+
+.brand:focus-visible {
+  outline: none;
+  box-shadow: var(--npst-focus-ring);
+  border-radius: var(--npst-radius);
 }
 
 .actions {
   display: flex;
   align-items: center;
   gap: var(--npst-space-3);
-}
-
-.user {
-  display: flex;
-  font-size: 0.875rem;
-  flex-direction: column;
-  line-height: 1.2;
-}
-
-.role {
-  font-size: 0.75rem;
-  opacity: 0.8;
-}
-
-.signOut {
-  padding: var(--npst-space-1) var(--npst-space-3);
-  border: 1px solid currentColor;
-  border-radius: var(--npst-radius);
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  font-size: 0.875rem;
-  cursor: pointer;
-}
-
-.signOut:hover {
-  background: var(--npst-button-primary-bg);
-  border-color: var(--npst-button-primary-bg);
-}
-
-.signOut:focus-visible {
-  outline: none;
-  box-shadow: var(--npst-focus-ring);
+  margin-left: auto;
 }

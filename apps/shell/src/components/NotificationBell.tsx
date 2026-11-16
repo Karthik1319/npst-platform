@@ -1,73 +1,95 @@
-import { useState } from 'react';
-import { usePlatform } from '@/platform/PlatformContext';
-import { useAsyncData } from '@/platform/useAsyncData';
+import { useCallback, useRef, useState } from 'react';
+import { Link } from 'react-router';
+import { NotificationItem } from '@/components/NotificationItem';
+import { useInbox } from '@/platform/InboxContext';
+import { formatDate } from '@/ui/format';
+import { Icon } from '@/ui/Icon';
+import { useDismiss } from '@/ui/useDismiss';
 import styles from './NotificationBell.module.css';
 
 const PANEL_ID = 'npst-notification-panel';
 
-/** Bell with a count of unread notifications + reminders, and a panel listing them. */
+/**
+ * The portal's global bell (Notification Service + Alerts and Reminders).
+ * Shows notifications from every application in one place.
+ */
 export function NotificationBell() {
-  const platform = usePlatform();
-  const inbox = useAsyncData(platform.inbox.list);
-  const reminders = useAsyncData(platform.reminders.list);
+  const { items, reminders, unreadCount, markAllRead } = useInbox();
   const [open, setOpen] = useState(false);
-
-  const unread =
-    inbox.status === 'ready' ? inbox.data.filter((item) => !item.read) : [];
-  const upcoming = reminders.status === 'ready' ? reminders.data : [];
-  const count = unread.length + upcoming.length;
+  const ref = useRef<HTMLDivElement>(null);
+  const close = useCallback(() => setOpen(false), []);
+  useDismiss(ref, open, close);
 
   return (
-    <div className={styles.wrapper}>
+    <div className={styles.wrapper} ref={ref}>
       <button
         type="button"
         className={styles.bell}
-        aria-label={`Notifications, ${count} new`}
+        aria-label={`Notifications, ${unreadCount} new`}
         aria-expanded={open}
         aria-controls={PANEL_ID}
         onClick={() => setOpen((isOpen) => !isOpen)}
       >
-        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-          <path
-            fill="currentColor"
-            d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2Zm6-6V11a6 6 0 0 0-5-5.9V4a1 1 0 1 0-2 0v1.1A6 6 0 0 0 6 11v5l-2 2v1h16v-1l-2-2Z"
-          />
-        </svg>
-        {count > 0 && (
+        <Icon name="bell" size={22} />
+        {unreadCount > 0 && (
           <span className={styles.badge} aria-hidden="true">
-            {count}
+            {unreadCount}
           </span>
         )}
       </button>
 
       {open && (
-        <div id={PANEL_ID} className={styles.panel}>
-          <h2 className={styles.heading}>Notifications</h2>
-          {unread.length === 0 ? (
-            <p className={styles.empty}>No new notifications</p>
+        <div
+          id={PANEL_ID}
+          className={styles.panel}
+          role="dialog"
+          aria-label="Notifications"
+        >
+          <div className={styles.head}>
+            <h2 className={styles.heading}>Notifications</h2>
+            {unreadCount > 0 && (
+              <button
+                type="button"
+                className={styles.textButton}
+                onClick={markAllRead}
+              >
+                Mark all as read
+              </button>
+            )}
+          </div>
+          {items.length === 0 ? (
+            <p className={styles.empty}>You are all caught up.</p>
           ) : (
             <ul className={styles.list}>
-              {unread.map((item) => (
-                <li key={item.id}>{item.title}</li>
-              ))}
-            </ul>
-          )}
-
-          <h2 className={styles.heading}>Reminders</h2>
-          {upcoming.length === 0 ? (
-            <p className={styles.empty}>No reminders</p>
-          ) : (
-            <ul className={styles.list}>
-              {upcoming.map((reminder) => (
-                <li key={reminder.id}>
-                  {reminder.title}
-                  <span className={styles.due}>
-                    Due {new Date(reminder.dueAt).toLocaleString()}
-                  </span>
+              {items.slice(0, 5).map((item) => (
+                <li key={item.id}>
+                  <NotificationItem item={item} onOpen={close} />
                 </li>
               ))}
             </ul>
           )}
+
+          {reminders.length > 0 && (
+            <>
+              <h2 className={`${styles.heading} ${styles.subheading}`}>
+                Reminders
+              </h2>
+              <ul className={styles.reminders}>
+                {reminders.slice(0, 3).map((reminder) => (
+                  <li key={reminder.id}>
+                    <Icon name="calendar" size={16} />
+                    <span>{reminder.title}</span>
+                    <span className={styles.due}>
+                      {formatDate(reminder.dueAt.slice(0, 10))}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          <Link to="/notifications" className={styles.viewAll} onClick={close}>
+            View all notifications <Icon name="arrowRight" size={16} />
+          </Link>
         </div>
       )}
     </div>

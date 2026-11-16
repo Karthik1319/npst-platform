@@ -1,6 +1,6 @@
 /** This app's id in the portal (its permission is `access` on this id). */
-export const APP_ID = 'react-b';
-export const APP_NAME = 'React B';
+export const APP_ID = 'projects';
+export const APP_NAME = 'Projects & Delivery';
 
 /** Portal address used on the production page. Set `VITE_PORTAL_URL` per environment. */
 export const PORTAL_URL: string =

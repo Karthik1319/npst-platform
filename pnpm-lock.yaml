@@ -275,6 +275,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(@types/node@24.19.2)(jsdom@31.0.0)(vite@8.3.8(@types/node@24.19.2)(esbuild@0.28.2)(sass-embedded@1.104.1)(sass@1.104.1)(yaml@2.9.0))
 
+  apps/brand-server: {}
+
   apps/demo-angular:
     dependencies:
       '@angular/common':
@@ -362,6 +364,9 @@ importers:
       '@npst/design-tokens':
         specifier: workspace:*
         version: link:../../libs/design-tokens
+      '@npst/mock-backend':
+        specifier: workspace:*
+        version: link:../../libs/mock-backend
       '@npst/platform-mocks':
         specifier: workspace:*
         version: link:../../libs/platform-mocks
@@ -380,8 +385,13 @@ importers:
 
   libs/design-tokens: {}
 
+  libs/mock-backend: {}
+
   libs/platform-mocks:
     dependencies:
+      '@npst/mock-backend':
+        specifier: workspace:*
+        version: link:../mock-backend
       '@npst/shared-contracts':
         specifier: workspace:*
         version: link:../shared-contracts

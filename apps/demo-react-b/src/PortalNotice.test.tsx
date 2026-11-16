@@ -9,7 +9,7 @@ describe('production page when opened directly', () => {
     render(<PortalNotice />);
     expect(
       screen.getByText(
-        'React B is part of the NPST Portal and opens only inside it.',
+        'Projects & Delivery is part of the NPST Portal and opens only inside it.',
       ),
     ).toBeDefined();
     expect(

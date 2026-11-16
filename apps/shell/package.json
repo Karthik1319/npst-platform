@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@npst/design-tokens": "workspace:*",
+    "@npst/mock-backend": "workspace:*",
     "@npst/platform-mocks": "workspace:*",
     "@npst/shared-contracts": "workspace:*",
     "react": "19.3.1",

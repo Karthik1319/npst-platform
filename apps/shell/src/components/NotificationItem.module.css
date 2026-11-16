@@ -1,0 +1,110 @@
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: var(--npst-space-3);
+  width: 100%;
+  padding: var(--npst-space-3) var(--npst-space-2);
+  border: none;
+  border-radius: var(--npst-radius);
+  background: transparent;
+  color: var(--npst-color-text-default);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.item:hover,
+.item:focus-visible {
+  outline: none;
+  background: var(--npst-color-surface-subtle);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--npst-radius-round);
+}
+
+.success {
+  background: var(--npst-status-success-bg);
+  color: var(--npst-status-success-text);
+}
+.warning {
+  background: var(--npst-status-warning-bg);
+  color: var(--npst-status-warning-text);
+}
+.error {
+  background: var(--npst-status-error-bg);
+  color: var(--npst-status-error-text);
+}
+.tone1 {
+  background: var(--npst-tone-1-bg);
+  color: var(--npst-tone-1-text);
+}
+.tone2 {
+  background: var(--npst-tone-2-bg);
+  color: var(--npst-tone-2-text);
+}
+.tone3 {
+  background: var(--npst-tone-3-bg);
+  color: var(--npst-tone-3-text);
+}
+.tone4 {
+  background: var(--npst-tone-4-bg);
+  color: var(--npst-tone-4-text);
+}
+.tone5 {
+  background: var(--npst-tone-5-bg);
+  color: var(--npst-tone-5-text);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-width: 0;
+}
+
+.title {
+  color: var(--npst-color-text-default);
+  font-size: var(--npst-font-size-sm);
+  line-height: 1.35;
+}
+
+.unread .title {
+  color: var(--npst-color-text-strong);
+  font-weight: 600;
+}
+
+.description {
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-sm);
+  line-height: 1.4;
+}
+
+.app {
+  margin-top: var(--npst-space-1);
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+  font-weight: 600;
+}
+
+.time {
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+  white-space: nowrap;
+}
+
+.dot {
+  position: absolute;
+  top: var(--npst-space-3);
+  left: 0;
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: var(--npst-radius-round);
+  background: var(--npst-color-action-primary);
+}

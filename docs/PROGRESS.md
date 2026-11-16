@@ -17,7 +17,12 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 7    | Failure handling                                | Done   |
 | 8    | Bundling review                                 | Done   |
 | 9    | Runtime theme                                   | Done   |
-| 10   | Integration guides                              | Next   |
+| 10   | Business portal: Portal Home dashboard          | Done   |
+| 11   | Sales Hub (React remote)                        | Next   |
+| 12   | Projects & Delivery (React remote)              |        |
+| 13   | People & HR (Angular remote)                    |        |
+| 14   | Cross-application workflow and demo polish      |        |
+| 15   | Integration guides                              |        |
 
 ## Toolchain
 
@@ -671,3 +676,71 @@ The Step 3 and Step 4 entries below still mention the bus as it was then; this n
 - Contrast checks and a lint rule against hard-coded colours (architecture, "Token layers") are not part of the POC.
 
 **Next step:** Step 10 – integration guides: `docs/adding-a-remote.md` and `docs/integrating-a-platform-module.md`.
+
+## Direction change (after Step 9)
+
+The portal will be shown to the Manager, CTO and CBO, so the frontend should tell a business story instead of showing a technical demo. Steps 10–14 turn the three demo MFEs into realistic business applications on the same architecture (no rebuild, no new dependencies, no UI library). The integration guides move to Step 15 so they can describe these applications.
+
+| MFE                 | Folder / Nx project | Framework, loading               | App id, portal path     |
+| ------------------- | ------------------- | -------------------------------- | ----------------------- |
+| Sales Hub           | `demo-react-a`      | React, Module Federation         | `sales-hub`, `/sales`   |
+| Projects & Delivery | `demo-react-b`      | React, Module Federation         | `projects`, `/projects` |
+| People & HR         | `demo-angular`      | Angular CLI build, mount/unmount | `people-hr`, `/people`  |
+
+Folder and Nx project names stay the same, so build, Module Federation names and ports do not change.
+
+## Step 10 – Business portal: Portal Home dashboard
+
+**Done:** the portal now looks and behaves like an enterprise application. Portal Home is a role-aware dashboard (greeting, application shortcuts, KPIs, sales funnel, project delivery health, workforce today, notifications, my tasks, celebrations, recent activity). The header, left navigation, bell and account menu were redesigned; Notifications and My Tasks pages were added. Apps were renamed in the catalogue (Sales Hub, Projects & Delivery, People & HR). The login page is unchanged. No logo anywhere.
+
+**Concepts:**
+
+- **Simulated business backends (`libs/mock-backend`):** the sample data and the server side of the business applications (Sales, Projects, HR, a shared task service, the Notification Service's inbox and the activity feed). It saves its data in the browser's `localStorage`, so it survives a reload and a sign-out/sign-in as another user. Apps call it only from their own `services/` folder, the place where real HTTP calls will go later.
+- **Role-aware dashboard:** every section asks `permissions.can('access', appId)`; a user only sees figures from apps they may open (e.g. User 3 sees no sales or project figures). UI only: the real backends check again.
+- **Team queues:** tasks and notifications are addressed to teams, named after the RBAC roles (SALES, SOLUTIONS, ADMIN, EMPLOYEE). A user sees the queues of their roles. This keeps the sample data free of the mock users.
+- **Charts without a library:** the funnel, donut and bars are small SVGs styled with theme variables (SVG attributes, so no inline styles are needed).
+
+**Files:**
+
+| File                                                                                                                 | Purpose                                                                                                                                                                                                                                        |
+| -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `libs/design-tokens/src/theme.css`, `apps/brand-server/public/theme.css`                                             | New tokens: navy header, status badge pairs, chart colours, table/surface/card tokens, greeting banner. The runtime theme still has exactly the same variables (contract test)                                                                 |
+| `libs/shared-contracts/src/platform-api.ts`                                                                          | Contract **1.1.0** (additive): `InboxItem` gains optional `description`, `kind`, `appId`, `link`; `Reminder` gains `link`; the shell-only `inbox` gains `markRead`, `markAllRead`, `subscribe`. `PlatformApi` (what MFEs receive) is unchanged |
+| `libs/mock-backend/**` (new)                                                                                         | Sample data (seeded, same records every time; dates relative to today), `salesApi`, `projectsApi`, `hrApi`, `workApi`, `notificationService`, `activityService`, `resetDemoData`, change events; 11 tests                                      |
+| `libs/platform-mocks/src/*`                                                                                          | Catalogue renamed (`sales-hub`, `projects`, `people-hr`); in-app permissions added; inbox and reminders now come from the Notification Service (per role, read state per user)                                                                 |
+| `apps/shell/src/layout/*`, `components/UserMenu.*`, `components/NotificationBell.*`, `components/NotificationItem.*` | Navy header, account menu with sign-out, global bell panel, grouped left navigation with counts                                                                                                                                                |
+| `apps/shell/src/pages/HomePage.tsx`, `pages/home/*`                                                                  | The dashboard and its cards                                                                                                                                                                                                                    |
+| `apps/shell/src/pages/NotificationsPage.tsx`, `MyTasksPage.tsx`, `AppPlaceholderPage.tsx`                            | Notifications (all/unread, mark all read, reminders), My Tasks (team queues across apps), Admin Console placeholder                                                                                                                            |
+| `apps/shell/src/services/business.ts`, `platform/useLiveData.ts`, `platform/InboxContext.tsx`                        | Business data for Portal Home; reload on data changes; one inbox for bell, nav and dashboard                                                                                                                                                   |
+| `apps/shell/src/ui/*`                                                                                                | Small shell UI pieces: icons (inline SVG), badge, card, progress bar, formatting (₹ Cr/L, "10 min ago")                                                                                                                                        |
+| `apps/shell/src/remotes/registry.ts`, `App.test.tsx`                                                                 | Remotes registered under the new app ids; tests rewritten for the new portal (54 shell tests)                                                                                                                                                  |
+| `apps/demo-*/src/config.ts` + tests                                                                                  | App ids and names only; the apps themselves change in Steps 11–13                                                                                                                                                                              |
+
+**RBAC (mock roles unchanged; in-app permissions added):**
+
+| Permission                        | ADMIN | SALES | SOLUTIONS | EMPLOYEE |
+| --------------------------------- | ----- | ----- | --------- | -------- |
+| `access:sales-hub`                | ✓     | ✓     |           |          |
+| `access:projects`                 | ✓     | ✓     | ✓         |          |
+| `access:people-hr`                | ✓     |       | ✓         | ✓        |
+| `access:admin-console`            | ✓     |       |           |          |
+| `create:lead`, `edit:opportunity` | ✓     | ✓     |           |          |
+| `update:project-task`             | ✓     |       | ✓         |          |
+| `approve:leave`                   | ✓     |       |           |          |
+| `apply:leave`                     | ✓     |       | ✓         | ✓        |
+| `export:sales-hub`, `view:audit`  | ✓     |       |           |          |
+
+**Verified in a browser** (production builds on spare ports, headless Chrome): Admin sees four apps, four KPIs, funnel, donut, 4 unread notifications, approvals as a task; User 1 (Sales) sees Sales Hub and Projects figures only; User 2 (Solutions) sees delivery and workforce; User 3 (Employee) sees only People & HR. Bell panel opens the related record; Notifications "Mark all as read" clears the count. Layout checked at 1440, 1280 and 820 px wide. No console errors.
+
+**Decisions:**
+
+- **Business data through simulated backends, not through `PlatformApi`.** MFEs still talk to the shell only through props and `PlatformApi`; data shared between applications goes through backends (as the architecture's "Future scope" recommends), simulated here in one library.
+- **Notifications are sent by backends, never by the browser** (rule from CLAUDE.md): the Notification Service mock holds the inbox; the shell's bell reads it through the shell-only part of the platform object.
+- **No new dependencies.** Icons and charts are hand-written SVG.
+
+**Open issues:**
+
+- In the real system every employee would likely get People & HR (self-service leave). The mock keeps the agreed role mapping (Sales users do not see People & HR).
+- `localStorage` stands in for the backends: data is per browser. "Reset demo data" is added in Step 14.
+
+**Next step:** Step 11 – Sales Hub (React remote `demo-react-a`).

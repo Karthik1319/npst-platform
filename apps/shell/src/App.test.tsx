@@ -58,31 +58,51 @@ function renderSignedInAt(name: string, path: string) {
   renderAt(path);
 }
 
+/** Portal Home greets the user by name in its main heading. */
+const portalHome = (name: string) =>
+  screen.findByRole('heading', { level: 1, name });
+
 async function signInFromLoginPage(name: string) {
   const button = await screen.findByRole('button', {
     name: new RegExp(`^Sign in as ${name} \\(`),
   });
   act(() => button.click());
-  await screen.findByRole('heading', { level: 1, name: 'Portal Home' });
+  await portalHome(name);
 }
 
-async function launcherTileNames(): Promise<string[]> {
-  const launcher = await screen.findByRole('list', { name: 'Applications' });
-  return within(launcher)
+async function shortcutNames(): Promise<string[]> {
+  const main = await screen.findByRole('main');
+  const shortcuts = await within(main).findByRole('list', {
+    name: 'Applications',
+  });
+  return within(shortcuts)
     .getAllByRole('link')
-    .map((tile) => tile.querySelector('span')?.textContent ?? '');
+    .map(
+      (card) =>
+        [...card.querySelectorAll('span')]
+          .map((span) => span.textContent)
+          .find(Boolean) ?? '',
+    );
 }
 
-function navLinkNames(): string[] {
+function navAppNames(): string[] {
   const nav = screen.getByRole('navigation', { name: 'Main' });
-  return within(nav)
+  const apps = within(nav).getByRole('list', { name: 'Applications' });
+  return within(apps)
     .getAllByRole('link')
-    .map((link) => link.textContent ?? '');
+    .map((link) => link.textContent?.trim() ?? '');
+}
+
+function signOutFromMenu() {
+  act(() => screen.getByRole('button', { name: /^Account menu, / }).click());
+  act(() => screen.getByRole('button', { name: 'Sign out' }).click());
 }
 
 afterEach(() => {
   cleanup();
   sessionStorage.clear();
+  // The simulated backends keep their data here; start each test fresh.
+  localStorage.clear();
 });
 
 describe('login page', () => {
@@ -117,31 +137,39 @@ describe('login page', () => {
 
   it('sends a signed-in user from /login to Portal Home', async () => {
     renderSignedInAt('User 1', '/login');
-    expect(
-      await screen.findByRole('heading', { level: 1, name: 'Portal Home' }),
-    ).toBeDefined();
+    expect(await portalHome('User 1')).toBeDefined();
   });
 });
 
 describe('application visibility per role', () => {
   it.each([
-    ['Admin User', ['React A', 'React B', 'Angular', 'Admin Console']],
-    ['User 1', ['React A', 'React B']],
-    ['User 2', ['React B', 'Angular']],
-    ['User 3', ['Angular']],
-  ])('%s sees tiles and nav links for %j only', async (name, expected) => {
+    [
+      'Admin User',
+      ['Sales Hub', 'Projects & Delivery', 'People & HR', 'Admin Console'],
+    ],
+    ['User 1', ['Sales Hub', 'Projects & Delivery']],
+    ['User 2', ['Projects & Delivery', 'People & HR']],
+    ['User 3', ['People & HR']],
+  ])('%s sees shortcuts and nav links for %j only', async (name, expected) => {
     renderSignedInAt(name, '/');
 
-    expect(await launcherTileNames()).toEqual(expected);
-    expect(navLinkNames()).toEqual(['Home', ...expected]);
+    expect(await shortcutNames()).toEqual(expected);
+    expect(navAppNames()).toEqual(
+      expected.filter((app) => app !== 'Admin Console'),
+    );
+    const nav = screen.getByRole('navigation', { name: 'Main' });
+    expect(
+      within(nav).queryByRole('link', { name: 'Admin Console' }) !== null,
+    ).toBe(expected.includes('Admin Console'));
   });
 });
 
 describe('direct URL access', () => {
   it.each([
-    ['User 3', '/react-a', 'React A'],
-    ['User 1', '/angular', 'Angular'],
+    ['User 3', '/sales', 'Sales Hub'],
+    ['User 1', '/people', 'People & HR'],
     ['User 2', '/admin', 'Admin Console'],
+    ['User 3', '/sales/opportunities/OP-1043', 'Sales Hub'],
   ])(
     '%s opening %s is redirected to Access Denied',
     async (name, path, appName) => {
@@ -159,38 +187,38 @@ describe('direct URL access', () => {
     },
   );
 
-  it('loads the remote for React A and passes it the host props', async () => {
-    renderSignedInAt('User 1', '/react-a');
+  it('loads the Sales Hub remote and passes it the host props', async () => {
+    renderSignedInAt('User 1', '/sales');
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Remote stub' }),
     ).toBeDefined();
     expect(
-      screen.getByText('user=User 1 basePath=/react-a platformUser=User 1'),
+      screen.getByText('user=User 1 basePath=/sales platformUser=User 1'),
     ).toBeDefined();
   });
 
-  it('loads the remote for React B and passes it the host props', async () => {
-    renderSignedInAt('User 2', '/react-b');
+  it('loads the Projects & Delivery remote on its own pages too', async () => {
+    renderSignedInAt('User 2', '/projects/PRJ-221');
     expect(
       await screen.findByText(
-        'user=User 2 basePath=/react-b platformUser=User 2',
+        'user=User 2 basePath=/projects platformUser=User 2',
       ),
     ).toBeDefined();
   });
 
-  it('mounts the Angular remote through the mount contract and unmounts it on leave', async () => {
-    renderSignedInAt('User 3', '/angular');
+  it('mounts People & HR (Angular) through the mount contract and unmounts it on leave', async () => {
+    renderSignedInAt('User 3', '/people');
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Mount stub' }),
     ).toBeDefined();
     expect(
-      screen.getByText('user=User 3 basePath=/angular platformUser=User 3'),
+      screen.getByText('user=User 3 basePath=/people platformUser=User 3'),
     ).toBeDefined();
     expect(mountStub.live).toBe(1);
 
     act(() => screen.getByRole('link', { name: 'Home' }).click());
 
-    await screen.findByRole('heading', { level: 1, name: 'Portal Home' });
+    await portalHome('User 3');
     await vi.waitFor(() => expect(mountStub.live).toBe(0));
     expect(screen.queryByRole('heading', { name: 'Mount stub' })).toBeNull();
   });
@@ -210,9 +238,9 @@ describe('non-React remotes (mount contract)', () => {
     esmRemote.down = true;
     esmRemote.loads = 0;
     try {
-      renderSignedInAt('User 3', '/angular');
+      renderSignedInAt('User 3', '/people');
       expect(
-        await screen.findByText('Angular is not available right now.'),
+        await screen.findByText('People & HR is not available right now.'),
       ).toBeDefined();
       expect(esmRemote.loads).toBe(2); // first attempt + one automatic retry
       // The rest of the portal keeps working.
@@ -233,12 +261,12 @@ describe('non-React remotes (mount contract)', () => {
 
   it('tells MFE routers about shell navigation (popstate)', async () => {
     renderSignedInAt('User 3', '/');
-    await screen.findByRole('list', { name: 'Applications' });
+    await portalHome('User 3');
     const popstate = vi.fn();
     window.addEventListener('popstate', popstate);
 
     const nav = screen.getByRole('navigation', { name: 'Main' });
-    act(() => within(nav).getByRole('link', { name: 'Angular' }).click());
+    act(() => within(nav).getByRole('link', { name: 'People & HR' }).click());
 
     await vi.waitFor(() => expect(popstate).toHaveBeenCalledTimes(1));
     window.removeEventListener('popstate', popstate);
@@ -247,18 +275,18 @@ describe('non-React remotes (mount contract)', () => {
 
 describe('shell ↔ MFE communication', () => {
   it('shell → MFE: the remote gets a platform for the signed-in user', async () => {
-    renderSignedInAt('User 1', '/react-a');
+    renderSignedInAt('User 1', '/sales');
     expect(await screen.findByText('canExport=false')).toBeDefined();
     cleanup();
     sessionStorage.clear();
 
-    renderSignedInAt('Admin User', '/react-a');
+    renderSignedInAt('Admin User', '/sales');
     expect(await screen.findByText('canExport=true')).toBeDefined();
   });
 
   it('MFE → shell: a toast requested by the remote is shown by the shell', async () => {
     vi.spyOn(console, 'info').mockImplementation(() => undefined);
-    renderSignedInAt('User 1', '/react-a');
+    renderSignedInAt('User 1', '/sales');
     const button = await screen.findByRole('button', {
       name: 'Notify the portal',
     });
@@ -267,14 +295,14 @@ describe('shell ↔ MFE communication', () => {
 
     // The toast region belongs to the shell's layout, not to the remote.
     const toasts = screen.getByRole('status');
-    expect(within(toasts).getByText('Hello from /react-a')).toBeDefined();
+    expect(within(toasts).getByText('Hello from /sales')).toBeDefined();
   });
 
   it('central sign-out removes the open remote', async () => {
-    renderSignedInAt('User 1', '/react-a');
+    renderSignedInAt('User 1', '/sales');
     await screen.findByRole('heading', { level: 1, name: 'Remote stub' });
 
-    act(() => screen.getByRole('button', { name: 'Sign out' }).click());
+    signOutFromMenu();
 
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Sign in' }),
@@ -303,7 +331,7 @@ describe('access denied page', () => {
 
 describe('logout and protected routes', () => {
   it('redirects to the login page when not signed in', async () => {
-    renderAt('/react-b');
+    renderAt('/projects');
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Sign in' }),
     ).toBeDefined();
@@ -311,9 +339,9 @@ describe('logout and protected routes', () => {
 
   it('signs out back to the login page and the portal stays protected', async () => {
     renderSignedInAt('User 2', '/');
-    await screen.findByRole('heading', { level: 1, name: 'Portal Home' });
+    await portalHome('User 2');
 
-    act(() => screen.getByRole('button', { name: 'Sign out' }).click());
+    signOutFromMenu();
 
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Sign in' }),
@@ -321,18 +349,141 @@ describe('logout and protected routes', () => {
     expect(sessionStorage.getItem(SESSION_STORAGE_KEY)).toBeNull();
 
     cleanup();
-    renderAt('/react-b');
+    renderAt('/projects');
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Sign in' }),
     ).toBeDefined();
   });
 });
 
-describe('platform features in the portal', () => {
-  it('shows the bell count (2 unread + 2 reminders)', async () => {
+describe('Portal Home dashboard', () => {
+  it.each([
+    [
+      'Admin User',
+      [
+        'Sales pipeline',
+        'Active projects',
+        'Total employees',
+        'Pending approvals',
+      ],
+    ],
+    [
+      'User 1',
+      [
+        'Sales pipeline',
+        'Active projects',
+        'Won deals',
+        'Projects needing attention',
+      ],
+    ],
+    ['User 3', ['Total employees', 'On leave today', 'My open tasks']],
+  ])(
+    'shows %s only figures from apps they may open: %j',
+    async (name, labels) => {
+      renderSignedInAt(name, '/');
+      const figures = await screen.findByRole('list', { name: 'Key figures' });
+      await vi.waitFor(() =>
+        expect(within(figures).getAllByRole('link')).toHaveLength(
+          labels.length,
+        ),
+      );
+      for (const label of labels) {
+        expect(within(figures).getByText(label)).toBeDefined();
+      }
+    },
+  );
+
+  it('shows the sales funnel and project health only to users with those apps', async () => {
+    renderSignedInAt('Admin User', '/');
+    expect(
+      await screen.findByRole('img', { name: /^Sales funnel: Lead 124/ }),
+    ).toBeDefined();
+    expect(screen.getByRole('img', { name: /^Project health:/ })).toBeDefined();
+    cleanup();
+
+    renderSignedInAt('User 3', '/');
+    await screen.findByRole('heading', { name: 'Workforce today' });
+    expect(screen.queryByRole('img', { name: /^Sales funnel/ })).toBeNull();
+    expect(
+      screen.queryByRole('heading', { name: 'Recent activity' }),
+    ).not.toBeNull();
+    expect(screen.queryByText(/Proposal v2 uploaded/)).toBeNull();
+  });
+
+  it("lists the open tasks of the user's team", async () => {
+    renderSignedInAt('User 2', '/');
+    const tasks = await screen.findByRole('region', { name: 'My tasks' });
+    expect(
+      await within(tasks).findByRole('link', {
+        name: 'Technical evaluation: Trident Bank fraud risk RFP',
+      }),
+    ).toBeDefined();
+  });
+
+  it('offers leave approvals as a task to users who may approve', async () => {
+    renderSignedInAt('Admin User', '/');
+    const tasks = await screen.findByRole('region', { name: 'My tasks' });
+    expect(
+      await within(tasks).findByRole('link', {
+        name: 'Approve leave requests (7 pending)',
+      }),
+    ).toBeDefined();
+  });
+});
+
+describe('notifications (bell, Notifications page)', () => {
+  it('shows the unread count for the user’s role', async () => {
     renderSignedInAt('Admin User', '/');
     expect(
       await screen.findByRole('button', { name: 'Notifications, 4 new' }),
     ).toBeDefined();
+  });
+
+  it('opens the bell panel and goes to the related record on click', async () => {
+    renderSignedInAt('User 2', '/');
+    act(() =>
+      screen.getByRole('button', { name: /^Notifications, \d+ new$/ }).click(),
+    );
+    const panel = await screen.findByRole('dialog', { name: 'Notifications' });
+    const item = await within(panel).findByRole('button', {
+      name: /Project PRJ-209 is delayed/,
+    });
+
+    // The remote suspends while it loads, so wait for act to finish.
+    await act(async () => item.click());
+
+    // The Projects remote (stub) opens on the project's page.
+    expect(
+      await screen.findByText(
+        'user=User 2 basePath=/projects platformUser=User 2',
+      ),
+    ).toBeDefined();
+  });
+
+  it('marks everything read from the Notifications page', async () => {
+    renderSignedInAt('User 1', '/notifications');
+    await screen.findByRole('heading', { level: 1, name: 'Notifications' });
+    expect(
+      await screen.findByRole('button', { name: 'Notifications, 2 new' }),
+    ).toBeDefined();
+
+    act(() => screen.getByRole('button', { name: 'Mark all as read' }).click());
+
+    expect(
+      await screen.findByRole('button', { name: 'Notifications, 0 new' }),
+    ).toBeDefined();
+  });
+});
+
+describe('My Tasks page', () => {
+  it("lists the open tasks of the user's team with links into the apps", async () => {
+    renderSignedInAt('User 1', '/my-tasks');
+    const link = await screen.findByRole('link', {
+      name: 'Review RFP for ABC Bank',
+    });
+    expect(link.getAttribute('href')).toBe('/sales/opportunities/OP-1043');
+    expect(
+      screen.queryByRole('link', { name: /Trident Bank fraud risk RFP/ }),
+    ).toBeNull();
   });
 });

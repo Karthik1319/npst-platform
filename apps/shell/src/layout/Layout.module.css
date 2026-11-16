@@ -3,12 +3,28 @@
   grid-template-areas:
     'header header'
     'nav content';
-  grid-template-columns: var(--npst-nav-width) 1fr;
+  grid-template-columns: var(--npst-nav-width) minmax(0, 1fr);
   grid-template-rows: var(--npst-header-height) 1fr;
   min-height: 100vh;
 }
 
 .content {
   grid-area: content;
+  min-width: 0;
   padding: var(--npst-space-4);
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-areas:
+      'header'
+      'nav'
+      'content';
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: var(--npst-header-height) auto 1fr;
+  }
+
+  .content {
+    padding: var(--npst-space-3);
+  }
 }
