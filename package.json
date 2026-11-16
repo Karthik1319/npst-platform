@@ -4,7 +4,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "bundle-report": "node tools/bundle-report.mjs"
   },
   "private": true,
   "dependencies": {},

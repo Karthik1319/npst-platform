@@ -15,8 +15,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 5    | Second React remote + Shell ↔ MFE communication | Done   |
 | 6    | Angular remote                                  | Done   |
 | 7    | Failure handling                                | Done   |
-| 8    | Bundling review                                 | Next   |
-| 9    | Runtime theme                                   | –      |
+| 8    | Bundling review                                 | Done   |
+| 9    | Runtime theme                                   | Next   |
 | 10   | Integration guides                              | –      |
 
 ## Toolchain
@@ -559,3 +559,66 @@ The Step 3 and Step 4 entries below still mention the bus as it was then; this n
 - A remote that loads but its own API calls fail is the remote's responsibility (its own error states); the shell only covers loading and rendering.
 
 **Next step:** Step 8 – bundling review: production build of all apps; report bundle sizes and what is shared; confirm one React copy; change only one remote, rebuild only it (`nx affected`), and the host picks it up without a rebuild.
+
+## Step 8 – Bundling review
+
+**Done:** reviewed the production builds of all four apps: what each contains, what the browser actually downloads, and whether one remote can be updated alone. Measured with built output served by plain static servers (not dev servers). New: `pnpm bundle-report` (`tools/bundle-report.mjs`, no dependencies) prints the size table below from the current builds.
+
+**What each build contains** (`pnpm bundle-report`; gzip ≈ network size):
+
+| App          | Total (gzip) | React                                            | Module Federation runtime | App code (incl. bundled libs) | CSS  |
+| ------------ | ------------ | ------------------------------------------------ | ------------------------- | ----------------------------- | ---- |
+| shell        | 127 KB       | 71 KB (the one shared copy)                      | 33 KB                     | 19 KB                         | 3 KB |
+| demo-react-a | 106 KB       | 69 KB fallback, **not downloaded** in the portal | 34 KB                     | 2 KB                          | 2 KB |
+| demo-react-b | 105 KB       | 69 KB fallback, **not downloaded**               | 34 KB                     | 1 KB                          | 2 KB |
+| demo-angular | 67 KB        | – (own Angular runtime, inside app code)         | –                         | 66 KB                         | 2 KB |
+
+**What the browser downloads** (production builds, Admin user, measured in Chrome):
+
+| Page                          | Downloaded (gzip)                  | From                                                                                       |
+| ----------------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------ |
+| Login page                    | 124 KB, 13 files                   | shell (React, MF runtime, portal)                                                          |
+| Sign in → Portal Home         | nothing new                        | –                                                                                          |
+| Open React A                  | 33 KB, 10 files (+2 KB shell glue) | React A's server: `mf-manifest.json`, `remoteEntry.js`, its MF runtime copy, app code, CSS |
+| Open React B                  | 33 KB, 9 files (+1 KB shell glue)  | React B's server, same pattern                                                             |
+| Open Angular                  | 68 KB, 2 files                     | Angular's server: `index.html`, `main-<hash>.js`                                           |
+| Back to an app already opened | nothing new                        | –                                                                                          |
+
+**What is shared:**
+
+- **React** (`react`, `react/jsx-runtime`, `react-dom`, `react-dom/client` 19.3.1): one copy, provided by the shell. The share scope lists `from: shell` for the shell, React A and React B; only one React version is loaded on the page; the remotes' fallback React files are never requested.
+- **Module Federation runtime:** not shared. Each React remote brings its own copy (`dist-<hash>.js` + `remoteEntry.js`, ~26 KB gzip of the 33 KB). The file is byte-identical to the shell's, but comes from another server, so the browser downloads it again.
+- **Our libraries** (`shared-contracts`, `platform-mocks`, `design-tokens`): bundled into each app at build time, not shared at runtime (as planned). They are small: React A's whole app code is 2 KB gzip; mock data is not in the remotes' production builds.
+- **Angular:** shares nothing with the shell (by design: plain ES-module remote).
+
+**Updating one remote without rebuilding the shell** (verified in the browser; the shell server kept running the same build throughout):
+
+| Change                            | `nx show projects --affected` | `nx affected -t build` built | Shell rebuilt?                  | Result after a page reload                                  |
+| --------------------------------- | ----------------------------- | ---------------------------- | ------------------------------- | ----------------------------------------------------------- |
+| Text in React A's `App.tsx`       | `demo-react-a`                | `demo-react-a` only          | No (build files byte-identical) | New text shown                                              |
+| Text in Angular's `app.html`      | `demo-angular`                | `demo-angular` only          | No                              | New text shown                                              |
+| A file in `libs/shared-contracts` | all 6 projects                | –                            | –                               | Expected: a contract change rebuilds every app that uses it |
+
+(The test changes were reverted afterwards.)
+
+**Why the shell picks up a new remote:** the shell only knows each remote's address. It reads the remote's fixed-name entry file (`mf-manifest.json` / `remoteEntry.js` for React, `index.html` for Angular) at runtime; that file names the current hashed files. So the fixed-name entry files must never be cached long, while hashed files can be cached forever.
+
+**Files:**
+
+| File                                                               | Purpose                                                                                |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| `tools/bundle-report.mjs`, `package.json` (`bundle-report` script) | Size table per app, grouped (React, fallback, MF runtime, app code, CSS), raw and gzip |
+| `docs/PROGRESS.md`                                                 | This report                                                                            |
+
+**Decisions:**
+
+- **Cache policy for hosting remotes** (for the deployment setup): `no-cache` for `index.html`, `mf-manifest.json` and `remoteEntry.js` (the static test server already sends this); long-lived `immutable` caching for hashed files under `assets/` and `main-<hash>.js`. Otherwise users may keep an old remote after a release.
+- **Keep the MF runtime per remote for now:** ~26 KB gzip per React remote is acceptable for the pilot; sharing it would need the remotes to expect the host's runtime (MF option) and must be retested.
+
+**Open issues:**
+
+- Each React remote downloads its own copy of the Module Federation runtime (~26 KB gzip). Revisit if many React remotes are on one page.
+- The shell's app code includes `platform-mocks` (mock login and data); it is replaced by the real platform modules later.
+- Release/rollback of a remote version (architecture: "immutable versions, controlled pointers") is not covered by the POC: a remote is replaced by redeploying its server.
+
+**Next step:** Step 9 – runtime theme: serve `theme.css` from a separate static location (simulating the brand server); change one colour and all four apps update without a rebuild; with that server down, the fallback applies.
