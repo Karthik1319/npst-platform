@@ -22,7 +22,7 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 12   | Projects & Delivery (React remote)              | Done   |
 | 13   | People & HR (Angular remote)                    | Done   |
 | 14   | Cross-application workflow and demo polish      | Done   |
-| 15   | Integration guides                              | Next   |
+| 15   | Integration guides                              | Done   |
 
 ## Toolchain
 
@@ -903,3 +903,19 @@ No MFE talks to another in the browser: the hand-over happens in the (simulated)
 - The Notification Service push (the bell updating at once) is simulated with a browser event; the real service would use WebSocket or server-sent events, or polling.
 
 **Next step:** Step 15 – integration guides (`docs/adding-a-remote.md`, `docs/integrating-a-platform-module.md`), now based on these applications.
+
+## Step 15 – Integration guides
+
+**Done:** two guides, based on the applications built in Steps 10–14.
+
+| File                                    | For                                                       | Contents                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| --------------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/adding-a-remote.md`               | Teams plugging an app into the portal (next: HRMS "Keka") | Choosing the route (React through Module Federation, or any framework through mount/unmount without build changes); props and the communication rules; step-by-step for both routes with the repository's apps as references; checklist: app id, permissions, routing below `basePath` and `popstate`, theme variables and scoped styles, data access in services, notifications from backends, timeout/retry/fallback, CORS and cache headers, independent release, standalone mode and production-build test, tests; monorepo specifics |
+| `docs/integrating-a-platform-module.md` | Teammates building the platform modules                   | Frontend part vs backend API of each module; where each mock lives today; replacing a mock in `apps/shell/src/services/platform.ts` module by module without changing any MFE; what stays server to server (with the demo flows mapped to real backend calls); notification fields; contract tests at three levels; versioning rules; checklist                                                                                                                                                                                           |
+
+**Decisions:**
+
+- **The guides point at working code in this repository** (Sales Hub, Projects & Delivery, People & HR, the portal) instead of copying long examples, so they stay correct as the code changes.
+- **Contract tests:** the guide recommends moving the shared behaviour cases into one function run against both the mock and the real module. That refactoring is left to the first module that replaces a mock.
+
+**Open issues:** none for the POC. Next phase (not started): plug the real HRMS in as a remote and replace the first mocks with the real platform modules.
