@@ -17,6 +17,7 @@
     "@angular/platform-browser": "22.2.6",
     "@angular/router": "22.2.6",
     "@npst/design-tokens": "workspace:*",
+    "@npst/mock-backend": "workspace:*",
     "@npst/platform-mocks": "workspace:*",
     "@npst/shared-contracts": "workspace:*",
     "rxjs": "7.8.2",

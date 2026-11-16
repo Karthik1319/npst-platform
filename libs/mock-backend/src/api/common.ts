@@ -1,4 +1,4 @@
-import type { Activity } from '../types';
+import type { Activity, StoredNotification } from '../types';
 
 /** One page of a longer list. */
 export interface Page<T> {
@@ -53,5 +53,26 @@ export function recordActivity(
     ...entry,
     id: `A-${number}`,
     at: new Date().toISOString(),
+  });
+}
+
+/**
+ * Notification Service, server side: a backend sends a notification to a team
+ * or a user. It appears in the portal's bell for them. Browsers never call this.
+ */
+export function sendNotification(
+  data: {
+    notifications: StoredNotification[];
+    counters: Record<string, number>;
+  },
+  notification: Omit<StoredNotification, 'id' | 'createdAt' | 'readBy'>,
+): void {
+  const number = data.counters['N'] ?? 5101;
+  data.counters['N'] = number + 1;
+  data.notifications.unshift({
+    ...notification,
+    id: `N-${number}`,
+    createdAt: new Date().toISOString(),
+    readBy: [],
   });
 }

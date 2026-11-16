@@ -1,0 +1,78 @@
+/* Leave balance, forms and segmented filters. Scoped below .hr-app. */
+.hr-app .hr-balances {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--npst-space-3);
+  margin: 0 0 var(--npst-space-3);
+  padding: 0;
+  list-style: none;
+}
+.hr-app .hr-balance {
+  padding: var(--npst-space-3);
+  border-radius: var(--npst-radius);
+  background: var(--npst-color-surface-subtle);
+  font-size: var(--npst-font-size-sm);
+}
+.hr-app .hr-balance strong {
+  display: block;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-xl);
+}
+.hr-app .hr-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--npst-space-3);
+  margin-bottom: var(--npst-space-4);
+  padding: var(--npst-space-3);
+  border-radius: var(--npst-radius);
+  background: var(--npst-color-surface-subtle);
+}
+.hr-app .hr-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-1);
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+}
+.hr-app .hr-field--wide {
+  grid-column: 1 / -1;
+}
+.hr-app .hr-form-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  gap: var(--npst-space-2);
+}
+.hr-app .hr-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--npst-status-error-text);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+}
+@media (max-width: 720px) {
+  .hr-app .hr-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.hr-app .hr-segments {
+  display: flex;
+  gap: var(--npst-space-1);
+}
+.hr-app .hr-segments button {
+  padding: var(--npst-space-1) var(--npst-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--npst-radius-round);
+  background: transparent;
+  color: var(--npst-color-text-secondary);
+  font: inherit;
+  font-size: var(--npst-font-size-sm);
+  cursor: pointer;
+}
+.hr-app .hr-segments button[aria-pressed='true'] {
+  border-color: var(--npst-nav-active-bg);
+  background: var(--npst-nav-active-bg);
+  color: var(--npst-color-action-primary-hover);
+  font-weight: 600;
+}

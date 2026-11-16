@@ -20,7 +20,7 @@ describe('standalone mode (development only)', () => {
     vi.restoreAllMocks();
   });
 
-  it('starts as User 3, a non-admin user allowed to open Angular (least privilege)', async () => {
+  it('starts as User 3, a non-admin user allowed to open People & HR (least privilege)', async () => {
     await startStandalone(root, '', fakeMount);
     expect(DEFAULT_USER_ID).toBe('u-3');
     expect(

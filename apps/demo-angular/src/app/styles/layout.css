@@ -1,0 +1,188 @@
+/* People & HR frame, panels and KPIs. Scoped below .hr-app (see app.ts). */
+.hr-app {
+  display: block;
+  color: var(--npst-color-text-default);
+  font-family: var(--npst-font-family);
+}
+.hr-app .hr-frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-3);
+}
+.hr-app .hr-eyebrow {
+  margin: 0;
+  color: var(--npst-tone-3-text);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.hr-app .hr-title {
+  margin: var(--npst-space-1) 0 0;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-2xl);
+}
+.hr-app .hr-tabs {
+  display: flex;
+  gap: var(--npst-space-1);
+  overflow-x: auto;
+  border-bottom: 1px solid var(--npst-color-border-subtle);
+}
+.hr-app .hr-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-2);
+  margin-bottom: -1px;
+  padding: var(--npst-space-2) var(--npst-space-3);
+  border-bottom: 2px solid transparent;
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.hr-app .hr-tab:hover {
+  color: var(--npst-color-action-primary);
+}
+.hr-app .hr-tab:focus-visible {
+  outline: none;
+  box-shadow: var(--npst-focus-ring);
+}
+.hr-app .hr-tab--active {
+  border-bottom-color: var(--npst-color-action-primary);
+  color: var(--npst-color-action-primary);
+}
+.hr-app .hr-body {
+  padding-top: var(--npst-space-2);
+}
+.hr-app .hr-body router-outlet {
+  display: none;
+}
+/* Each routed page component stacks its sections with the same spacing. */
+.hr-app .hr-body > * {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-4);
+}
+.hr-app .hr-icon {
+  display: inline-flex;
+  flex: none;
+}
+.hr-app .hr-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-card-radius);
+  background: var(--npst-color-surface-card);
+  box-shadow: var(--npst-shadow-subtle);
+}
+.hr-app .hr-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--npst-space-3);
+  margin-bottom: var(--npst-space-3);
+}
+.hr-app .hr-panel-title {
+  flex: 1;
+  margin: 0;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-lg);
+}
+.hr-app .hr-panel-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-1);
+  color: var(--npst-color-action-primary);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.hr-app .hr-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+  gap: var(--npst-space-4);
+  align-items: start;
+}
+.hr-app .hr-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(18rem, 1fr);
+  gap: var(--npst-space-4);
+  align-items: start;
+}
+.hr-app .hr-column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-4);
+  min-width: 0;
+}
+@media (max-width: 1100px) {
+  .hr-app .hr-detail-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.hr-app .hr-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--npst-space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hr-app .hr-kpi {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: var(--npst-space-3);
+  padding: var(--npst-space-3) var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-card-radius);
+  background: var(--npst-color-surface-card);
+  box-shadow: var(--npst-shadow-subtle);
+}
+.hr-app .hr-kpi-icon {
+  display: grid;
+  grid-row: span 2;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--npst-radius-round);
+}
+.hr-app .hr-kpi-value {
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-xl);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.hr-app .hr-kpi-label {
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-sm);
+}
+.hr-app .hr-kpi-note {
+  grid-column: 1 / -1;
+  margin-top: var(--npst-space-2);
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+}
+.hr-app .hr-tone-1 {
+  background: var(--npst-tone-1-bg);
+  color: var(--npst-tone-1-text);
+}
+.hr-app .hr-tone-2 {
+  background: var(--npst-tone-2-bg);
+  color: var(--npst-tone-2-text);
+}
+.hr-app .hr-tone-3 {
+  background: var(--npst-tone-3-bg);
+  color: var(--npst-tone-3-text);
+}
+.hr-app .hr-tone-4 {
+  background: var(--npst-tone-4-bg);
+  color: var(--npst-tone-4-text);
+}
+.hr-app .hr-tone-5 {
+  background: var(--npst-tone-5-bg);
+  color: var(--npst-tone-5-text);
+}

@@ -1,0 +1,196 @@
+@if (summary(); as s) {
+<ul class="hr-kpis" aria-label="People figures">
+  <li class="hr-kpi">
+    <span class="hr-kpi-icon hr-tone-3"><app-icon name="people" /></span>
+    <span class="hr-kpi-value"
+      >{{ format.formatNumber(s.totalEmployees) }}</span
+    >
+    <span class="hr-kpi-label">Total employees</span>
+    <span class="hr-kpi-note">{{ s.departments.length }} departments</span>
+  </li>
+  <li class="hr-kpi">
+    <span class="hr-kpi-icon hr-tone-2"><app-icon name="checkCircle" /></span>
+    <span class="hr-kpi-value">{{ format.formatNumber(s.presentToday) }}</span>
+    <span class="hr-kpi-label">Present today</span>
+    <span class="hr-kpi-note"
+      >{{ ((s.presentToday / s.totalEmployees) * 100).toFixed(1) }}%
+      attendance</span
+    >
+  </li>
+  <li class="hr-kpi">
+    <span class="hr-kpi-icon hr-tone-4"><app-icon name="calendar" /></span>
+    <span class="hr-kpi-value">{{ s.onLeaveToday }}</span>
+    <span class="hr-kpi-label">On leave today</span>
+    <span class="hr-kpi-note">Approved leave only</span>
+  </li>
+  @if (canApprove) {
+  <li class="hr-kpi">
+    <span class="hr-kpi-icon hr-tone-1"><app-icon name="clock" /></span>
+    <span class="hr-kpi-value">{{ s.pendingApprovals }}</span>
+    <span class="hr-kpi-label">Pending approvals</span>
+    <span class="hr-kpi-note">Leave requests waiting for you</span>
+  </li>
+  } @else if (canApply) {
+  <li class="hr-kpi">
+    <span class="hr-kpi-icon hr-tone-1"><app-icon name="leave" /></span>
+    <span class="hr-kpi-value">{{ available() }} days</span>
+    <span class="hr-kpi-label">My leave balance</span>
+    <span class="hr-kpi-note">Across all leave types</span>
+  </li>
+  }
+  <li class="hr-kpi">
+    <span class="hr-kpi-icon hr-tone-5"><app-icon name="userPlus" /></span>
+    <span class="hr-kpi-value">{{ s.joinedLast30Days }}</span>
+    <span class="hr-kpi-label">Joined this month</span>
+    <span class="hr-kpi-note">{{ s.onProbation }} on probation</span>
+  </li>
+</ul>
+}
+
+<div class="hr-grid">
+  @if (canApprove) {
+  <section class="hr-panel" aria-labelledby="pending-title">
+    <div class="hr-panel-head">
+      <h2 id="pending-title" class="hr-panel-title">Pending leave approvals</h2>
+      <a class="hr-panel-link" routerLink="/leave"
+        >Review all <app-icon name="arrowRight" [size]="16"
+      /></a>
+    </div>
+    @if (pending().length === 0) {
+    <p class="hr-empty">No requests waiting.</p>
+    }
+    <ul class="hr-list">
+      @for (r of pending().slice(0, 5); track r.id) {
+      <li>
+        <span class="hr-avatar" aria-hidden="true"
+          >{{ format.initials(r.employeeName) }}</span
+        >
+        <span class="hr-list-title">
+          <span class="hr-strong">{{ r.employeeName }}</span>
+          <span class="hr-sub"
+            >{{ r.type }} · {{ r.days }} day{{ r.days === 1 ? '' : 's' }} from
+            {{ format.formatDate(r.from) }} · {{ r.department }}</span
+          >
+        </span>
+        <span class="hr-badge hr-badge--warning">Pending</span>
+      </li>
+      }
+    </ul>
+  </section>
+  } @else if (canApply) {
+  <section class="hr-panel" aria-labelledby="my-leave-title">
+    <div class="hr-panel-head">
+      <h2 id="my-leave-title" class="hr-panel-title">My leave</h2>
+      <a class="hr-panel-link" routerLink="/leave"
+        >Apply for leave <app-icon name="arrowRight" [size]="16"
+      /></a>
+    </div>
+    <ul class="hr-balances">
+      @for (b of balance(); track b.type) {
+      <li class="hr-balance">
+        <strong>{{ b.available }}</strong>{{ b.type }} left
+      </li>
+      }
+    </ul>
+    @for (r of myRequests().slice(0, 3); track r.id) {
+    <p class="hr-sub">
+      {{ r.type }}, {{ format.formatDate(r.from) }}–{{ format.formatDate(r.to)
+      }} · <span [class]="leaveBadge(r.status)">{{ r.status }}</span>
+    </p>
+    }
+  </section>
+  }
+
+  <section class="hr-panel" aria-labelledby="on-leave-title">
+    <div class="hr-panel-head">
+      <h2 id="on-leave-title" class="hr-panel-title">On leave today</h2>
+    </div>
+    <ul class="hr-list">
+      @for (r of onLeave().slice(0, 6); track r.id) {
+      <li>
+        <span class="hr-avatar" aria-hidden="true"
+          >{{ format.initials(r.employeeName) }}</span
+        >
+        <span class="hr-list-title">
+          <span class="hr-strong">{{ r.employeeName }}</span>
+          <span class="hr-sub">{{ r.department }} · {{ r.type }}</span>
+        </span>
+        <span class="hr-chip">Back {{ format.formatDate(r.to) }}</span>
+      </li>
+      }
+    </ul>
+    @if (onLeave().length > 6) {
+    <p class="hr-sub">and {{ onLeave().length - 6 }} more</p>
+    }
+  </section>
+</div>
+
+<div class="hr-grid">
+  <section class="hr-panel" aria-labelledby="departments-title">
+    <div class="hr-panel-head">
+      <h2 id="departments-title" class="hr-panel-title">
+        Headcount by department
+      </h2>
+      <a class="hr-panel-link" routerLink="/employees"
+        >Directory <app-icon name="arrowRight" [size]="16"
+      /></a>
+    </div>
+    <ul class="hr-bars">
+      @for (d of departments(); track d.name) {
+      <li>
+        <span>{{ d.name }}</span>
+        <svg
+          class="hr-bar"
+          viewBox="0 0 100 6"
+          preserveAspectRatio="none"
+          role="img"
+          [attr.aria-label]="d.name + ': ' + d.count"
+        >
+          <rect class="hr-bar-track" width="100" height="6" rx="3" />
+          <rect
+            class="hr-bar-fill"
+            [attr.width]="(d.count / maxDepartment()) * 100"
+            height="6"
+            rx="3"
+          />
+        </svg>
+        <span class="hr-value">{{ d.count }}</span>
+      </li>
+      }
+    </ul>
+  </section>
+
+  <section class="hr-panel" aria-labelledby="celebrations-title">
+    <div class="hr-panel-head">
+      <h2 id="celebrations-title" class="hr-panel-title">
+        Birthdays and work anniversaries
+      </h2>
+    </div>
+    <ul class="hr-list">
+      @for (c of (summary()?.celebrations ?? []).slice(0, 6); track c.kind +
+      c.employeeId) {
+      <li>
+        <span
+          [class]="c.kind === 'Birthday' ? 'hr-round-icon hr-tone-4' : 'hr-round-icon hr-tone-1'"
+        >
+          <app-icon
+            [name]="c.kind === 'Birthday' ? 'gift' : 'award'"
+            [size]="18"
+          />
+        </span>
+        <span class="hr-list-title">
+          <a class="hr-strong" [routerLink]="['/employees', c.employeeId]"
+            >{{ c.name }}</a
+          >
+          <span class="hr-sub"
+            >{{ c.kind === 'Birthday' ? 'Birthday' : c.years + ' year' +
+            (c.years === 1 ? '' : 's') + ' at NPST' }} · {{ c.department
+            }}</span
+          >
+        </span>
+        <span class="hr-chip">{{ format.due(c.date) }}</span>
+      </li>
+      }
+    </ul>
+  </section>
+</div>

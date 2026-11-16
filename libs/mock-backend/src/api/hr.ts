@@ -1,6 +1,45 @@
-import { readData } from '../store';
-import type { Employee, LeaveRequest, LeaveStatus } from '../types';
-import { clone, matches, paginate, today, type Page } from './common';
+import { daysBetweenInclusive } from '../dates';
+import { nextId, readData, updateData } from '../store';
+import type {
+  Actor,
+  Employee,
+  LeaveRequest,
+  LeaveStatus,
+  LeaveType,
+} from '../types';
+import {
+  clone,
+  matches,
+  paginate,
+  recordActivity,
+  sendNotification,
+  today,
+  type Page,
+} from './common';
+
+/** Yearly leave entitlement per type, in days. */
+export const LEAVE_ENTITLEMENT: Record<LeaveType, number> = {
+  'Casual leave': 8,
+  'Sick leave': 6,
+  'Earned leave': 15,
+  'Comp off': 2,
+};
+
+export interface LeaveBalance {
+  type: LeaveType;
+  entitled: number;
+  used: number;
+  pending: number;
+  available: number;
+}
+
+/** What an employee enters when applying for leave. */
+export interface NewLeaveRequest {
+  type: LeaveType;
+  from: string;
+  to: string;
+  reason: string;
+}
 
 export interface Celebration {
   kind: 'Birthday' | 'Work anniversary';
@@ -89,6 +128,111 @@ export const hrApi = {
 
   async departments(): Promise<string[]> {
     return [...new Set(readData().employees.map((e) => e.department))].sort();
+  },
+
+  /** Leave balance of one person (approved and pending days are deducted). */
+  async leaveBalance(employeeId: string): Promise<LeaveBalance[]> {
+    const own = readData().leaveRequests.filter(
+      (r) => r.employeeId === employeeId,
+    );
+    return (Object.keys(LEAVE_ENTITLEMENT) as LeaveType[]).map((type) => {
+      const days = (status: LeaveStatus) =>
+        own
+          .filter((r) => r.type === type && r.status === status)
+          .reduce((sum, r) => sum + r.days, 0);
+      const used = days('Approved');
+      const pending = days('Pending');
+      const entitled = LEAVE_ENTITLEMENT[type];
+      return {
+        type,
+        entitled,
+        used,
+        pending,
+        available: Math.max(0, entitled - used - pending),
+      };
+    });
+  },
+
+  // ---------- Write side (the real backend checks `apply:leave` / `approve:leave`) ----------
+
+  /**
+   * Submits a leave request for the signed-in user. Managers (the ADMIN team in
+   * this demo) get a notification in the portal's bell.
+   */
+  async applyLeave(
+    input: NewLeaveRequest,
+    actor: Actor & { department?: string },
+  ): Promise<LeaveRequest> {
+    if (input.to < input.from)
+      throw new Error('The end date is before the start date');
+    return updateData((data) => {
+      const request: LeaveRequest = {
+        id: nextId(data, 'LR', 2301),
+        employeeId: actor.id,
+        employeeName: actor.name,
+        department: actor.department ?? 'NPST',
+        type: input.type,
+        from: input.from,
+        to: input.to,
+        days: daysBetweenInclusive(input.from, input.to),
+        reason: input.reason,
+        status: 'Pending',
+        appliedAt: new Date().toISOString(),
+      };
+      data.leaveRequests.unshift(request);
+      sendNotification(data, {
+        to: { team: 'ADMIN' },
+        title: `Leave request from ${actor.name}`,
+        description: `${request.type}, ${request.days} day${request.days === 1 ? '' : 's'} from ${request.from}. Waiting for your approval.`,
+        kind: 'info',
+        appId: 'people-hr',
+        link: '/people/leave',
+      });
+      recordActivity(data, {
+        appId: 'people-hr',
+        actor: actor.name,
+        text: `Leave request submitted (${request.type}, ${request.days} day${request.days === 1 ? '' : 's'})`,
+        link: '/people/leave',
+      });
+      return clone(request);
+    });
+  },
+
+  /** Approves or rejects a pending request; the requester is notified. */
+  async decideLeave(
+    id: string,
+    decision: 'Approved' | 'Rejected',
+    actor: Actor,
+  ): Promise<LeaveRequest> {
+    return updateData((data) => {
+      const request = data.leaveRequests.find((r) => r.id === id);
+      if (!request) throw new Error(`Leave request ${id} not found`);
+      if (request.status !== 'Pending')
+        throw new Error(
+          `Leave request ${id} is already ${request.status.toLowerCase()}`,
+        );
+      request.status = decision;
+      request.decidedBy = actor.name;
+      request.decidedAt = new Date().toISOString();
+      // Requests made in the portal belong to a portal user, who gets the answer in the bell.
+      if (!request.employeeId.startsWith('EMP-')) {
+        sendNotification(data, {
+          to: { userId: request.employeeId },
+          title: `Your leave request was ${decision.toLowerCase()}`,
+          description: `${request.type} from ${request.from} to ${request.to} (${request.days} day${request.days === 1 ? '' : 's'}), ${decision.toLowerCase()} by ${actor.name}.`,
+          kind: decision === 'Approved' ? 'success' : 'warning',
+          appId: 'people-hr',
+          link: '/people/leave',
+        });
+      }
+      recordActivity(data, {
+        appId: 'people-hr',
+        actor: actor.name,
+        text: `Leave ${decision.toLowerCase()} for ${request.employeeName}`,
+        link: '/people/leave',
+      });
+      return clone(request);
+    });
   },
 
   async listLeaveRequests(

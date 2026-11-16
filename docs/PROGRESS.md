@@ -20,8 +20,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 10   | Business portal: Portal Home dashboard          | Done   |
 | 11   | Sales Hub (React remote)                        | Done   |
 | 12   | Projects & Delivery (React remote)              | Done   |
-| 13   | People & HR (Angular remote)                    | Next   |
-| 14   | Cross-application workflow and demo polish      |        |
+| 13   | People & HR (Angular remote)                    | Done   |
+| 14   | Cross-application workflow and demo polish      | Next   |
 | 15   | Integration guides                              |        |
 
 ## Toolchain
@@ -819,3 +819,45 @@ Folder and Nx project names stay the same, so build, Module Federation names and
 **Open issues:** adding project updates, editing milestones and drag-and-drop on the board are not in this preview (status changes use a "Move to" menu, which also works with a keyboard).
 
 **Next step:** Step 13 – People & HR (Angular remote `demo-angular`).
+
+## Step 13 – People & HR (Angular remote `demo-angular`)
+
+**Done:** the Angular app is now **People & HR**, an HRMS-style application. It is still a standard Angular CLI project loaded through mount/unmount; only app code changed. Pages below `/people`:
+
+| Page               | Path                         | What it shows                                                                                                                                                                                                                                    |
+| ------------------ | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Dashboard          | `/people`                    | Total employees, present today, on leave today, pending approvals (managers) or my leave balance (employees), joined this month; pending approvals or my leave; who is on leave today; headcount by department; birthdays and work anniversaries |
+| Employee directory | `/people/employees`          | Employee ID, name, department, designation, reporting manager, employment status; search, department and status filters, 15 per page                                                                                                             |
+| Employee profile   | `/people/employees/EMP-1094` | Profile, department and designation, reporting manager and direct reports, joining date and tenure, contact information, employment details, leave history                                                                                       |
+| Leave management   | `/people/leave`              | **My leave** (balance per type, apply for leave, my requests) with `apply:leave`; **Leave requests** (pending/approved/rejected/all, approve or reject) with `approve:leave`                                                                     |
+
+**Leave workflow across users** (simulated HR backend + Notification Service):
+
+1. User 3 (Employee) applies for leave → portal toast "Leave request LR-… submitted for approval"; the HR backend sends **"Leave request from User 3"** to the managers' bell (ADMIN team).
+2. Admin opens it from the bell (`/people/leave`) and approves or rejects → toast; the HR backend sends **"Your leave request was approved/rejected"** to User 3 only.
+3. Both steps appear in Portal Home's Recent Activity; the employee's balance shows pending and used days.
+
+**Angular specifics:**
+
+- Data access only in `services/hr.service.ts` (an Angular service); state in signals; no `@angular/forms` (would be a new dependency): forms read their values on submit.
+- Route parameters arrive as component inputs (`withComponentInputBinding()` in `app.config.ts`).
+- Shared styles are attached to the root component without encapsulation, every rule scoped below `.hr-app`, split into four files to stay within the CLI's per-stylesheet budget. A test checks that they are removed from the page when the app is unmounted.
+
+**Files:**
+
+| File                                                | Purpose                                                                                                                                                                                |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/demo-angular/src/app/app.ts`, `app.html`      | Frame: title, tabs, routed page; live-instance count kept                                                                                                                              |
+| `src/app/app.routes.ts`, `app.config.ts`            | HR routes; input binding                                                                                                                                                               |
+| `src/app/pages/*`                                   | Dashboard, directory, profile, leave management                                                                                                                                        |
+| `src/app/services/hr.service.ts`                    | HR backend calls                                                                                                                                                                       |
+| `src/app/ui/*`, `src/app/styles/*`                  | Icon component, formatting, status badges; scoped styles                                                                                                                               |
+| `src/main.spec.ts`, `standalone/standalone.spec.ts` | 13 tests: role-based dashboard, routing, directory filter, full apply → notify → approve → notify flow, permissions, single instance, style clean-up; production-build check unchanged |
+| `angular.json`                                      | `@npst/mock-backend` added to the dev server's `prebundle.exclude` (same reason as the other workspace libraries)                                                                      |
+| `libs/mock-backend/src/api/hr.ts`, `common.ts`      | Apply/decide leave with notifications, leave balance; `sendNotification` (server side of the Notification Service)                                                                     |
+
+**Verified in a browser** (production builds, spare ports): all pages for Admin and User 3; Sales users have no access (unchanged role mapping); no console errors.
+
+**Open issues:** attendance is derived from approved leave only (no check-in data); holidays and half-day leave are not modelled.
+
+**Next step:** Step 14 – cross-application workflow and demo polish.

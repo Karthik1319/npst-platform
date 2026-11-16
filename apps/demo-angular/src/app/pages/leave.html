@@ -1,0 +1,200 @@
+@if (canApply) {
+<section class="hr-panel" aria-labelledby="my-leave-title">
+  <div class="hr-panel-head">
+    <h2 id="my-leave-title" class="hr-panel-title">My leave</h2>
+    @if (!applying()) {
+    <button type="button" class="hr-button" (click)="applying.set(true)">
+      <app-icon name="plus" [size]="18" /> Apply for leave
+    </button>
+    }
+  </div>
+
+  <ul class="hr-balances" aria-label="Leave balance">
+    @for (b of balance(); track b.type) {
+    <li class="hr-balance">
+      <strong>{{ b.available }} / {{ b.entitled }}</strong>
+      {{ b.type }} @if (b.pending > 0) {
+      <span class="hr-sub"
+        >{{ b.pending }} day{{ b.pending === 1 ? '' : 's' }} pending</span
+      >
+      }
+    </li>
+    }
+  </ul>
+
+  @if (applying()) {
+  <form class="hr-form" aria-label="Apply for leave" (submit)="submit($event)">
+    <label class="hr-field">
+      Leave type
+      <select class="hr-input" name="type">
+        @for (t of types; track t) {
+        <option [value]="t">{{ t }}</option>
+        }
+      </select>
+    </label>
+    <label class="hr-field">
+      From
+      <input class="hr-input" type="date" name="from" [min]="today" required />
+    </label>
+    <label class="hr-field">
+      To
+      <input class="hr-input" type="date" name="to" [min]="today" required />
+    </label>
+    <label class="hr-field hr-field--wide">
+      Reason
+      <input
+        class="hr-input"
+        name="reason"
+        placeholder="e.g. Family function"
+        required
+      />
+    </label>
+    @if (error()) {
+    <p class="hr-error" role="alert">{{ error() }}</p>
+    }
+    <div class="hr-form-actions">
+      <button
+        type="button"
+        class="hr-secondary"
+        (click)="applying.set(false); error.set(null)"
+      >
+        Cancel
+      </button>
+      <button type="submit" class="hr-button" [disabled]="saving()">
+        {{ saving() ? 'Submitting…' : 'Submit request' }}
+      </button>
+    </div>
+  </form>
+  } @if (mine().length === 0) {
+  <p class="hr-empty">You have no leave requests yet.</p>
+  } @else {
+  <div class="hr-table-wrap">
+    <table class="hr-table" aria-label="My leave requests">
+      <thead>
+        <tr>
+          <th scope="col">Request</th>
+          <th scope="col">Leave type</th>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col">Days</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of mine(); track r.id) {
+        <tr>
+          <td>
+            <span class="hr-strong">{{ r.id }}</span>
+            <span class="hr-sub">{{ r.reason }}</span>
+          </td>
+          <td>{{ r.type }}</td>
+          <td>{{ format.formatDate(r.from) }}</td>
+          <td>{{ format.formatDate(r.to) }}</td>
+          <td>{{ r.days }}</td>
+          <td>
+            <span [class]="leaveBadge(r.status)">{{ r.status }}</span>
+            @if (r.decidedBy) {
+            <span class="hr-sub">by {{ r.decidedBy }}</span>
+            }
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</section>
+} @if (canApprove) {
+<section class="hr-panel" aria-labelledby="requests-title">
+  <div class="hr-panel-head">
+    <h2 id="requests-title" class="hr-panel-title">Leave requests</h2>
+    <div class="hr-segments" role="group" aria-label="Filter by status">
+      @for (f of filters; track f) {
+      <button
+        type="button"
+        [attr.aria-pressed]="filter() === f"
+        (click)="filter.set(f)"
+      >
+        {{ f }} ({{ count(f) }})
+      </button>
+      }
+    </div>
+  </div>
+  <div class="hr-table-wrap">
+    <table class="hr-table" aria-label="Leave requests">
+      <thead>
+        <tr>
+          <th scope="col">Employee</th>
+          <th scope="col">Leave type</th>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col">Days</th>
+          <th scope="col">Reason</th>
+          <th scope="col">Status</th>
+          <th scope="col"><span class="hr-muted">Action</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (r of shown(); track r.id) {
+        <tr>
+          <td>
+            <span class="hr-person">
+              <span class="hr-avatar" aria-hidden="true"
+                >{{ format.initials(r.employeeName) }}</span
+              >
+              <span>
+                <span class="hr-strong">{{ r.employeeName }}</span>
+                <span class="hr-sub"
+                  >{{ r.department }} · applied {{ format.timeAgo(r.appliedAt)
+                  }}</span
+                >
+              </span>
+            </span>
+          </td>
+          <td>{{ r.type }}</td>
+          <td class="hr-muted">{{ format.formatDate(r.from) }}</td>
+          <td class="hr-muted">{{ format.formatDate(r.to) }}</td>
+          <td>{{ r.days }}</td>
+          <td>{{ r.reason }}</td>
+          <td>
+            <span [class]="leaveBadge(r.status)">{{ r.status }}</span>
+            @if (r.decidedBy) {
+            <span class="hr-sub">by {{ r.decidedBy }}</span>
+            }
+          </td>
+          <td>
+            @if (r.status === 'Pending') {
+            <span class="hr-actions">
+              <button
+                type="button"
+                class="hr-button"
+                [disabled]="busy() === r.id"
+                [attr.aria-label]="'Approve leave for ' + r.employeeName"
+                (click)="decide(r, 'Approved')"
+              >
+                <app-icon name="check" [size]="16" /> Approve
+              </button>
+              <button
+                type="button"
+                class="hr-danger"
+                [disabled]="busy() === r.id"
+                [attr.aria-label]="'Reject leave for ' + r.employeeName"
+                (click)="decide(r, 'Rejected')"
+              >
+                <app-icon name="close" [size]="16" /> Reject
+              </button>
+            </span>
+            }
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (shown().length === 0) {
+  <p class="hr-empty">
+    No {{ filter() === 'All' ? '' : filter().toLowerCase() + ' ' }}requests.
+  </p>
+  }
+</section>
+}

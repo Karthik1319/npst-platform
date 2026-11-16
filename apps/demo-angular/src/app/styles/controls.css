@@ -1,0 +1,170 @@
+/* Buttons, form fields, badges, tables, pagination. Scoped below .hr-app. */
+.hr-app .hr-button,
+.hr-app .hr-secondary,
+.hr-app .hr-ghost,
+.hr-app .hr-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--npst-space-2);
+  padding: 0.5rem var(--npst-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--npst-radius);
+  font: inherit;
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  text-decoration: none;
+}
+.hr-app .hr-button {
+  background: var(--npst-button-primary-bg);
+  color: var(--npst-button-primary-text);
+}
+.hr-app .hr-button:hover {
+  background: var(--npst-button-primary-bg-hover);
+}
+.hr-app .hr-secondary {
+  border-color: var(--npst-button-secondary-border);
+  background: var(--npst-button-secondary-bg);
+  color: var(--npst-button-secondary-text);
+}
+.hr-app .hr-secondary:hover {
+  border-color: var(--npst-color-action-primary);
+  color: var(--npst-color-action-primary);
+}
+.hr-app .hr-danger {
+  border-color: var(--npst-status-error-bg);
+  background: var(--npst-status-error-bg);
+  color: var(--npst-status-error-text);
+}
+.hr-app .hr-ghost {
+  padding: var(--npst-space-1) var(--npst-space-2);
+  background: transparent;
+  color: var(--npst-color-action-primary);
+}
+.hr-app
+  :is(
+    .hr-button,
+    .hr-secondary,
+    .hr-ghost,
+    .hr-danger,
+    .hr-input
+  ):focus-visible {
+  outline: none;
+  box-shadow: var(--npst-focus-ring);
+}
+.hr-app :is(.hr-button, .hr-secondary):disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.hr-app .hr-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--npst-space-2);
+  margin-bottom: var(--npst-space-3);
+}
+.hr-app .hr-search {
+  position: relative;
+  flex: 1 1 16rem;
+  max-width: 24rem;
+  color: var(--npst-color-text-muted);
+}
+.hr-app .hr-search .hr-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.65rem;
+  transform: translateY(-50%);
+}
+.hr-app .hr-search .hr-input {
+  width: 100%;
+  padding-left: 2.2rem;
+}
+.hr-app .hr-input {
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--npst-input-border);
+  border-radius: var(--npst-radius);
+  background: var(--npst-color-surface-card);
+  color: var(--npst-color-text-default);
+  font: inherit;
+  font-size: var(--npst-font-size-sm);
+}
+.hr-app .hr-spacer {
+  flex: 1;
+}
+.hr-app .hr-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem var(--npst-space-2);
+  border-radius: var(--npst-radius-round);
+  font-size: var(--npst-font-size-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.hr-app .hr-badge--success {
+  background: var(--npst-status-success-bg);
+  color: var(--npst-status-success-text);
+}
+.hr-app .hr-badge--warning {
+  background: var(--npst-status-warning-bg);
+  color: var(--npst-status-warning-text);
+}
+.hr-app .hr-badge--error {
+  background: var(--npst-status-error-bg);
+  color: var(--npst-status-error-text);
+}
+.hr-app .hr-badge--info {
+  background: var(--npst-status-info-bg);
+  color: var(--npst-status-info-text);
+}
+.hr-app .hr-badge--neutral {
+  background: var(--npst-status-neutral-bg);
+  color: var(--npst-status-neutral-text);
+}
+.hr-app .hr-table-wrap {
+  overflow-x: auto;
+}
+.hr-app .hr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--npst-font-size-sm);
+}
+.hr-app .hr-table th {
+  padding: var(--npst-space-2) var(--npst-space-3);
+  border-bottom: 1px solid var(--npst-color-border-subtle);
+  background: var(--npst-table-header-bg);
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.hr-app .hr-table td {
+  padding: 0.65rem var(--npst-space-3);
+  border-bottom: 1px solid var(--npst-color-border-subtle);
+  vertical-align: middle;
+}
+.hr-app .hr-table tbody tr:hover {
+  background: var(--npst-table-row-hover-bg);
+}
+.hr-app .hr-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.hr-app .hr-actions {
+  display: flex;
+  gap: var(--npst-space-2);
+}
+.hr-app .hr-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--npst-space-2);
+  margin-top: var(--npst-space-3);
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-sm);
+}

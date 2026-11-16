@@ -1,22 +1,15 @@
-import { Component } from '@angular/core';
 import { Routes } from '@angular/router';
+import { Dashboard } from './pages/dashboard';
+import { EmployeeDetails } from './pages/employee-details';
+import { Employees } from './pages/employees';
+import { Leave } from './pages/leave';
 
-@Component({
-  selector: 'app-page-one',
-  template: '<p>This is <strong>page 1</strong> of the Angular app.</p>',
-})
-class PageOne {}
-
-@Component({
-  selector: 'app-page-two',
-  template: '<p>This is <strong>page 2</strong> of the Angular app.</p>',
-})
-class PageTwo {}
-
+/** Pages below the portal path (`/people`, `/people/employees`, …). */
 export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'page-1' },
-  { path: 'page-1', component: PageOne },
-  { path: 'page-2', component: PageTwo },
-  // URLs outside this app (e.g. while the portal leaves /angular) are not ours to handle.
+  { path: '', pathMatch: 'full', component: Dashboard },
+  { path: 'employees', component: Employees },
+  { path: 'employees/:id', component: EmployeeDetails },
+  { path: 'leave', component: Leave },
+  // URLs outside this app (e.g. while the portal leaves /people) are not ours to handle.
   { path: '**', children: [] },
 ];

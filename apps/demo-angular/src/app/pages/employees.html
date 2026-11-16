@@ -1,0 +1,118 @@
+<section class="hr-panel" aria-labelledby="directory-title">
+  <div class="hr-panel-head">
+    <h2 id="directory-title" class="hr-panel-title">Employee directory</h2>
+  </div>
+  <div class="hr-toolbar" role="search">
+    <label class="hr-search">
+      <app-icon name="search" [size]="16" />
+      <input
+        class="hr-input"
+        type="search"
+        placeholder="Search name, ID, designation or email"
+        aria-label="Search employees"
+        [value]="search()"
+        (input)="setFilter('search', $event)"
+      />
+    </label>
+    <select
+      class="hr-input"
+      aria-label="Department"
+      [value]="department()"
+      (change)="setFilter('department', $event)"
+    >
+      <option value="">All departments</option>
+      @for (d of departments(); track d) {
+      <option [value]="d">{{ d }}</option>
+      }
+    </select>
+    <select
+      class="hr-input"
+      aria-label="Employment status"
+      [value]="status()"
+      (change)="setFilter('status', $event)"
+    >
+      <option value="">All statuses</option>
+      <option value="Active">Active</option>
+      <option value="Probation">Probation</option>
+      <option value="Notice period">Notice period</option>
+    </select>
+    @if (search() || department() || status()) {
+    <button type="button" class="hr-ghost" (click)="clear()">
+      Clear filters
+    </button>
+    }
+  </div>
+
+  @if (result(); as r) {
+  <div class="hr-table-wrap">
+    <table class="hr-table">
+      <thead>
+        <tr>
+          <th scope="col">Employee ID</th>
+          <th scope="col">Employee</th>
+          <th scope="col">Department</th>
+          <th scope="col">Designation</th>
+          <th scope="col">Reporting manager</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (e of r.items; track e.id) {
+        <tr>
+          <td class="hr-muted">{{ e.id }}</td>
+          <td>
+            <span class="hr-person">
+              <span class="hr-avatar" aria-hidden="true"
+                >{{ initials(e.name) }}</span
+              >
+              <span>
+                <a class="hr-strong" [routerLink]="['/employees', e.id]"
+                  >{{ e.name }}</a
+                >
+                <span class="hr-sub">{{ e.email }}</span>
+              </span>
+            </span>
+          </td>
+          <td>{{ e.department }}</td>
+          <td>{{ e.designation }}</td>
+          <td>{{ e.managerName ?? '—' }}</td>
+          <td><span [class]="statusBadge(e.status)">{{ e.status }}</span></td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  @if (r.total === 0) {
+  <p class="hr-empty">No employees match these filters.</p>
+  }
+  <nav class="hr-pagination" aria-label="Directory pages">
+    <span
+      >Showing {{ r.total === 0 ? 0 : first() }}–{{ last() }} of {{ r.total
+      }}</span
+    >
+    <span class="hr-actions">
+      <button
+        type="button"
+        class="hr-secondary"
+        aria-label="Previous page"
+        [disabled]="r.page <= 1"
+        (click)="page.set(r.page - 1)"
+      >
+        <app-icon name="chevronLeft" [size]="16" />
+      </button>
+      <span class="hr-muted">Page {{ r.page }} of {{ pages() }}</span>
+      <button
+        type="button"
+        class="hr-secondary"
+        aria-label="Next page"
+        [disabled]="r.page >= pages()"
+        (click)="page.set(r.page + 1)"
+      >
+        <app-icon name="chevronRight" [size]="16" />
+      </button>
+    </span>
+  </nav>
+  } @else {
+  <p role="status">Loading employees…</p>
+  }
+</section>

@@ -7,8 +7,14 @@
  * would call their real backend. Replacing this library with real HTTP calls
  * changes only those service files.
  */
-export { hrApi } from './api/hr';
-export type { Celebration, EmployeeQuery, HrSummary } from './api/hr';
+export { hrApi, LEAVE_ENTITLEMENT } from './api/hr';
+export type {
+  Celebration,
+  EmployeeQuery,
+  HrSummary,
+  LeaveBalance,
+  NewLeaveRequest,
+} from './api/hr';
 export { notificationService, activityService } from './api/platform';
 export type { NotificationView, Viewer } from './api/platform';
 export { projectsApi } from './api/projects';

@@ -55,7 +55,11 @@
           "builder": "@angular/build:dev-server",
           "options": {
             "prebundle": {
-              "exclude": ["@npst/platform-mocks", "@npst/shared-contracts"]
+              "exclude": [
+                "@npst/mock-backend",
+                "@npst/platform-mocks",
+                "@npst/shared-contracts"
+              ]
             }
           },
           "configurations": {

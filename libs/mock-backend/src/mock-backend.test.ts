@@ -199,3 +199,83 @@ describe('Sales Hub write operations', () => {
     );
   });
 });
+
+describe('leave workflow (People & HR)', () => {
+  const employee = {
+    id: 'portal-user-3',
+    name: 'Employee Tester',
+    roles: ['EMPLOYEE'],
+  };
+  const manager = {
+    id: 'portal-admin',
+    name: 'Manager Tester',
+    roles: ['ADMIN'],
+  };
+
+  it('notifies managers of a new request and the employee of the decision', async () => {
+    const request = await hrApi.applyLeave(
+      {
+        type: 'Casual leave',
+        from: '2026-12-21',
+        to: '2026-12-23',
+        reason: 'Family function',
+      },
+      employee,
+    );
+    expect(request).toMatchObject({
+      status: 'Pending',
+      days: 3,
+      employeeName: 'Employee Tester',
+    });
+
+    const managerInbox = await notificationService.inbox(manager);
+    expect(managerInbox[0]).toMatchObject({
+      title: 'Leave request from Employee Tester',
+      read: false,
+      link: '/people/leave',
+    });
+
+    await hrApi.decideLeave(request.id, 'Approved', manager);
+
+    const employeeInbox = await notificationService.inbox(employee);
+    expect(employeeInbox[0]).toMatchObject({
+      title: 'Your leave request was approved',
+      kind: 'success',
+    });
+    // Another employee does not see it.
+    const other = await notificationService.inbox({
+      id: 'someone-else',
+      roles: ['EMPLOYEE'],
+    });
+    expect(
+      other.some((n) => n.title === 'Your leave request was approved'),
+    ).toBe(false);
+  });
+
+  it('deducts approved and pending days from the balance', async () => {
+    await hrApi.applyLeave(
+      {
+        type: 'Sick leave',
+        from: '2026-12-01',
+        to: '2026-12-02',
+        reason: 'Medical appointment',
+      },
+      employee,
+    );
+    const balance = await hrApi.leaveBalance(employee.id);
+    expect(balance.find((b) => b.type === 'Sick leave')).toMatchObject({
+      entitled: 6,
+      pending: 2,
+      available: 4,
+    });
+  });
+
+  it('does not decide a request twice', async () => {
+    const [pending] = await hrApi.listLeaveRequests({ status: 'Pending' });
+    if (!pending) throw new Error('expected a pending request');
+    await hrApi.decideLeave(pending.id, 'Rejected', manager);
+    await expect(
+      hrApi.decideLeave(pending.id, 'Approved', manager),
+    ).rejects.toThrow('already rejected');
+  });
+});

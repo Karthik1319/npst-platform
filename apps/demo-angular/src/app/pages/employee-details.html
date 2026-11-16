@@ -1,0 +1,129 @@
+<a class="hr-back" routerLink="/employees"
+  ><app-icon name="arrowLeft" [size]="16" /> Employee directory</a
+>
+
+@if (state() === 'loading') {
+<p role="status">Loading profile…</p>
+} @if (state() === 'missing') {
+<section class="hr-panel">
+  <p class="hr-empty">Employee {{ id() }} was not found.</p>
+</section>
+} @if (employee(); as e) {
+<section class="hr-panel" aria-label="Employee profile">
+  <div class="hr-profile">
+    <span class="hr-avatar hr-avatar--large" aria-hidden="true"
+      >{{ format.initials(e.name) }}</span
+    >
+    <div>
+      <h2 class="hr-profile-name">{{ e.name }}</h2>
+      <div class="hr-profile-meta">
+        <span>{{ e.designation }}</span> · <span>{{ e.department }}</span> ·
+        <span [class]="statusBadge(e.status)">{{ e.status }}</span>
+      </div>
+      <div class="hr-profile-meta">
+        <span class="hr-muted">{{ e.id }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="hr-detail-grid">
+  <div class="hr-column">
+    <section class="hr-panel" aria-labelledby="employment-title">
+      <div class="hr-panel-head">
+        <h2 id="employment-title" class="hr-panel-title">Employment details</h2>
+      </div>
+      <dl class="hr-facts">
+        <dt>Department</dt>
+        <dd>{{ e.department }}</dd>
+        <dt>Designation</dt>
+        <dd>{{ e.designation }}</dd>
+        <dt>Joining date</dt>
+        <dd>{{ format.formatDate(e.joinDate) }} ({{ tenure() }})</dd>
+        <dt>Employment type</dt>
+        <dd>{{ e.type }}</dd>
+        <dt>Status</dt>
+        <dd>{{ e.status }}</dd>
+        <dt>Work mode</dt>
+        <dd>{{ e.workMode }}</dd>
+        <dt>Office</dt>
+        <dd>{{ e.location }}</dd>
+      </dl>
+    </section>
+
+    <section class="hr-panel" aria-labelledby="leave-history-title">
+      <div class="hr-panel-head">
+        <h2 id="leave-history-title" class="hr-panel-title">Leave history</h2>
+      </div>
+      @if (leave().length === 0) {
+      <p class="hr-empty">No leave requests this year.</p>
+      }
+      <ul class="hr-list">
+        @for (r of leave(); track r.id) {
+        <li>
+          <span [class]="leaveBadge(r.status)">{{ r.status }}</span>
+          <span class="hr-list-title">
+            {{ r.type }}, {{ r.days }} day{{ r.days === 1 ? '' : 's' }}
+            <span class="hr-sub"
+              >{{ format.formatDate(r.from) }}–{{ format.formatDate(r.to) }} ·
+              {{ r.reason }}</span
+            >
+          </span>
+          <span></span>
+        </li>
+        }
+      </ul>
+    </section>
+  </div>
+
+  <div class="hr-column">
+    <section class="hr-panel" aria-labelledby="contact-title">
+      <div class="hr-panel-head">
+        <h2 id="contact-title" class="hr-panel-title">Contact information</h2>
+      </div>
+      <dl class="hr-facts">
+        <dt>Email</dt>
+        <dd><a [href]="'mailto:' + e.email">{{ e.email }}</a></dd>
+        <dt>Phone</dt>
+        <dd>{{ e.phone }}</dd>
+        <dt>Location</dt>
+        <dd>{{ e.location }}</dd>
+      </dl>
+    </section>
+
+    <section class="hr-panel" aria-labelledby="reporting-title">
+      <div class="hr-panel-head">
+        <h2 id="reporting-title" class="hr-panel-title">Reporting</h2>
+      </div>
+      <dl class="hr-facts">
+        <dt>Reporting manager</dt>
+        <dd>
+          @if (e.managerId) {
+          <a [routerLink]="['/employees', e.managerId]">{{ e.managerName }}</a>
+          } @else { Department head }
+        </dd>
+        <dt>Direct reports</dt>
+        <dd>{{ reports().length }}</dd>
+      </dl>
+      @if (reports().length > 0) {
+      <ul class="hr-list">
+        @for (r of reports().slice(0, 8); track r.id) {
+        <li>
+          <span class="hr-avatar" aria-hidden="true"
+            >{{ format.initials(r.name) }}</span
+          >
+          <span class="hr-list-title">
+            <a [routerLink]="['/employees', r.id]">{{ r.name }}</a>
+            <span class="hr-sub">{{ r.designation }}</span>
+          </span>
+          <span></span>
+        </li>
+        }
+      </ul>
+      @if (reports().length > 8) {
+      <p class="hr-sub">and {{ reports().length - 8 }} more</p>
+      } }
+    </section>
+  </div>
+</div>
+}

@@ -13,6 +13,9 @@
     },
     {
       "path": "../../libs/platform-mocks/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/mock-backend/tsconfig.lib.json"
     }
   ]
 }

@@ -1,0 +1,163 @@
+/* Text styles, lists, people, profile and forms. Scoped below .hr-app. */
+.hr-app .hr-strong {
+  color: var(--npst-color-text-strong);
+  font-weight: 600;
+  text-decoration: none;
+}
+.hr-app a.hr-strong:hover {
+  color: var(--npst-color-action-primary);
+  text-decoration: underline;
+}
+.hr-app .hr-sub {
+  display: block;
+  margin-top: 0.125rem;
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-xs);
+}
+.hr-app .hr-muted {
+  color: var(--npst-color-text-muted);
+  white-space: nowrap;
+}
+.hr-app .hr-empty {
+  margin: var(--npst-space-3) 0;
+  color: var(--npst-color-text-muted);
+  font-size: var(--npst-font-size-sm);
+}
+.hr-app .hr-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hr-app .hr-list > li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--npst-space-3);
+  padding: var(--npst-space-2) 0;
+}
+.hr-app .hr-list > li + li {
+  border-top: 1px solid var(--npst-color-border-subtle);
+}
+.hr-app .hr-list-title {
+  min-width: 0;
+  font-size: var(--npst-font-size-sm);
+  line-height: 1.35;
+}
+.hr-app .hr-person {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-2);
+  min-width: 0;
+}
+.hr-app .hr-avatar {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--npst-radius-round);
+  background: var(--npst-avatar-bg);
+  color: var(--npst-avatar-text);
+  font-size: 0.6875rem;
+  font-weight: 700;
+}
+.hr-app .hr-avatar--large {
+  width: 4rem;
+  height: 4rem;
+  font-size: var(--npst-font-size-xl);
+}
+.hr-app .hr-chip {
+  padding: 0.125rem var(--npst-space-2);
+  border-radius: var(--npst-radius);
+  background: var(--npst-status-neutral-bg);
+  color: var(--npst-status-neutral-text);
+  font-size: var(--npst-font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.hr-app .hr-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--npst-font-size-sm);
+}
+.hr-app .hr-bars li {
+  display: grid;
+  grid-template-columns: 10rem 1fr 2.5rem;
+  align-items: center;
+  gap: var(--npst-space-3);
+}
+.hr-app .hr-bar {
+  display: block;
+  width: 100%;
+  height: 0.375rem;
+}
+.hr-app .hr-bar-track {
+  fill: var(--npst-progress-track);
+}
+.hr-app .hr-bar-fill {
+  fill: var(--npst-tone-3-text);
+}
+.hr-app .hr-bar-good {
+  fill: var(--npst-chart-good);
+}
+.hr-app .hr-value {
+  color: var(--npst-color-text-strong);
+  font-weight: 700;
+  text-align: right;
+}
+.hr-app .hr-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--npst-space-1);
+  color: var(--npst-color-action-primary);
+  font-size: var(--npst-font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.hr-app .hr-profile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--npst-space-4);
+}
+.hr-app .hr-profile-name {
+  margin: 0;
+  color: var(--npst-color-text-strong);
+  font-size: var(--npst-font-size-2xl);
+}
+.hr-app .hr-profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--npst-space-2);
+  color: var(--npst-color-text-secondary);
+  font-size: var(--npst-font-size-sm);
+}
+.hr-app .hr-facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--npst-space-2) var(--npst-space-4);
+  margin: 0;
+  font-size: var(--npst-font-size-sm);
+}
+.hr-app .hr-facts dt {
+  color: var(--npst-color-text-muted);
+}
+.hr-app .hr-facts dd {
+  margin: 0;
+}
+.hr-app .hr-facts a,
+.hr-app .hr-list a {
+  color: var(--npst-color-action-primary);
+}
+.hr-app .hr-round-icon {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--npst-radius-round);
+}
