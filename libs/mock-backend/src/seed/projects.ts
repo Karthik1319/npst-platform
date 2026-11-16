@@ -289,7 +289,7 @@ function buildProject(
   const completed = plan.status === 'Completed';
   const engineers = completed
     ? []
-    : staffing.take(random.int(3, 5), random.pick([50, 75, 100]));
+    : staffing.take(random.int(3, 5), random.pick([25, 50, 50, 75]));
 
   return {
     id: plan.id,

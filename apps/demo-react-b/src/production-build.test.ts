@@ -7,7 +7,7 @@ import { build } from 'vite';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 /*
- * Builds React B for production (same config as `nx build demo-react-b`) into
+ * Builds Projects & Delivery for production (same config as `nx build demo-react-b`) into
  * a temporary folder and checks the output: it must still be a Module
  * Federation remote, and must not contain the standalone harness or mock users.
  */
@@ -45,7 +45,7 @@ afterAll(() => {
   if (outDir) rmSync(outDir, { recursive: true, force: true });
 });
 
-describe('production build of React B', () => {
+describe('production build of Projects & Delivery', () => {
   it('is still a Module Federation remote (manifest + remoteEntry exposing ./App)', () => {
     expect(files).toContain('remoteEntry.js');
     expect(files).toContain('mf-manifest.json');

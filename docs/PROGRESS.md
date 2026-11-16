@@ -19,8 +19,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 9    | Runtime theme                                   | Done   |
 | 10   | Business portal: Portal Home dashboard          | Done   |
 | 11   | Sales Hub (React remote)                        | Done   |
-| 12   | Projects & Delivery (React remote)              | Next   |
-| 13   | People & HR (Angular remote)                    |        |
+| 12   | Projects & Delivery (React remote)              | Done   |
+| 13   | People & HR (Angular remote)                    | Next   |
 | 14   | Cross-application workflow and demo polish      |        |
 | 15   | Integration guides                              |        |
 
@@ -789,3 +789,33 @@ Folder and Nx project names stay the same, so build, Module Federation names and
 - "Upload document" and editing an opportunity's stage are not in this preview.
 
 **Next step:** Step 12 – Projects & Delivery (React remote `demo-react-b`).
+
+## Step 12 – Projects & Delivery (React remote `demo-react-b`)
+
+**Done:** React B is now **Projects & Delivery**, where the delivery team runs projects after a deal is won. Pages below `/projects`:
+
+| Page            | Path                | What it shows                                                                                                                                                                                                                                                                               |
+| --------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dashboard       | `/projects`         | Active projects, on track, at risk, delayed, upcoming milestones, team utilisation; projects needing attention (with their top risk); upcoming milestones; projects by phase; resource allocation (over-allocation called out)                                                              |
+| Projects        | `/projects/list`    | Project ID, name, customer, project manager, start, target completion, status, progress; search, status and manager filters                                                                                                                                                                 |
+| Project details | `/projects/PRJ-221` | Overview, customer, assigned team (with allocation), milestones, task progress, timeline (start → target with milestones and today), risks and blockers, recent updates                                                                                                                     |
+| Tasks           | `/projects/tasks`   | Board: To do / In progress / In review / Done; filter by project, person or the Solutions team queue; **Move to** for users with `update:project-task`; `?task=T-…` highlights a task (used by notifications and My Tasks); work requested by another app is tagged "From Sales Hub · OP-…" |
+
+**RBAC in the UI:** Sales (User 1) can open Projects & Delivery but sees **View only** and no move controls; Solutions (User 2) and Admin can move tasks of delivery staff and of their own team's queue (not the Management queue).
+
+**Files:**
+
+| File                                                        | Purpose                                                                                                                                                           |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/demo-react-b/src/App.tsx`                             | Exposed component: props → portal context, router, layout, pages                                                                                                  |
+| `src/layout/ProjectsLayout.*`, `src/pages/*`                | Frame with tabs; dashboard, projects list, project details (SVG timeline), task board                                                                             |
+| `src/services/projects.ts`                                  | Delivery backend calls (only file with data access)                                                                                                               |
+| `src/routing/`, `src/portal.tsx`, `src/ui/*`                | Same small router and UI kit as Sales Hub (own copy)                                                                                                              |
+| `src/*.test.tsx`, `standalone/*.test.tsx`                   | 17 tests: dashboard, filters, details sections, moving a task from Sales Hub + toast, view only for Sales, deep-link highlight, standalone mode, production build |
+| `libs/mock-backend/src/api/projects.ts`, `seed/projects.ts` | Project with its customer; project managers; more realistic staffing (team utilisation about 80%, one project manager over-allocated)                             |
+
+**Verified in a browser** (production builds, spare ports): all pages for User 2 and User 1 (view only); task highlight from `?task=`; no console errors.
+
+**Open issues:** adding project updates, editing milestones and drag-and-drop on the board are not in this preview (status changes use a "Move to" menu, which also works with a keyboard).
+
+**Next step:** Step 13 – People & HR (Angular remote `demo-angular`).

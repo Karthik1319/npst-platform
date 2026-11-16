@@ -14,7 +14,7 @@ interface StandaloneProps {
 }
 
 /**
- * Development-only harness: runs React B without the shell, with the mock
+ * Development-only harness: runs Projects & Delivery without the shell, with the mock
  * platform for a chosen mock user, and the same access check as the shell
  * (`platform.permissions.can('access', APP_ID)`).
  */

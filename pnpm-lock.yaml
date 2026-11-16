@@ -349,6 +349,9 @@ importers:
       '@npst/design-tokens':
         specifier: workspace:*
         version: link:../../libs/design-tokens
+      '@npst/mock-backend':
+        specifier: workspace:*
+        version: link:../../libs/mock-backend
       '@npst/platform-mocks':
         specifier: workspace:*
         version: link:../../libs/platform-mocks

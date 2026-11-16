@@ -1,5 +1,5 @@
 import { readData } from '../store';
-import type { Milestone, Project, ProjectStatus } from '../types';
+import type { Customer, Milestone, Project, ProjectStatus } from '../types';
 import { clone, matches, today } from './common';
 
 export interface UpcomingMilestone extends Milestone {
@@ -106,8 +106,17 @@ export const projectsApi = {
     );
   },
 
-  async get(id: string): Promise<Project | null> {
-    const project = readData().projects.find((p) => p.id === id);
-    return project ? clone(project) : null;
+  async get(
+    id: string,
+  ): Promise<{ project: Project; customer: Customer } | null> {
+    const data = readData();
+    const project = data.projects.find((p) => p.id === id);
+    const customer =
+      project && data.customers.find((c) => c.id === project.customerId);
+    return project && customer ? clone({ project, customer }) : null;
+  },
+
+  async managers(): Promise<string[]> {
+    return [...new Set(readData().projects.map((p) => p.manager))].sort();
   },
 };

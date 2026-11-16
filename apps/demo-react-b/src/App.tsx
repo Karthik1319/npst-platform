@@ -1,56 +1,49 @@
 import type { MfeProps } from '@npst/shared-contracts';
-import { useState, version as reactVersion } from 'react';
-import styles from './App.module.css';
-
-/** Where this code was loaded from (shows the remote's own server when inside the shell). */
-const servedFrom = new URL(import.meta.url).origin;
+import { ProjectsLayout } from '@/layout/ProjectsLayout';
+import { DashboardPage } from '@/pages/DashboardPage';
+import { ProjectDetailsPage } from '@/pages/ProjectDetailsPage';
+import { ProjectsPage } from '@/pages/ProjectsPage';
+import { TasksPage } from '@/pages/TasksPage';
+import { PortalProvider } from '@/portal';
+import { Link, Router, useRouter } from '@/routing/router';
+import controls from '@/ui/controls.module.css';
 
 /**
- * React B micro-frontend: a second, independent remote. Same two-way contract
- * as every MFE:
- * - Shell → MFE: `MfeProps` (user, basePath, platform).
- * - MFE → Shell: calls on `platform`, e.g. `notify.toast()`.
- * It never imports React A or shell code.
+ * Projects & Delivery micro-frontend (exposed as `./App` through Module
+ * Federation): delivery of won deals.
+ * - Portal → app: `MfeProps` (signed-in user, base path, platform).
+ * - App → portal: calls on `platform` (toasts, permission checks).
+ * - Its own pages live below `basePath` (e.g. `/projects/PRJ-221`).
+ * Business data comes from the delivery backend (see `services/projects.ts`).
  */
 export function App({ user, basePath, platform }: MfeProps) {
-  // A hook: proves this remote uses the shell's single React copy.
-  const [sent, setSent] = useState(0);
-
-  function notifyPortal() {
-    const count = sent + 1;
-    setSent(count);
-    platform.notify.toast(`Hello from React B (#${count})`, {
-      kind: 'success',
-    });
-  }
-
+  const viewOnly = !platform.permissions.can('update', 'project-task');
   return (
-    <section className={styles.app}>
-      <h1 className={styles.title}>React B</h1>
-      <p className={styles.lead}>Demo React micro-frontend.</p>
+    <PortalProvider value={{ user, platform }}>
+      <Router basePath={basePath}>
+        <ProjectsLayout viewOnly={viewOnly}>
+          <Pages />
+        </ProjectsLayout>
+      </Router>
+    </PortalProvider>
+  );
+}
 
-      <h2 className={styles.heading}>From the portal</h2>
-      <dl className={styles.facts}>
-        <dt>Signed-in user</dt>
-        <dd>
-          {user.name} ({user.roles.join(', ')})
-        </dd>
-        <dt>Base path</dt>
-        <dd>{basePath}</dd>
-        <dt>React version</dt>
-        <dd>{reactVersion}</dd>
-        <dt>Served from</dt>
-        <dd>{servedFrom}</dd>
-      </dl>
-
-      <h2 className={styles.heading}>To the portal</h2>
-      <p className={styles.note}>
-        Asks the portal to show a notification through the platform.
-      </p>
-      <button type="button" className={styles.button} onClick={notifyPortal}>
-        Send a notification
-      </button>
-    </section>
+function Pages() {
+  const { path, search } = useRouter();
+  const [section] = path.split('/').filter(Boolean);
+  if (section === undefined) return <DashboardPage />;
+  if (section === 'list') return <ProjectsPage />;
+  // New query (e.g. a different highlighted task) = fresh board state.
+  if (section === 'tasks') return <TasksPage key={search.toString()} />;
+  if (section.startsWith('PRJ-'))
+    return (
+      <ProjectDetailsPage key={section} id={decodeURIComponent(section)} />
+    );
+  return (
+    <p className={controls.empty}>
+      This page does not exist. <Link to="/">Go to the Projects dashboard</Link>
+    </p>
   );
 }
 

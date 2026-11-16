@@ -1,4 +1,4 @@
-// Entry when React B is opened directly at its own address (not through the
+// Entry when Projects & Delivery is opened directly at its own address (not through the
 // shell). The shell never uses this file: it loads `App` via Module Federation
 // (mf-manifest.json → remoteEntry.js) and passes the real host props.
 import '@npst/design-tokens/theme.css';
@@ -14,7 +14,7 @@ if (!rootElement) {
 const root = createRoot(rootElement);
 
 if (import.meta.env.DEV) {
-  // Development only: run React B on its own with the mock platform.
+  // Development only: run Projects & Delivery on its own with the mock platform.
   // `import.meta.env.DEV` is `false` in production builds, so this branch and
   // the mock users are removed from the build output.
   const { Standalone } = await import('@/standalone/Standalone');
@@ -24,7 +24,7 @@ if (import.meta.env.DEV) {
     </StrictMode>,
   );
 } else {
-  // Production: React B opens only inside the portal.
+  // Production: Projects & Delivery opens only inside the portal.
   root.render(
     <StrictMode>
       <PortalNotice />

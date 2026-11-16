@@ -1,17 +1,26 @@
-import { act, cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { Standalone } from '@/standalone/Standalone';
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  localStorage.clear();
+  vi.restoreAllMocks();
+});
+
+const currentUser = () =>
+  screen
+    .getByRole('list', { name: 'Switch mock user' })
+    .querySelector('[aria-current="true"]')?.textContent;
 
 describe('standalone mode (development only)', () => {
   it('starts as User 1, not Admin (least privilege)', () => {
+    window.history.replaceState(null, '', '/');
     render(<Standalone search="" />);
     expect(
-      screen.getByRole('heading', { level: 1, name: 'React B' }),
+      screen.getByRole('heading', { level: 1, name: 'Dashboard' }),
     ).toBeDefined();
-    expect(screen.getByText('User 1 (SALES)')).toBeDefined();
-    expect(screen.queryByText(/Admin User \(ADMIN\)/)).toBeNull();
+    expect(currentUser()).toBe('User 1');
   });
 
   it('denies ?user=u-3 like the shell does', () => {
@@ -25,29 +34,20 @@ describe('standalone mode (development only)', () => {
       ),
     ).toBeDefined();
     expect(
-      screen.queryByRole('heading', { level: 1, name: 'React B' }),
+      screen.queryByRole('navigation', { name: 'Projects & Delivery' }),
     ).toBeNull();
   });
 
   it.each([
-    ['u-1', 'User 1 (SALES)'],
-    ['u-2', 'User 2 (SOLUTIONS)'],
-    ['u-admin', 'Admin User (ADMIN)'],
-  ])('opens React B for ?user=%s', (userId, who) => {
+    ['u-1', 'User 1'],
+    ['u-2', 'User 2'],
+    ['u-admin', 'Admin User'],
+  ])('opens Projects & Delivery for ?user=%s', (userId, who) => {
     render(<Standalone search={`?user=${userId}`} />);
     expect(
-      screen.getByRole('heading', { level: 1, name: 'React B' }),
+      screen.getByRole('navigation', { name: 'Projects & Delivery' }),
     ).toBeDefined();
-    expect(screen.getByText(who)).toBeDefined();
-  });
-
-  it('shows toasts itself (no shell in standalone mode)', async () => {
-    vi.spyOn(console, 'info').mockImplementation(() => undefined);
-    render(<Standalone search="?user=u-1" />);
-    act(() =>
-      screen.getByRole('button', { name: 'Send a notification' }).click(),
-    );
-    expect(await screen.findByText('Hello from React B (#1)')).toBeDefined();
+    expect(currentUser()).toBe(who);
   });
 
   it('rejects an unknown mock user', () => {
