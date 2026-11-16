@@ -3,6 +3,7 @@ import { Outlet } from 'react-router';
 import { ToastHost } from '@/components/ToastHost';
 import { Header } from '@/layout/Header';
 import { LeftNav } from '@/layout/LeftNav';
+import { useNotifyMfeRouters } from '@/remotes/useNotifyMfeRouters';
 import styles from './Layout.module.css';
 
 interface LayoutProps {
@@ -11,6 +12,8 @@ interface LayoutProps {
 
 /** Portal frame: header on top, nav on the left, routed page in the middle. */
 export function Layout({ apps }: LayoutProps) {
+  useNotifyMfeRouters();
+
   return (
     <div className={styles.layout}>
       <Header />

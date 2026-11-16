@@ -4,6 +4,16 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
 import { SESSION_STORAGE_KEY } from '@/services/auth';
 import { SessionProvider } from '@/session/SessionContext';
+import { mountStub } from '@/test/mount-stub';
+
+// Non-React remotes: a fake mount-contract module instead of a real server.
+const esmRemote = vi.hoisted(() => ({ down: false }));
+vi.mock('@/remotes/load-esm-remote', () => ({
+  loadEsmRemote: () =>
+    esmRemote.down
+      ? Promise.reject(new Error('Failed to fetch'))
+      : Promise.resolve(mountStub),
+}));
 
 const USER_IDS: Record<string, string> = {
   'Admin User': 'u-admin',
@@ -148,11 +158,21 @@ describe('direct URL access', () => {
     ).toBeDefined();
   });
 
-  it('opens an allowed app', async () => {
+  it('mounts the Angular remote through the mount contract and unmounts it on leave', async () => {
     renderSignedInAt('User 3', '/angular');
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Angular' }),
+      await screen.findByRole('heading', { level: 1, name: 'Mount stub' }),
     ).toBeDefined();
+    expect(
+      screen.getByText('user=User 3 basePath=/angular platformUser=User 3'),
+    ).toBeDefined();
+    expect(mountStub.live).toBe(1);
+
+    act(() => screen.getByRole('link', { name: 'Home' }).click());
+
+    await screen.findByRole('heading', { level: 1, name: 'Portal Home' });
+    await vi.waitFor(() => expect(mountStub.live).toBe(0));
+    expect(screen.queryByRole('heading', { name: 'Mount stub' })).toBeNull();
   });
 
   it('shows Page not found for a path that is not an app', async () => {
@@ -160,6 +180,38 @@ describe('direct URL access', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Page not found' }),
     ).toBeDefined();
+  });
+});
+
+describe('non-React remotes (mount contract)', () => {
+  it('shows the fallback when the remote cannot be loaded', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    esmRemote.down = true;
+    try {
+      renderSignedInAt('User 3', '/angular');
+      expect(
+        await screen.findByText(
+          'Angular is not available right now. Please try again later.',
+        ),
+      ).toBeDefined();
+      // The rest of the portal keeps working.
+      expect(screen.getByRole('navigation', { name: 'Main' })).toBeDefined();
+    } finally {
+      esmRemote.down = false;
+    }
+  });
+
+  it('tells MFE routers about shell navigation (popstate)', async () => {
+    renderSignedInAt('User 3', '/');
+    await screen.findByRole('list', { name: 'Applications' });
+    const popstate = vi.fn();
+    window.addEventListener('popstate', popstate);
+
+    const nav = screen.getByRole('navigation', { name: 'Main' });
+    act(() => within(nav).getByRole('link', { name: 'Angular' }).click());
+
+    await vi.waitFor(() => expect(popstate).toHaveBeenCalledTimes(1));
+    window.removeEventListener('popstate', popstate);
   });
 });
 

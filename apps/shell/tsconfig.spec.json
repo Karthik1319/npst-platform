@@ -14,6 +14,7 @@
     "vite.config.ts",
     "src/**/*.test.ts",
     "src/**/*.test.tsx",
+    "src/test/**/*.ts",
     "src/test/**/*.tsx",
     "src/remotes/remote-modules.d.ts"
   ],

@@ -1,0 +1,31 @@
+{
+  "name": "@npst/demo-angular",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "name": "demo-angular"
+  },
+  "scripts": {
+    "dev": "ng serve --port 4203",
+    "build": "ng build",
+    "test": "ng test --watch=false && node scripts/check-production-build.mjs"
+  },
+  "dependencies": {
+    "@angular/common": "22.2.6",
+    "@angular/compiler": "22.2.6",
+    "@angular/core": "22.2.6",
+    "@angular/platform-browser": "22.2.6",
+    "@angular/router": "22.2.6",
+    "@npst/design-tokens": "workspace:*",
+    "@npst/platform-mocks": "workspace:*",
+    "@npst/shared-contracts": "workspace:*",
+    "rxjs": "7.8.2",
+    "tslib": "2.9.1"
+  },
+  "devDependencies": {
+    "@angular/build": "22.2.7",
+    "@angular/cli": "22.2.7",
+    "@angular/compiler-cli": "22.2.6",
+    "zone.js": "0.16.3"
+  }
+}

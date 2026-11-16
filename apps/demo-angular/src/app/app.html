@@ -1,0 +1,30 @@
+<section class="app">
+  <h1 class="title">Angular</h1>
+  <p class="lead">
+    Demo Angular micro-frontend (Angular CLI build, mount/unmount).
+  </p>
+
+  <h2 class="heading">From the portal</h2>
+  <dl class="facts">
+    <dt>Signed-in user</dt>
+    <dd>{{ props.user.name }} ({{ props.user.roles.join(', ') }})</dd>
+    <dt>Base path</dt>
+    <dd>{{ props.basePath }}</dd>
+    <dt>Angular version</dt>
+    <dd>{{ angularVersion }}</dd>
+    <dt>Served from</dt>
+    <dd>{{ servedFrom }}</dd>
+  </dl>
+
+  <h2 class="heading">To the portal</h2>
+  <button type="button" class="button" (click)="notifyPortal()">
+    Send a notification
+  </button>
+
+  <h2 class="heading">Pages inside this app</h2>
+  <nav class="pages" aria-label="Angular pages">
+    <a routerLink="/page-1" routerLinkActive="active">Page 1</a>
+    <a routerLink="/page-2" routerLinkActive="active">Page 2</a>
+  </nav>
+  <router-outlet />
+</section>

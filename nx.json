@@ -12,6 +12,7 @@
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
+      "exclude": ["apps/demo-angular/**/*"],
       "options": {
         "typecheck": {
           "targetName": "typecheck"
@@ -39,6 +40,9 @@
     "test": {
       "cache": true,
       "inputs": ["default", "^production"]
+    },
+    "dev": {
+      "continuous": true
     }
   }
 }

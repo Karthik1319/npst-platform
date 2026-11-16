@@ -13,8 +13,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 3b   | Mock login + RBAC (enhancement)                 | Done   |
 | 4    | First React remote                              | Done   |
 | 5    | Second React remote + Shell ↔ MFE communication | Done   |
-| 6    | Angular remote                                  | Next   |
-| 7    | Failure handling                                | –      |
+| 6    | Angular remote                                  | Done   |
+| 7    | Failure handling                                | Next   |
 | 8    | Bundling review                                 | –      |
 | 9    | Runtime theme                                   | –      |
 | 10   | Integration guides                              | –      |
@@ -33,6 +33,7 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | Vitest            | 5.1.0 (jsdom 31.0.0)                              |
 | ESLint            | 10.14.0 (typescript-eslint 8.72.2)                |
 | Module Federation | `@module-federation/vite` 1.23.11 (runtime 2.9.3) |
+| Angular           | 22.2.6 (Angular CLI / `@angular/build` 22.2.7)    |
 
 ## Step 0 – Check setup
 
@@ -437,6 +438,78 @@ The Step 3 and Step 4 entries below still mention the bus as it was then; this n
 
 - The standalone harness, portal notice and production-build test are duplicated in each React remote; a shared development-only helper library could replace the copies once more remotes exist.
 - Session expiry reported by an MFE's API call (send the user back to the portal login) is a likely future `PlatformApi` addition; decided with the real authentication work.
-- Carried over: the remotes bundle their own copy of the Module Federation runtime (Step 8); the Angular build must compile `shared-contracts` from source (Step 6).
+- Carried over: the remotes bundle their own copy of the Module Federation runtime (Step 8); the Angular build must compile `shared-contracts` from source (Step 6; solved there).
 
 **Next step:** Step 6 – Angular remote: first propose the build options with trade-offs and let you choose; then `demo-angular` with `mount` / `unmount`, mounted by the shell on `/angular`, receiving the same props `{ user, basePath, platform }` and calling the shell through `platform` (e.g. a toast).
+
+## Step 6 – Angular remote
+
+**Decision before building (build options):** Module Federation is new to NPST, so no Angular team is assumed to use any federation tooling. The priority is that existing and future Angular teams can join **without migrating their build tooling**. Options considered: Vite + Analog plugin + `@module-federation/vite`; Angular CLI + Native Federation; Rspack (`@nx/angular-rspack`) + `@module-federation/enhanced`; Angular CLI webpack builder + MF plugin; and the standard Angular CLI build loaded as a plain ES module. All but the last require a build-tool change or a federation add-on. A spike confirmed the last one works, so it was chosen.
+
+**Done:** new app `apps/demo-angular` (Nx name `demo-angular`, port 4203), a **standard Angular CLI project** (generated with `ng new`, default `@angular/build:application` builder, zoneless, standalone components). The shell mounts it on `/angular` through the mount contract, with the same props as React remotes; leaving the page destroys it.
+
+**Concepts:**
+
+- **Plain ES-module remote:** a normal `ng build` output whose entry file (`main-<hash>.js`) exports `mount` and `unmount`. Angular shares nothing with the React shell, so Module Federation (needed for the shared React copy) adds nothing here. React remotes stay on Module Federation.
+- **Finding the entry file:** build tools add a content hash to file names, which changes on every build. The shell reads the current names from the remote's own built `index.html`, which every Angular build already produces, and imports the entry modules in page order.
+- **Mount contract in Angular:** `mount` calls `createApplication()` with the props as an injection token (`MFE_PROPS`) and `APP_BASE_HREF = basePath`, then bootstraps the root component into an element inside the shell's container; `unmount` calls `ApplicationRef.destroy()`.
+- **Router sync (`popstate`):** a router changing the URL with `history.pushState` is not announced to other routers on the page. The shell fires the standard `popstate` event after its own navigation, so the MFE's router re-reads the URL (e.g. clicking "Angular" in the nav while Angular shows page 2 returns it to page 1).
+- **zone.js:** Angular's older change-detection library; it patches browser APIs (timers, promises, events) for the whole page, and cannot be removed once loaded. New Angular apps are zoneless by default.
+
+**What an Angular team changes (app code only; `angular.json` builder unchanged):**
+
+1. `main.ts` exports `mount(element, props)` / `unmount(element)` (about 25 lines) and still starts on its own when opened directly.
+2. An injection token for the props; `APP_BASE_HREF` from `basePath`; a catch-all `**` route.
+3. Styles in components using theme variables (global `styles.css` is not loaded inside the portal).
+4. The server allows the portal's origin (CORS).
+
+**Files:**
+
+| File                                                                                                  | Purpose                                                                                                                                                                                                                        |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `apps/demo-angular/angular.json`, `tsconfig*.json`, `public/favicon.ico`                              | As generated by `ng new` (default builder); additions: dev-server `prebundle.exclude` for our two TypeScript-source libraries, and `cli.analytics: false` (answer to the CLI's first-run question, so it is never asked again) |
+| `apps/demo-angular/package.json`                                                                      | Angular 22.2.6 packages, CLI 22.2.7, `rxjs` 7.8.2, `zone.js` 0.16.3 (dev, zone.js check only); scripts `dev` (`ng serve --port 4203`), `build` (`ng build`), `test`                                                            |
+| `apps/demo-angular/src/main.ts`                                                                       | Mount contract (`mount` / `unmount`); standalone start in development, portal notice in production                                                                                                                             |
+| `apps/demo-angular/src/app/app.ts`, `.html`, `.css`, `app.routes.ts`, `mfe-props.ts`, `app.config.ts` | Shows the props, sends a notification through `platform`, two internal pages; logs `created` / `destroyed` with the live instance count                                                                                        |
+| `apps/demo-angular/src/standalone/standalone.ts`                                                      | Development-only harness (plain DOM): mock user switcher, default User 3, same access check as the portal, toasts                                                                                                              |
+| `apps/demo-angular/src/portal-notice.ts`, `config.ts`, `index.html`, `styles.css`                     | Production notice; app id and portal URL; standalone page (theme imported only here)                                                                                                                                           |
+| `apps/demo-angular/src/*.spec.ts`, `src/standalone/standalone.spec.ts`                                | `ng test` (Vitest): props shown, notification sent, one instance per element and destroyed on unmount, routing below `basePath`, standalone and notice                                                                         |
+| `apps/demo-angular/scripts/check-production-build.mjs`                                                | Real `ng build`: entry exports `mount` / `unmount`, no mock data or standalone code, notice present                                                                                                                            |
+| `apps/shell/src/remotes/load-esm-remote.ts` + `.test.ts`                                              | Loader for plain ES-module remotes (reads `index.html`, imports entries in order, checks the exports)                                                                                                                          |
+| `apps/shell/src/remotes/MountRemote.tsx`                                                              | Mounts / unmounts a mount-contract remote; calls run strictly in order; errors go to the remote's error boundary                                                                                                               |
+| `apps/shell/src/remotes/registry.ts`, `RemoteAppPage.tsx`, `Portal.tsx`                               | `mountRemotes` registry (Angular at `VITE_DEMO_ANGULAR_URL`, default `http://localhost:4203/`); one page component for both remote types                                                                                       |
+| `apps/shell/src/remotes/useNotifyMfeRouters.ts`, `layout/Layout.tsx`                                  | Fires `popstate` after shell navigation                                                                                                                                                                                        |
+| `apps/shell/src/test/mount-stub.ts`, `App.test.tsx`, `tsconfig.spec.json`                             | Fake mount-contract remote; tests: mount with props, unmount on leave (0 live), fallback when loading fails, `popstate` on navigation                                                                                          |
+| `nx.json`                                                                                             | Nx's TypeScript plugin skips `apps/demo-angular` (the Angular CLI type-checks it, templates included); `dev` targets marked `continuous` (see Decisions)                                                                       |
+| `pnpm-workspace.yaml`                                                                                 | Angular CLI install scripts not run (`@parcel/watcher`, `esbuild`, `lmdb`, `msgpackr-extract`), same as the Angular CLI's own default                                                                                          |
+| `.gitignore`, `.prettierignore`                                                                       | Ignore the Angular CLI cache (`.angular/`)                                                                                                                                                                                     |
+
+**Verified in a browser (production builds and dev servers):**
+
+- User 3 on `/angular`: shows User 3 (EMPLOYEE), `/angular`, Angular 22.2.6, served from the Angular server; "Send a notification" shows "Hello from Angular (#1)" in the shell. Only `index.html` and `main-<hash>.js` are downloaded in production.
+- Angular's own pages: links, browser back / forward, deep link `/angular/page-2`, back from Home into `/angular/page-2`.
+- Shell nav "Angular" while Angular shows page 2 → Angular returns to page 1 (router sync).
+- Leaving `/angular` logs `destroyed (live instances: 0)` and removes the app; 3× Home ↔ Angular never shows more than 1 instance; React's development double-mount (mount → unmount → mount) also ends with 1.
+- Angular server stopped → "Angular is not available right now. Please try again later."; the portal keeps working.
+- **zone.js variant** (temporary build with `polyfills: zone.js` and zone change detection): works in the portal; zone.js replaces the global `Promise` for the whole page and stays after unmount; React A, its toasts and Export, and the shell's toast timers keep working; no console problems.
+- React A and React B unchanged (one shared React copy, toasts, Export, sign-out).
+- Standalone (`ng serve`): default User 3; `?user=u-1` → Access denied; toasts shown by the harness. Production build opened directly: portal notice.
+- `pnpm nx run-many -t lint test typecheck build` passes for 6 projects (91 tests + Angular production-build check).
+
+**Decisions:**
+
+- **Two remote types, one contract:** React remotes use Module Federation (shared React); Angular and other non-React remotes are plain ES modules from their standard build. Both get the same props, error boundary and fallback.
+- **Native Federation not used** (it would add federation tooling to every Angular team); documented as an option if several Angular MFEs ever need to share one Angular copy.
+- **New Angular MFEs should be zoneless**; zone.js apps are supported (verified), but two zone.js MFEs on one page are untested.
+- **Dev servers are `continuous` Nx targets:** Nx runs at most 3 tasks at once by default, and a dev server never finishes, so with 4 apps the 4th never started. Marking `dev` as continuous ("runs until stopped") lets `pnpm nx run-many -t dev` start all of them.
+- **No ESLint for the Angular app yet:** the Angular CLI does not add one by default and `angular-eslint` would be a new dependency; Angular teams keep their own lint setup.
+
+**Open issues:**
+
+- `nx sync` adds references to our libraries into the Angular app's `tsconfig.app.json`; harmless (the build passes), but it is a monorepo-only change to the generated file.
+- Two Angular MFEs that both load zone.js on the same page: to test when a second Angular MFE exists.
+- Existing Angular apps with large global stylesheets need them scoped to the app before joining the portal (integration guide, Step 10).
+- `PORTAL_URL` in the Angular app is a constant; set per environment with the Angular CLI `define` option or file replacements when deployed.
+- Step 7 adds a timeout and one retry for both remote types.
+
+**Next step:** Step 7 – failure handling: stop each remote in turn; the shell shows a fallback, not a blank page (error boundary, timeout, one retry).

@@ -4,3 +4,8 @@ packages:
 allowBuilds:
   '@swc/core': true
   nx: true
+  # Angular CLI dependencies: install scripts not needed (same as the Angular CLI's own default).
+  '@parcel/watcher': false
+  esbuild: false
+  lmdb: false
+  msgpackr-extract: false

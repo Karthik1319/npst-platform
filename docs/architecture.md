@@ -80,12 +80,32 @@ export async function unmount(element) {
   // Destroy the Angular application and release resources.
 }
 
-// React host (illustrative)
-const remote = await loadRemote('angularMfe/entry');
+// React host (illustrative; see "Loading remotes without changing their build tooling")
+const remote = await loadEsmRemote('https://angular-mfe.example/');
 await remote.mount(containerElement, props);
 ```
 
 MF does not supply this contract; We must define and test inputs (props), outputs (platform calls), error reporting, authentication context, navigation and cleanup.
+
+### Loading remotes without changing their build tooling
+
+Federation is new to NPST, so app teams must not have to migrate their build tooling to join the portal. The contract an app follows (mount/unmount, props, routing, cleanup) is fixed; how its files are delivered depends on what the app shares with the host:
+
+| Remote type                      | Delivery                                                                                                                                         | Why                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| React MFE                        | Module Federation remote (`mf-manifest.json`, `remoteEntry.js`), using the `@module-federation/*` plugin for its bundler (Vite, Rspack, webpack) | Must share the host's single React copy, which only MF provides                                    |
+| Angular (or other non-React) MFE | Plain ES module from the app's **standard build** (e.g. Angular CLI `ng build`, default builder); the entry file exports `mount` and `unmount`   | Shares nothing with the React host, so MF adds no value; no build-tool change or federation plugin |
+
+For a plain ES-module remote, the host reads the current (hashed) entry file names from the remote's own built `index.html`, imports the entry modules in page order (e.g. Angular `polyfills` before `main`), and calls `mount` with the same props as React remotes. Errors show the same fallback as any remote. Verified with Angular 22 (zoneless and zone.js apps), in development (`ng serve`) and production builds.
+
+What an Angular team changes (app code only, see the integration guide):
+
+- `main.ts` exports `mount(element, props)` and `unmount(element)`, and still starts on its own when opened directly (development).
+- Props reach components through an injection token; the router uses `APP_BASE_HREF = basePath` and a catch-all route for URLs outside the app.
+- Styles live in components and use the theme variables; the app's global stylesheet is not loaded inside the portal.
+- The server allows the portal's origin (CORS), as for any remote.
+
+The host fires the standard `popstate` event after its own navigation, so the router inside any MFE (Angular or React) follows URL changes made by the portal.
 
 ### Communication
 
@@ -248,18 +268,19 @@ Framework independence comes from the component contract, not from MF: MF can lo
 
 ## 8. Risks and controls
 
-| Risk                                        | Why it matters                                                  | Control                                                                                                                              |
-| ------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| Remote unavailable or slow                  | Part of the portal could go blank                               | Bundled fallback for critical shell UI; bounded retries and timeouts; health monitoring; remote-offline tests                        |
-| React version mismatch or duplicate runtime | Runtime errors                                                  | Pin compatible versions; singleton sharing; enforce required versions; test exact host/remote combinations                           |
-| Angular lifecycle leaks                     | Repeated mounting leaves listeners, subscriptions or DOM behind | Documented mount/unmount contract; automated lifecycle tests; destroy resources on unmount                                           |
-| Remote code security                        | Runtime-loaded code runs in the app's context                   | Internal origins only; CSP; protected CI publishing; access and integrity reviews                                                    |
-| Non-atomic releases and version drift       | Apps may get incompatible remote versions                       | Immutable versions, controlled pointers, staged rollout, compatibility checks, rollback                                              |
-| Brand server unavailable                    | Apps miss the latest theme                                      | Bundled fallback CSS/assets; resilient hosting; deliberate cache policy                                                              |
-| Monorepo migration and ownership            | Workflows and release responsibilities change                   | Pilot migration; code owners, access boundaries, independent pipelines, contribution standards                                       |
-| MFE handles its own login or session        | Inconsistent sessions; logout does not end access everywhere    | Host Portal is the only login; MFEs never store session identifiers; browser-managed session cookie; backend validates every request |
-| Hidden coupling between MFEs                | One app's change silently breaks another                        | Shell ↔ MFE contract only; no global event bus; future MFE ↔ MFE needs agreed per use case with typed, versioned, owned contracts    |
-| Nx cache strategy                           | Remote caching adds infrastructure and security concerns        | Start with local caching; assess an approved remote-cache option separately                                                          |
+| Risk                                                | Why it matters                                                       | Control                                                                                                                                                                                                              |
+| --------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Remote unavailable or slow                          | Part of the portal could go blank                                    | Bundled fallback for critical shell UI; bounded retries and timeouts; health monitoring; remote-offline tests                                                                                                        |
+| React version mismatch or duplicate runtime         | Runtime errors                                                       | Pin compatible versions; singleton sharing; enforce required versions; test exact host/remote combinations                                                                                                           |
+| Angular lifecycle leaks                             | Repeated mounting leaves listeners, subscriptions or DOM behind      | Documented mount/unmount contract; automated lifecycle tests; destroy resources on unmount                                                                                                                           |
+| Remote code security                                | Runtime-loaded code runs in the app's context                        | Internal origins only; CSP; protected CI publishing; access and integrity reviews                                                                                                                                    |
+| Non-atomic releases and version drift               | Apps may get incompatible remote versions                            | Immutable versions, controlled pointers, staged rollout, compatibility checks, rollback                                                                                                                              |
+| Brand server unavailable                            | Apps miss the latest theme                                           | Bundled fallback CSS/assets; resilient hosting; deliberate cache policy                                                                                                                                              |
+| Monorepo migration and ownership                    | Workflows and release responsibilities change                        | Pilot migration; code owners, access boundaries, independent pipelines, contribution standards                                                                                                                       |
+| MFE handles its own login or session                | Inconsistent sessions; logout does not end access everywhere         | Host Portal is the only login; MFEs never store session identifiers; browser-managed session cookie; backend validates every request                                                                                 |
+| Global CSS or scripts from an MFE affect the portal | A non-React MFE's global styles or polyfills apply to the whole page | Only component styles inside the portal; theme variables only; zoneless Angular for new apps (zone.js patches browser APIs for the whole page and cannot be unloaded); test with two zone.js MFEs before allowing it |
+| Hidden coupling between MFEs                        | One app's change silently breaks another                             | Shell ↔ MFE contract only; no global event bus; future MFE ↔ MFE needs agreed per use case with typed, versioned, owned contracts                                                                                    |
+| Nx cache strategy                                   | Remote caching adds infrastructure and security concerns             | Start with local caching; assess an approved remote-cache option separately                                                                                                                                          |
 
 ## 9. Repository structure (example)
 

@@ -1,0 +1,92 @@
+/*
+ * Page styles for opening this app on its own (standalone mode or the
+ * production notice). Only this app's own index.html loads this file; the
+ * portal never does, so nothing here can leak into the portal.
+ */
+@import '@npst/design-tokens/theme.css';
+
+body {
+  margin: 0;
+  padding: var(--npst-space-5);
+  background: var(--npst-color-surface-page);
+  font-family: var(--npst-font-family);
+}
+
+.npst-card {
+  max-width: 32rem;
+  padding: var(--npst-space-4);
+  border: 1px solid var(--npst-color-border-subtle);
+  border-radius: var(--npst-radius-lg);
+  background: var(--npst-color-surface-card);
+  color: var(--npst-color-text-default);
+}
+
+.npst-card h1 {
+  margin: 0 0 var(--npst-space-2);
+  color: var(--npst-color-text-strong);
+}
+
+.npst-card p {
+  margin: 0 0 var(--npst-space-3);
+  color: var(--npst-color-text-secondary);
+}
+
+.npst-card a {
+  color: var(--npst-color-action-primary);
+  font-weight: 600;
+}
+
+.npst-card--denied h1 {
+  color: var(--npst-color-status-error);
+}
+
+.npst-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--npst-space-2);
+  margin-bottom: var(--npst-space-4);
+  padding: var(--npst-space-2) var(--npst-space-3);
+  border: 1px dashed var(--npst-color-status-warning);
+  border-radius: var(--npst-radius);
+  background: var(--npst-color-surface-card);
+  color: var(--npst-color-text-default);
+  font-size: var(--npst-font-size-sm);
+}
+
+.npst-banner ul {
+  display: flex;
+  gap: var(--npst-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.npst-banner a {
+  padding: var(--npst-space-1) var(--npst-space-2);
+  border-radius: var(--npst-radius-round);
+  color: var(--npst-color-action-primary);
+}
+
+.npst-banner a[aria-current='true'] {
+  background: var(--npst-tone-1-bg);
+  font-weight: 700;
+}
+
+.npst-toasts {
+  position: fixed;
+  right: var(--npst-space-4);
+  bottom: var(--npst-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--npst-space-2);
+}
+
+.npst-toast {
+  min-width: 16rem;
+  padding: var(--npst-space-3);
+  border-radius: var(--npst-radius);
+  background: var(--npst-toast-bg);
+  color: var(--npst-toast-text);
+  box-shadow: var(--npst-shadow-raised);
+}
