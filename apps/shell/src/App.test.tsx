@@ -60,10 +60,24 @@ function renderAt(path: string) {
   );
 }
 
-/** Starts the app as if `name` had signed in earlier in this browser tab. */
+/** Starts the app as if `name` had signed in earlier (in this or another tab). */
 function renderSignedInAt(name: string, path: string) {
-  sessionStorage.setItem(SESSION_STORAGE_KEY, USER_IDS[name] ?? '');
+  localStorage.setItem(SESSION_STORAGE_KEY, USER_IDS[name] ?? '');
   renderAt(path);
+}
+
+/** What the browser tells this tab when another tab changes the session. */
+function sessionChangedInAnotherTab(newUserId: string | null) {
+  if (newUserId) localStorage.setItem(SESSION_STORAGE_KEY, newUserId);
+  else localStorage.removeItem(SESSION_STORAGE_KEY);
+  act(() => {
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: SESSION_STORAGE_KEY,
+        newValue: newUserId,
+      }),
+    );
+  });
 }
 
 /** Portal Home greets the user by name in its main heading. */
@@ -108,8 +122,7 @@ function signOutFromMenu() {
 
 afterEach(() => {
   cleanup();
-  sessionStorage.clear();
-  // The simulated backends keep their data here; start each test fresh.
+  // The mock session and the simulated backends keep their data here; start each test fresh.
   localStorage.clear();
 });
 
@@ -286,7 +299,6 @@ describe('shell ↔ MFE communication', () => {
     renderSignedInAt('User 1', '/sales');
     expect(await screen.findByText('canExport=false')).toBeDefined();
     cleanup();
-    sessionStorage.clear();
 
     renderSignedInAt('Admin User', '/sales');
     expect(await screen.findByText('canExport=true')).toBeDefined();
@@ -354,13 +366,51 @@ describe('logout and protected routes', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Sign in' }),
     ).toBeDefined();
-    expect(sessionStorage.getItem(SESSION_STORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(SESSION_STORAGE_KEY)).toBeNull();
 
     cleanup();
     renderAt('/projects');
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Sign in' }),
     ).toBeDefined();
+  });
+});
+
+describe('one session for the portal, every app and every tab', () => {
+  it('a new tab is already signed in', async () => {
+    // Signed in once (e.g. in the first tab); a second tab opens directly in an app.
+    renderSignedInAt('User 2', '/projects');
+    expect(
+      await screen.findByText(
+        'user=User 2 basePath=/projects platformUser=User 2',
+      ),
+    ).toBeDefined();
+    expect(
+      screen.queryByRole('heading', { level: 1, name: 'Sign in' }),
+    ).toBeNull();
+  });
+
+  it('signing out in another tab signs this tab out of the portal and its apps', async () => {
+    renderSignedInAt('User 1', '/sales');
+    await screen.findByRole('heading', { level: 1, name: 'Remote stub' });
+
+    sessionChangedInAnotherTab(null);
+
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Sign in' }),
+    ).toBeDefined();
+    expect(
+      screen.queryByRole('heading', { level: 1, name: 'Remote stub' }),
+    ).toBeNull();
+  });
+
+  it('signing in as someone else in another tab switches this tab too', async () => {
+    renderSignedInAt('User 1', '/');
+    await portalHome('User 1');
+
+    sessionChangedInAnotherTab('u-3');
+
+    expect(await portalHome('User 3')).toBeDefined();
   });
 });
 

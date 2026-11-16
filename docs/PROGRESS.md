@@ -23,6 +23,7 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 13   | People & HR (Angular remote)                    | Done   |
 | 14   | Cross-application workflow and demo polish      | Done   |
 | 15   | Integration guides                              | Done   |
+| 16   | Reverse proxy (NGINX) and one session           | Done   |
 
 ## Toolchain
 
@@ -919,3 +920,53 @@ No MFE talks to another in the browser: the hand-over happens in the (simulated)
 - **Contract tests:** the guide recommends moving the shared behaviour cases into one function run against both the mock and the real module. That refactoring is left to the first module that replaces a mock.
 
 **Open issues:** none for the POC. Next phase (not started): plug the real HRMS in as a remote and replace the first mocks with the real platform modules.
+
+## Step 16 – Reverse proxy (NGINX) and one session (senior's input)
+
+**Input:**
+
+1. Use an NGINX reverse proxy so that the portal and applications send all API requests to **one public entry point**, which routes them to the internal backend services.
+2. The portal and all applications must keep **the same session** after sign-in, never a separate session per application.
+
+**Decision:**
+
+| Topic                   | Implemented or documented                                                                              | Why                                                                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NGINX reverse proxy     | **Documented** (`docs/reverse-proxy.md`) + **untested example configuration** (`docs/examples/nginx/`) | The PoC has no real backends (they are simulated in the browser), so there is nothing to route yet. Implement it with the first real backend                                                   |
+| One session, design     | **Documented** (`docs/single-session.md`)                                                              | The real cookie, session store, timeouts and CSRF need the authentication backend; CLAUDE.md defers these to the authentication work                                                           |
+| One session, in the PoC | **Implemented**                                                                                        | The mock session was kept per tab (a new tab asked for a new sign-in; signing out did not reach other tabs). Now it is shared by all tabs and sign-out reaches every tab, like the real cookie |
+
+**Done:**
+
+- `docs/reverse-proxy.md`:
+  - why a proxy, and where it fits (diagram, routes);
+  - the recommended layout: portal, applications and APIs on one origin;
+  - the impact on today's code (nothing now; later only addresses and build base paths, the contract unchanged);
+  - required components and add-ons (free NGINX vs NGINX Plus, TLS, `auth_request`, rate limits, health checks, WebSocket/SSE, logging, high availability, WAF, Kubernetes note);
+  - security benefits, risks and controls; open decisions; sources.
+- `docs/single-session.md`:
+  - why separate hosts lead to separate sessions, and how one origin avoids it;
+  - the target flow (sign-in, every app's API call, central sign-out);
+  - recommended server-side session; cookie and session rules (`__Host-` prefix, `HttpOnly`, `Secure`, `SameSite`, CSRF, timeouts, rotation);
+  - rules for application teams; what the PoC does.
+- `docs/examples/nginx/` (example only, not syntax-checked: NGINX is not installed here): `npst-portal.conf`, `npst-proxy.conf`, `npst-security-headers.conf`.
+- `apps/shell/src/services/auth.ts`: mock session in `localStorage` (shared by all tabs of the portal) instead of `sessionStorage` (one tab); `onSessionChange()` reports sign-in/sign-out from other tabs.
+- `apps/shell/src/session/SessionContext.tsx`: follows those changes, so other tabs return to the login page or switch user.
+- `apps/shell/src/App.test.tsx`: tests use the shared session; three new tests (new tab already signed in, sign-out in another tab removes the open app, sign-in as another user switches the tab). 61 portal tests.
+- `docs/architecture.md`, section 5: PoC session row updated; new subsection "One public entry point and one session".
+
+**Research findings (November 2026):**
+
+- **Current NGINX versions:** stable 1.30.6, mainline 1.31.8. nginx.org published many security advisories in 2026, so a patch process is part of the plan.
+- **Free NGINX vs NGINX Plus:** JWT validation and active health checks need NGINX Plus.
+- **WAF:** F5 ended its NGINX ModSecurity module (March 2024).
+- **Kubernetes:** the community `ingress-nginx` controller was retired in March 2026 (no further security patches).
+
+**Verified:**
+
+- **Tests and checks:** lint and tests pass (61 portal tests), as do typecheck and build.
+- **Browser:** two real Chrome tabs on the production build. A tab opened directly at `/notifications` was already signed in as the user from the first tab; signing out in the first tab sent both tabs to the login page.
+
+**Open decisions:** listed in `docs/reverse-proxy.md` (section 6) and `docs/single-session.md` (section 4: timeouts and CSRF, for the authentication work).
+
+**Next step:** none planned; implement the proxy and the real session together with the first real backend.

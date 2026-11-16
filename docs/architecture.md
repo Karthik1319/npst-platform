@@ -223,13 +223,18 @@ Actual cookie configuration, CSRF protection, CORS and backend integration will 
 
 ### How the POC follows this
 
-| Flow step   | POC (mock)                                                                                                                                                      | Later (real)                                                                                                       |
-| ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Login       | Host Portal login page; the user picks a mock user (no password)                                                                                                | Host Portal login backed by the authentication backend                                                             |
-| Session     | The Host Portal keeps the mock user's id in tab storage, standing in for the backend session; MFEs never see or store it                                        | Secure, browser-managed session cookie set by the backend; the Host Portal reads the current user from the backend |
-| MFEs        | Receive `user` and `platform` from the Host Portal as props; no login screens or session code; standalone mode (development only) uses mock users without login | Same props; API calls carry the session cookie automatically                                                       |
-| Permissions | `platform.permissions.can()` shows or hides UI only                                                                                                             | Backend validates session and permissions on every request                                                         |
-| Logout      | Clears the mock session and removes all MFEs from the page                                                                                                      | Invalidates the central session for all MFEs                                                                       |
+| Flow step   | POC (mock)                                                                                                                                                                                                  | Later (real)                                                                                                       |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Login       | Host Portal login page; the user picks a mock user (no password)                                                                                                                                            | Host Portal login backed by the authentication backend                                                             |
+| Session     | The Host Portal keeps the mock user's id in browser storage shared by all its tabs (sign-in once; sign-out in one tab signs out every tab), standing in for the backend session; MFEs never see or store it | Secure, browser-managed session cookie set by the backend; the Host Portal reads the current user from the backend |
+| MFEs        | Receive `user` and `platform` from the Host Portal as props; no login screens or session code; standalone mode (development only) uses mock users without login                                             | Same props; API calls carry the session cookie automatically                                                       |
+| Permissions | `platform.permissions.can()` shows or hides UI only                                                                                                                                                         | Backend validates session and permissions on every request                                                         |
+| Logout      | Clears the mock session and removes all MFEs from the page                                                                                                                                                  | Invalidates the central session for all MFEs                                                                       |
+
+### One public entry point and one session
+
+- **One public entry point:** all browser traffic goes through one public address, where an NGINX reverse proxy serves the portal and application files and routes `/api/<service>/` to the internal backends. Proposal: `docs/reverse-proxy.md`.
+- **One session:** because everything is on one origin, the portal's single session cookie reaches every application's API, so the portal and all applications share one session and one sign-out. Design and rules: `docs/single-session.md`.
 
 ## 6. Options considered
 

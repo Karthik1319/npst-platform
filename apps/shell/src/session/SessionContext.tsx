@@ -3,6 +3,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -22,6 +23,12 @@ const SessionContext = createContext<SessionValue | null>(null);
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<PlatformUser | null>(() =>
     auth.restoreSession(),
+  );
+
+  // One session for every tab: follow sign-in/sign-out done in another tab.
+  useEffect(
+    () => auth.onSessionChange(() => setUser(auth.restoreSession())),
+    [],
   );
 
   const signIn = useCallback(async (userId: string) => {

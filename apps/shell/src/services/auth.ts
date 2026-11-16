@@ -15,10 +15,21 @@ import type { PlatformUser } from '@npst/shared-contracts';
  */
 
 /**
- * Mock only: the user's id in tab storage stands in for the backend session.
- * It never reaches MFEs; the real session cookie is managed by the browser.
+ * Mock only: the signed-in user's id in the browser's localStorage stands in
+ * for the backend session cookie. Like that cookie, it is shared by every tab
+ * of the portal, so the user signs in once for the portal and all its
+ * applications. It never reaches MFEs; the real cookie is managed by the
+ * browser (HttpOnly, invisible to scripts).
  */
 export const SESSION_STORAGE_KEY = 'npst.session.userId';
+
+function sessionStore(): Storage | null {
+  try {
+    return localStorage;
+  } catch {
+    return null; // Storage blocked: the session lasts until the page reloads.
+  }
+}
 
 /** Users shown on the mock login page. */
 export const loginOptions: readonly PlatformUser[] = mockAuth.users;
@@ -26,27 +37,43 @@ export const loginOptions: readonly PlatformUser[] = mockAuth.users;
 export async function signIn(userId: string): Promise<PlatformUser> {
   const user = await mockAuth.signIn(userId);
   try {
-    sessionStorage.setItem(SESSION_STORAGE_KEY, user.id);
+    sessionStore()?.setItem(SESSION_STORAGE_KEY, user.id);
   } catch {
-    // Storage blocked: the session lasts until the page reloads.
+    // Storage full or blocked: the session lasts until the page reloads.
   }
   return user;
 }
 
 export function signOut(): void {
   try {
-    sessionStorage.removeItem(SESSION_STORAGE_KEY);
+    sessionStore()?.removeItem(SESSION_STORAGE_KEY);
   } catch {
     // Nothing stored.
   }
 }
 
-/** Restores the signed-in user after a page reload. */
+/** The signed-in user (after a reload, in a new tab), or `null`. */
 export function restoreSession(): PlatformUser | null {
   try {
-    const userId = sessionStorage.getItem(SESSION_STORAGE_KEY);
+    const userId = sessionStore()?.getItem(SESSION_STORAGE_KEY);
     return userId ? (mockAuth.findUser(userId) ?? null) : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Calls `listener` when the session changes in another tab (sign-out, or
+ * sign-in as someone else), so every open tab follows: one session for the
+ * whole portal. Real system: the backend invalidates the session centrally;
+ * the next API call returns 401 and the portal returns to its login page
+ * (optionally all tabs are told at once, e.g. with a BroadcastChannel).
+ */
+export function onSessionChange(listener: () => void): () => void {
+  const onStorage = (event: StorageEvent) => {
+    // `key` is null when the whole storage was cleared.
+    if (event.key === SESSION_STORAGE_KEY || event.key === null) listener();
+  };
+  window.addEventListener('storage', onStorage);
+  return () => window.removeEventListener('storage', onStorage);
 }
