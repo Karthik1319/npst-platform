@@ -5,8 +5,12 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
 import { App } from '@/App';
+import { loadRuntimeTheme } from '@/services/runtime-theme';
 import { SessionProvider } from '@/session/SessionContext';
 import '@/styles/global.css';
+
+// The brand server's theme, loaded after the bundled one so its values win.
+loadRuntimeTheme();
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

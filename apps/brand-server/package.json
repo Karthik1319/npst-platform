@@ -1,0 +1,13 @@
+{
+  "name": "@npst/brand-server",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "nx": {
+    "name": "brand-server"
+  },
+  "scripts": {
+    "dev": "vite --port 4204 --strictPort",
+    "test": "vitest run"
+  }
+}

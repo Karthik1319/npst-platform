@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => ({
     // `@/…` points at this app's src folder (same mapping as tsconfig `paths`).
     alias: { '@': src('') },
   },
-  // Fixed ports: shell 4200; remotes use 4201, 4202, 4203.
+  // Fixed ports: shell 4200; remotes use 4201, 4202, 4203; brand server 4204.
   server: { port: 4200, strictPort: true },
   preview: { port: 4200, strictPort: true },
   build: { outDir: 'dist', emptyOutDir: true, target: 'esnext' },

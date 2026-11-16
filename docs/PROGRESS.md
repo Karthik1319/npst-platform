@@ -16,8 +16,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 6    | Angular remote                                  | Done   |
 | 7    | Failure handling                                | Done   |
 | 8    | Bundling review                                 | Done   |
-| 9    | Runtime theme                                   | Next   |
-| 10   | Integration guides                              | –      |
+| 9    | Runtime theme                                   | Done   |
+| 10   | Integration guides                              | Next   |
 
 ## Toolchain
 
@@ -622,3 +622,52 @@ The Step 3 and Step 4 entries below still mention the bus as it was then; this n
 - Release/rollback of a remote version (architecture: "immutable versions, controlled pointers") is not covered by the POC: a remote is replaced by redeploying its server.
 
 **Next step:** Step 9 – runtime theme: serve `theme.css` from a separate static location (simulating the brand server); change one colour and all four apps update without a rebuild; with that server down, the fallback applies.
+
+## Step 9 – Runtime theme
+
+**Done:** a simulated **brand server** (`apps/brand-server`, port 4204) serves `theme.css`. The shell loads it at runtime after its bundled theme, so its values win. Changing one colour on the brand server changes the shell and all three MFEs after a page reload, with nothing rebuilt. If the brand server is down or hangs, the portal shows at once with the bundled theme (the fallback). No logo anywhere (unchanged rule).
+
+**Concepts:**
+
+- **Bundled fallback + runtime theme:** every app still bundles `libs/design-tokens/src/theme.css`, so it always has a complete theme. The runtime copy from the brand server is added later in the page, and for the same CSS variable the later definition wins.
+- **Why MFEs follow automatically:** MFEs render inside the portal's page and use only theme variables (`var(--npst-…)`), so they read whatever the page defines. They do not load their own `theme.css` inside the portal (only in their standalone pages).
+- **Non-blocking load:** the runtime stylesheet is added by script, not written into `index.html`, so a slow or unreachable brand server never delays the first render. Trade-off: on a slow connection the bundled colours can show briefly before the runtime theme applies.
+
+**Files:**
+
+| File                                                    | Purpose                                                                                                                                                                                              |
+| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/brand-server/public/theme.css`                    | The published theme (simulated); same variables as the bundled theme, header comment explains its role                                                                                               |
+| `apps/brand-server/package.json`, `vite.config.mjs`     | `dev` serves only the static file on port 4204 with `Cache-Control: no-cache` (uses the workspace's existing Vite; no new dependency)                                                                |
+| `apps/brand-server/theme.test.ts`                       | The published theme defines exactly the bundled theme's variables, and no logo                                                                                                                       |
+| `apps/shell/src/services/runtime-theme.ts` + `.test.ts` | Adds the runtime stylesheet once, after the bundled styles; on error removes it and logs a warning (bundled theme stays). URL from `VITE_BRAND_THEME_URL`, default `http://localhost:4204/theme.css` |
+| `apps/shell/src/main.tsx`, `vite.config.ts`             | Loads the runtime theme at start-up; port list comment                                                                                                                                               |
+
+**Verified in a browser** (production builds, same servers throughout; one primitive changed on the brand server: `--npst-blue-600` `#1d4ed8` → `#c2410c`):
+
+| Situation                                              | Shell (login avatar, launcher)                           | React A button | React B button | Angular button |
+| ------------------------------------------------------ | -------------------------------------------------------- | -------------- | -------------- | -------------- |
+| Published theme = bundled                              | blue `rgb(29, 78, 216)`                                  | blue           | blue           | blue           |
+| Colour changed on the brand server only, page reloaded | **orange `rgb(194, 65, 12)`**                            | **orange**     | **orange**     | **orange**     |
+| Brand server stopped                                   | blue (bundled), warning in the console                   | blue           | blue           | blue           |
+| Brand server hangs (accepts, never answers)            | login page rendered after ~110 ms with the bundled theme | –              | –              | –              |
+
+- Login page gradient, avatars and arrows follow the change too (they use the same tokens).
+- Dev servers: the brand server sends `no-cache`; the runtime stylesheet comes after all of Vite's injected styles and its values win.
+- `pnpm nx run-many -t lint test typecheck build` passes for 7 projects (100 tests + Angular production-build check).
+
+**How to try it:** `pnpm nx run-many -t dev` (now starts all five: shell, three remotes, brand server), open the portal, change a value in `apps/brand-server/public/theme.css` (e.g. `--npst-blue-600`), reload the page. Stop the brand server and reload: the bundled theme applies.
+
+**Decisions:**
+
+- **Load the runtime theme by script, after the bundled one** (not a blocking `<link>` in `index.html`): availability first; a brief flash of bundled colours on slow connections is accepted.
+- **Only the shell loads the runtime theme;** MFEs inherit it inside the portal. MFE standalone pages (development) and the production notice use the bundled theme.
+- **The published theme must define the same variables as the bundled one** (contract test); a missing variable would otherwise silently fall back.
+
+**Open issues:**
+
+- The POC overwrites one file. The real brand server publishes immutable, versioned files and moves a "current version" pointer (architecture, "Publish flow"); then `platform.branding.themeVersion` can report the version (still `local`).
+- Cache policy for the real brand server: `no-cache` (or a short max-age) on the current-version URL, long caching on versioned files.
+- Contrast checks and a lint rule against hard-coded colours (architecture, "Token layers") are not part of the POC.
+
+**Next step:** Step 10 – integration guides: `docs/adding-a-remote.md` and `docs/integrating-a-platform-module.md`.
