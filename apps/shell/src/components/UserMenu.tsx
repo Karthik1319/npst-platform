@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { usePlatform } from '@/platform/PlatformContext';
+import { businessData } from '@/services/business';
 import { useSession } from '@/session/SessionContext';
 import { initials } from '@/ui/format';
 import { Icon } from '@/ui/Icon';
@@ -11,13 +12,31 @@ const MENU_ID = 'npst-user-menu';
 
 /** Signed-in user (name, role, initials) with the account menu and central sign-out. */
 export function UserMenu() {
-  const { user } = usePlatform();
+  const platform = usePlatform();
+  const { user } = platform;
+  // Administrative action (demo only): offered to users of the Admin Console.
+  const canReset = platform.permissions.can('access', 'admin-console');
   const { signOut } = useSession();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const close = useCallback(() => setOpen(false), []);
   useDismiss(ref, open, close);
+
+  function handleReset() {
+    close();
+    if (
+      !window.confirm(
+        'Reset all demo data to its starting state? Changes made during the demo are lost.',
+      )
+    )
+      return;
+    businessData.resetDemoData();
+    navigate('/');
+    platform.notify.toast('Demo data reset to its starting state', {
+      kind: 'info',
+    });
+  }
 
   function handleSignOut() {
     signOut();
@@ -66,6 +85,17 @@ export function UserMenu() {
                 <Icon name="bell" size={18} /> Notifications
               </Link>
             </li>
+            {canReset && (
+              <li>
+                <button
+                  type="button"
+                  className={styles.item}
+                  onClick={handleReset}
+                >
+                  <Icon name="refresh" size={18} /> Reset demo data
+                </button>
+              </li>
+            )}
             <li>
               <button
                 type="button"

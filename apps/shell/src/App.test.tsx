@@ -1,4 +1,12 @@
-import { act, cleanup, render, screen, within } from '@testing-library/react';
+import { salesApi } from '@npst/mock-backend';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
@@ -485,5 +493,103 @@ describe('My Tasks page', () => {
     expect(
       screen.queryByRole('link', { name: /Trident Bank fraud risk RFP/ }),
     ).toBeNull();
+  });
+});
+
+describe('portal search', () => {
+  it('finds records only in apps the user may open', async () => {
+    renderSignedInAt('User 1', '/');
+    const search = await screen.findByRole('searchbox', {
+      name: 'Search the portal',
+    });
+
+    fireEvent.change(search, { target: { value: 'ABC Bank' } });
+    const results = await screen.findByRole('list', { name: 'Search results' });
+    expect(
+      within(results).getByRole('button', {
+        name: /ABC Bank – Digital Banking Platform/,
+      }),
+    ).toBeDefined();
+
+    fireEvent.change(search, { target: { value: 'Priya Sharma' } });
+    // Employees are in People & HR, which Sales users cannot open; projects they manage still match.
+    await vi.waitFor(() =>
+      expect(screen.queryByRole('button', { name: /EMP-1094/ })).toBeNull(),
+    );
+  });
+
+  it('opens a result in its application', async () => {
+    renderSignedInAt('User 2', '/');
+    const search = await screen.findByRole('searchbox', {
+      name: 'Search the portal',
+    });
+    fireEvent.change(search, { target: { value: 'PRJ-221' } });
+    const result = await screen.findByRole('button', {
+      name: /Digital Onboarding Platform/,
+    });
+
+    await act(async () => result.click());
+
+    expect(
+      await screen.findByText(
+        'user=User 2 basePath=/projects platformUser=User 2',
+      ),
+    ).toBeDefined();
+  });
+});
+
+describe('reset demo data (administrative action)', () => {
+  it('is offered only to administrators and restores the sample data', async () => {
+    vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    renderSignedInAt('Admin User', '/notifications');
+    await screen.findByRole('button', { name: 'Notifications, 4 new' });
+    act(() => screen.getByRole('button', { name: 'Mark all as read' }).click());
+    await screen.findByRole('button', { name: 'Notifications, 0 new' });
+
+    act(() => screen.getByRole('button', { name: /^Account menu, / }).click());
+    act(() => screen.getByRole('button', { name: 'Reset demo data' }).click());
+
+    expect(
+      await screen.findByRole('button', { name: 'Notifications, 4 new' }),
+    ).toBeDefined();
+    cleanup();
+
+    renderSignedInAt('User 1', '/');
+    act(() => screen.getByRole('button', { name: /^Account menu, / }).click());
+    expect(
+      screen.queryByRole('button', { name: 'Reset demo data' }),
+    ).toBeNull();
+  });
+});
+
+describe('cross-application workflow (portal side)', () => {
+  it("shows another team's request in the bell and My Tasks as soon as it is sent", async () => {
+    renderSignedInAt('User 2', '/');
+    await screen.findByRole('button', { name: 'Notifications, 3 new' });
+
+    // Sales (another user, in Sales Hub) asks the Solutions team for a proposal.
+    await act(() =>
+      salesApi.requestSolutionProposal(
+        'OP-1043',
+        {
+          title: 'Prepare solution proposal – ABC Bank',
+          due: '2099-01-10',
+          priority: 'High',
+          note: '',
+        },
+        { id: 'someone-in-sales', name: 'Rahul Kulkarni', roles: ['SALES'] },
+      ),
+    );
+
+    expect(
+      await screen.findByRole('button', { name: 'Notifications, 4 new' }),
+    ).toBeDefined();
+    const tasks = screen.getByRole('region', { name: 'My tasks' });
+    expect(
+      await within(tasks).findByRole('link', {
+        name: 'Prepare solution proposal – ABC Bank',
+      }),
+    ).toBeDefined();
   });
 });

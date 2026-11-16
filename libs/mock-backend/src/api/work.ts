@@ -1,6 +1,13 @@
-import { readData, updateData } from '../store';
+import { nextId, readData, updateData } from '../store';
 import type { Actor, AppId, Task, TaskStatus, Team } from '../types';
-import { clone, recordActivity } from './common';
+import { clone, recordActivity, sendNotification } from './common';
+
+/** Team that follows up work requested from each app. */
+const SOURCE_TEAM: Partial<Record<AppId, Team>> = {
+  'sales-hub': 'SALES',
+  projects: 'SOLUTIONS',
+  'people-hr': 'ADMIN',
+};
 
 export interface TaskQuery {
   appId?: AppId;
@@ -42,9 +49,13 @@ export const workApi = {
   },
 
   /**
-   * Moves a task to another status. Completing a task records who did it, adds
-   * it to Recent Activity and to the related opportunity's timeline.
-   * (The real backend checks the caller's permission first.)
+   * Moves a task to another status (the real backend checks the caller's
+   * permission first).
+   * - Starting or completing a task requested from another app adds a line to
+   *   the related opportunity's timeline.
+   * - Completing it records who did it, adds it to Recent Activity and, when
+   *   another team asked for it, sends that team a notification (server to
+   *   server, through the Notification Service).
    */
   async updateStatus(
     id: string,
@@ -54,13 +65,31 @@ export const workApi = {
     return updateData((data) => {
       const task = data.tasks.find((t) => t.id === id);
       if (!task) throw new Error(`Task ${id} not found`);
+      const previous = task.status;
       task.status = status;
+      const now = new Date().toISOString();
+      const opportunity = task.opportunityId
+        ? data.opportunities.find((o) => o.id === task.opportunityId)
+        : undefined;
+      const requested =
+        task.sourceAppId !== undefined && task.sourceAppId !== task.appId;
+      const timeline = (text: string) =>
+        opportunity?.timeline.unshift({
+          id: nextId(data, 'TL', 1),
+          at: now,
+          actor: actor.name,
+          text,
+          ...(task.appId !== 'sales-hub' ? { appId: task.appId } : {}),
+        });
+
       if (status !== 'Done') {
         delete task.completedBy;
         delete task.completedAt;
+        if (requested && status === 'In progress' && previous === 'To do')
+          timeline(`Work started: ${task.title}`);
         return clone(task);
       }
-      const now = new Date().toISOString();
+
       task.completedBy = actor.name;
       task.completedAt = now;
       recordActivity(data, {
@@ -69,16 +98,22 @@ export const workApi = {
         text: `Task “${task.title}” completed`,
         link: taskLink(task),
       });
-      const opportunity = task.opportunityId
-        ? data.opportunities.find((o) => o.id === task.opportunityId)
+      timeline(`Task completed: ${task.title}`);
+      const sourceTeam = task.sourceAppId
+        ? SOURCE_TEAM[task.sourceAppId]
         : undefined;
-      opportunity?.timeline.unshift({
-        id: `${opportunity.id}-t${task.id}`,
-        at: now,
-        actor: actor.name,
-        text: `Task completed: ${task.title}`,
-        ...(task.appId !== 'sales-hub' ? { appId: task.appId } : {}),
-      });
+      if (requested && sourceTeam) {
+        sendNotification(data, {
+          to: { team: sourceTeam },
+          title: `Completed by ${actor.name}: ${task.title}`,
+          description: opportunity
+            ? `The work you requested for ${opportunity.customerName} (${opportunity.id}) is done. Open the opportunity to continue.`
+            : 'The work you requested is done.',
+          kind: 'success',
+          appId: task.sourceAppId,
+          link: opportunity ? `/sales/opportunities/${opportunity.id}` : '/',
+        });
+      }
       return clone(task);
     });
   },

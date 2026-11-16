@@ -482,3 +482,10 @@
 .group + .group {
   margin-top: var(--npst-space-4);
 }
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--npst-space-2);
+  margin-top: var(--npst-space-3);
+}

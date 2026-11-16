@@ -6,10 +6,12 @@ import {
   type Lead,
   type LeadQuery,
   type NewLead,
+  type NewOpportunity,
   type Note,
   type Opportunity,
   type OpportunityQuery,
   type Page,
+  type ProposalRequest,
   type SalesActivity,
   type SalesSummary,
   type Task,
@@ -28,10 +30,12 @@ export type {
   Lead,
   LeadQuery,
   NewLead,
+  NewOpportunity,
   Note,
   Opportunity,
   OpportunityQuery,
   Page,
+  ProposalRequest,
   SalesActivity,
   SalesSummary,
   Task,
@@ -65,6 +69,18 @@ export const salesService = {
 
   createLead: (input: NewLead, user: PlatformUser): Promise<Lead> =>
     salesApi.createLead(input, actorOf(user)),
+  customers: (): Promise<Customer[]> => salesApi.customers(),
+  createOpportunity: (
+    input: NewOpportunity,
+    user: PlatformUser,
+  ): Promise<Opportunity> => salesApi.createOpportunity(input, actorOf(user)),
+  /** Hands proposal work to the Solutions team (their backend creates the task and notifies them). */
+  requestProposal: (
+    opportunityId: string,
+    request: ProposalRequest,
+    user: PlatformUser,
+  ): Promise<Task> =>
+    salesApi.requestSolutionProposal(opportunityId, request, actorOf(user)),
   addNote: (
     opportunityId: string,
     text: string,

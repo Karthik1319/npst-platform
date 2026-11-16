@@ -141,6 +141,15 @@ Rules:
 
 The decision, message types and owners are agreed per use case before any implementation.
 
+**Work across applications, as the POC shows it.** One business process can span several applications without any MFE-to-MFE channel. Example (Sales Hub → Projects & Delivery):
+
+1. A sales user asks for a solution proposal on an opportunity in Sales Hub. Sales Hub calls **its own backend**.
+2. That backend creates the task in the Solutions team's queue (server to server) and asks the **Notification Service** to notify the team.
+3. The Host Portal's bell shows the notification; its link is a **deep link** (`/projects/tasks?task=T-…`) that opens the task in Projects & Delivery.
+4. When the Solutions team completes the task, the delivery backend updates the opportunity's timeline and notifies the Sales team the same way.
+
+The two MFEs never load, import or message each other; the browser only carries the user from one app to the other through portal URLs. In the POC the backends and the Notification Service are simulated by `libs/mock-backend`, which keeps its data in the browser's `localStorage` so the flow can be shown by signing in as different users.
+
 ## 4. Centralised branding
 
 ### What is centralised

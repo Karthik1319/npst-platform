@@ -18,7 +18,7 @@ export function Layout({ apps }: LayoutProps) {
   return (
     <InboxProvider>
       <div className={styles.layout}>
-        <Header />
+        <Header apps={apps} />
         <LeftNav apps={apps} />
         <main className={styles.content}>
           <Outlet />

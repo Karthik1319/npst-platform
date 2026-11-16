@@ -21,8 +21,8 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 11   | Sales Hub (React remote)                        | Done   |
 | 12   | Projects & Delivery (React remote)              | Done   |
 | 13   | People & HR (Angular remote)                    | Done   |
-| 14   | Cross-application workflow and demo polish      | Next   |
-| 15   | Integration guides                              |        |
+| 14   | Cross-application workflow and demo polish      | Done   |
+| 15   | Integration guides                              | Next   |
 
 ## Toolchain
 
@@ -861,3 +861,45 @@ Folder and Nx project names stay the same, so build, Module Federation names and
 **Open issues:** attendance is derived from approved leave only (no check-in data); holidays and half-day leave are not modelled.
 
 **Next step:** Step 14 – cross-application workflow and demo polish.
+
+## Step 14 – Cross-application workflow and demo polish
+
+**Done:** a business process now runs across applications and users, plus portal-wide search, a demo reset and a presentation script.
+
+**Workflow: Sales Hub → Solutions team → Sales Hub**
+
+1. User 1 (Sales) creates an opportunity in Sales Hub (**New opportunity**) → toast; management is notified.
+2. On the opportunity, **Request solution proposal** → the Sales Hub backend puts a task in the Solutions team's queue (Projects & Delivery) and the Notification Service notifies the team; the opportunity's timeline and related tasks show the request.
+3. User 2 (Solutions) sees **"Proposal task assigned: ABC Bank"** in the bell and in My Tasks; the notification opens the task board with the task highlighted and tagged "From Sales Hub".
+4. Moving it to In progress and Done updates the opportunity's timeline; on Done the Sales team is notified (**"Completed by User 2: …"**) and Recent Activity on Portal Home lists every step.
+
+No MFE talks to another in the browser: the hand-over happens in the (simulated) backends and the Notification Service, and the user moves between apps through portal links (see `docs/architecture.md`, "Work across applications"). The leave workflow from Step 13 is the second example.
+
+**Polish:**
+
+- **Portal search** in the header (Ctrl K): applications, opportunities, leads, projects and employees, only from apps the user may open; results open in their app.
+- **Reset demo data** in the account menu, for administrators (asks for confirmation), so the demo can be repeated.
+- **`docs/demo-script.md`:** a 15–20 minute click-by-click script for Manager, CTO and CBO.
+
+**Files:**
+
+| File                                                                                                                                       | Purpose                                                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `libs/mock-backend/src/api/sales.ts`                                                                                                       | Create opportunity; request a solution proposal (task in the Solutions queue + notification + timeline)                                                                                                                   |
+| `libs/mock-backend/src/api/work.ts`                                                                                                        | Starting/completing requested work updates the opportunity timeline; completion notifies the requesting team                                                                                                              |
+| `libs/mock-backend/src/api/search.ts`                                                                                                      | Portal search across the business apps, filtered by the apps the user may open                                                                                                                                            |
+| `apps/demo-react-a/src/pages/NewOpportunityDialog.tsx`, `RequestProposalDialog.tsx`, `OpportunitiesPage.tsx`, `OpportunityDetailsPage.tsx` | New opportunity and proposal request in Sales Hub                                                                                                                                                                         |
+| `apps/shell/src/components/HeaderSearch.*`, `layout/Header.*`, `components/UserMenu.tsx`, `services/business.ts`                           | Header search; reset demo data                                                                                                                                                                                            |
+| `docs/demo-script.md` (new), `docs/architecture.md`                                                                                        | Presentation script; how work crosses applications                                                                                                                                                                        |
+| Tests                                                                                                                                      | Backend: full workflow and search (19 tests); Sales Hub: create opportunity, request proposal (25); shell: search with RBAC, reset only for Admin, a request from another user appears live in the bell and My Tasks (58) |
+
+**Verified in a browser** (production builds on spare ports, headless Chrome, only through the UI): User 1 created OP-1050 and requested the proposal (toast "Proposal task T-3501 sent to the Solutions team"); User 2's bell showed 4 new with the request on top; the notification opened `/projects/tasks?task=T-3501` with the card highlighted; moving it to In progress and Done showed both toasts; User 1's bell showed "Completed by User 2…" and its link opened OP-1050 with the timeline "Opportunity created → Proposal requested → Work started → Task completed"; Admin's Recent activity listed the steps. No console errors.
+
+**How to run the demo:** `pnpm nx run-many -t dev`, open http://localhost:4200, follow `docs/demo-script.md`.
+
+**Open issues:**
+
+- The simulated backends keep data per browser (`localStorage`); two people on two laptops do not see each other's changes. Real backends remove this.
+- The Notification Service push (the bell updating at once) is simulated with a browser event; the real service would use WebSocket or server-sent events, or polling.
+
+**Next step:** Step 15 – integration guides (`docs/adding-a-remote.md`, `docs/integrating-a-platform-module.md`), now based on these applications.

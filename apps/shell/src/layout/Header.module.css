@@ -29,6 +29,6 @@
 .actions {
   display: flex;
   align-items: center;
+  flex: none;
   gap: var(--npst-space-3);
-  margin-left: auto;
 }

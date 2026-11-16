@@ -3,7 +3,9 @@ import {
   hrApi,
   onDataChange,
   projectsApi,
+  resetDemoData,
   salesApi,
+  searchApi,
   taskLink,
   workApi,
   type Activity,
@@ -11,6 +13,7 @@ import {
   type HrSummary,
   type ProjectsSummary,
   type SalesSummary,
+  type SearchResult,
   type Task,
 } from '@npst/mock-backend';
 import type { PlatformUser } from '@npst/shared-contracts';
@@ -21,7 +24,14 @@ import type { PlatformUser } from '@npst/shared-contracts';
  * each application's backend; here it reads the simulated backends.
  * Only this file changes when the real API exists.
  */
-export type { Activity, HrSummary, ProjectsSummary, SalesSummary, Task };
+export type {
+  Activity,
+  HrSummary,
+  ProjectsSummary,
+  SalesSummary,
+  SearchResult,
+  Task,
+};
 
 export const businessData = {
   salesSummary: (): Promise<SalesSummary> => salesApi.summary(),
@@ -37,6 +47,13 @@ export const businessData = {
 
   /** Portal path that opens a task in its app. */
   taskLink: (task: Task): string => taskLink(task),
+
+  /** Portal search across the apps the user may open (the real service checks permissions too). */
+  search: (query: string, appIds: readonly string[]): Promise<SearchResult[]> =>
+    searchApi.search(query, appIds),
+
+  /** Demo only: puts the sample data back to its starting state. */
+  resetDemoData: (): void => resetDemoData(),
 
   /** Calls `listener` when any business data changes (simulated push). */
   subscribe: (listener: () => void): (() => void) => onDataChange(listener),

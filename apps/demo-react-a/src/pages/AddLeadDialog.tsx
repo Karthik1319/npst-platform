@@ -22,7 +22,7 @@ export const INDUSTRIES = [
   'NBFC',
   'Fintech',
 ] as const;
-const PRODUCTS = [
+export const PRODUCT_OPTIONS = [
   'Digital Banking Platform',
   'UPI Switch',
   'Video KYC Onboarding',
@@ -146,7 +146,7 @@ export function AddLeadDialog({
         <label className={controls.field}>
           Interested in
           <select className={controls.select} name="interest">
-            {PRODUCTS.map((product) => (
+            {PRODUCT_OPTIONS.map((product) => (
               <option key={product}>{product}</option>
             ))}
           </select>

@@ -12,6 +12,7 @@ import { Icon } from '@/ui/Icon';
 import { Panel } from '@/ui/Panel';
 import { PRIORITY, STAGE, TASK_STATUS } from '@/ui/status';
 import { assigneeName, canWorkOn } from '@/ui/tasks';
+import { RequestProposalDialog } from './RequestProposalDialog';
 import styles from './pages.module.css';
 
 const STEPS = ['Opportunity', 'Proposal', 'Negotiation', 'Won'] as const;
@@ -21,6 +22,7 @@ export function OpportunityDetailsPage({ id }: { id: string }) {
   const { user, platform } = usePortal();
   const canEdit = platform.permissions.can('edit', 'opportunity');
   const canAudit = platform.permissions.can('view', 'audit');
+  const [requesting, setRequesting] = useState(false);
   const [found, reload] = useLoad(
     useCallback(() => salesService.opportunity(id), [id]),
   );
@@ -81,6 +83,18 @@ export function OpportunityDetailsPage({ id }: { id: string }) {
             <Icon name="building" size={16} /> {customer.industry},{' '}
             {customer.city}
           </div>
+          {canEdit &&
+            ['Opportunity', 'Proposal', 'Negotiation'].includes(deal.stage) && (
+              <div className={styles.heroActions}>
+                <button
+                  type="button"
+                  className={controls.button}
+                  onClick={() => setRequesting(true)}
+                >
+                  <Icon name="send" size={16} /> Request solution proposal
+                </button>
+              </div>
+            )}
         </div>
         <dl className={styles.heroFacts}>
           <div>
@@ -280,6 +294,11 @@ export function OpportunityDetailsPage({ id }: { id: string }) {
           </Panel>
 
           <Panel title="Documents and proposals">
+            {deal.documents.length === 0 && (
+              <p className={controls.empty}>
+                No documents yet. The proposal is added here when it is ready.
+              </p>
+            )}
             <ul className={styles.list}>
               {deal.documents.map((doc) => (
                 <li key={doc.id}>
@@ -326,6 +345,17 @@ export function OpportunityDetailsPage({ id }: { id: string }) {
           )}
         </div>
       </div>
+      {requesting && (
+        <RequestProposalDialog
+          opportunity={deal}
+          onClose={() => setRequesting(false)}
+          onSent={() => {
+            setRequesting(false);
+            reload();
+            reloadTasks();
+          }}
+        />
+      )}
     </>
   );
 }

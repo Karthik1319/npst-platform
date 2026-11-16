@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { usePortal } from '@/portal';
 import { Link, useRouter } from '@/routing/router';
 import { salesService, type OpportunityQuery } from '@/services/sales';
 import { useLoad } from '@/services/useLoad';
@@ -11,6 +12,7 @@ import { Pagination } from '@/ui/Pagination';
 import { Panel } from '@/ui/Panel';
 import { ProgressBar } from '@/ui/ProgressBar';
 import { STAGE } from '@/ui/status';
+import { NewOpportunityDialog } from './NewOpportunityDialog';
 import styles from './pages.module.css';
 
 type Stage = NonNullable<OpportunityQuery['stage']>;
@@ -19,7 +21,10 @@ const PAGE_SIZE = 10;
 
 /** The pipeline as stages, then every opportunity in a table. */
 export function OpportunitiesPage() {
-  const { search: params } = useRouter();
+  const { search: params, navigate } = useRouter();
+  const { platform } = usePortal();
+  const canEdit = platform.permissions.can('edit', 'opportunity');
+  const [creating, setCreating] = useState(false);
   const initialStage = params.get('stage') ?? '';
   const [query, setQuery] = useState<OpportunityQuery>({
     search: '',
@@ -111,7 +116,20 @@ export function OpportunitiesPage() {
         )}
       </Panel>
 
-      <Panel title={query.stage ? `${query.stage} stage` : 'All opportunities'}>
+      <Panel
+        title={query.stage ? `${query.stage} stage` : 'All opportunities'}
+        actions={
+          canEdit && (
+            <button
+              type="button"
+              className={controls.button}
+              onClick={() => setCreating(true)}
+            >
+              <Icon name="plus" size={18} /> New opportunity
+            </button>
+          )
+        }
+      >
         <div className={controls.toolbar} role="search">
           <label className={controls.searchBox}>
             <Icon name="search" size={16} />
@@ -279,6 +297,12 @@ export function OpportunitiesPage() {
           </div>
         )}
       </Panel>
+      {creating && (
+        <NewOpportunityDialog
+          onClose={() => setCreating(false)}
+          onCreated={(id) => navigate(`/opportunities/${id}`)}
+        />
+      )}
     </>
   );
 }

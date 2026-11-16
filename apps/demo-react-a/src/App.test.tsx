@@ -259,3 +259,71 @@ describe('Tasks and follow-ups', () => {
     expect(toasts).toEqual([expect.stringMatching(/^Follow-up done: /)]);
   });
 });
+
+describe('Cross-application workflow (Sales Hub side)', () => {
+  it('creates an opportunity and opens it', async () => {
+    const { toasts } = renderAt('/opportunities');
+    act(() => screen.getByRole('button', { name: 'New opportunity' }).click());
+    const dialog = await screen.findByRole('dialog', {
+      name: 'New opportunity',
+    });
+    await vi.waitFor(() =>
+      expect(
+        within(dialog).getByRole('option', { name: /^ABC Bank/ }),
+      ).toBeDefined(),
+    );
+
+    fireEvent.change(
+      within(dialog).getByRole('textbox', { name: 'Opportunity name' }),
+      { target: { value: 'UPI Merchant Payments' } },
+    );
+    await act(async () =>
+      within(dialog)
+        .getByRole('button', { name: 'Create opportunity' })
+        .click(),
+    );
+
+    expect(
+      await screen.findByRole('heading', {
+        name: 'ABC Bank – UPI Merchant Payments',
+      }),
+    ).toBeDefined();
+    expect(window.location.pathname).toMatch(
+      /^\/sales\/opportunities\/OP-\d+$/,
+    );
+    expect(toasts).toEqual([
+      expect.stringMatching(/^Opportunity OP-\d+ created for ABC Bank$/),
+    ]);
+  });
+
+  it('hands proposal work to the Solutions team', async () => {
+    const { toasts } = renderAt('/opportunities/OP-1043');
+    const request = await screen.findByRole('button', {
+      name: 'Request solution proposal',
+    });
+    act(() => request.click());
+    const dialog = await screen.findByRole('dialog', {
+      name: 'Request solution proposal',
+    });
+
+    await act(async () =>
+      within(dialog)
+        .getByRole('button', { name: 'Send to Solutions team' })
+        .click(),
+    );
+
+    expect(toasts).toEqual([
+      expect.stringMatching(/^Proposal task T-\d+ sent to the Solutions team$/),
+    ]);
+    const related = screen.getByRole('region', { name: 'Related tasks' });
+    expect(
+      await within(related).findByText('Prepare solution proposal – ABC Bank'),
+    ).toBeDefined();
+    const timeline = screen.getByRole('region', { name: 'Activity timeline' });
+    expect(
+      within(timeline).getByText(
+        /^Solution proposal requested from the Solutions team/,
+      ),
+    ).toBeDefined();
+  });
+});

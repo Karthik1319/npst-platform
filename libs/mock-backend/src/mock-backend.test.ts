@@ -7,6 +7,7 @@ import {
   projectsApi,
   resetDemoData,
   salesApi,
+  searchApi,
   workApi,
 } from './index';
 
@@ -277,5 +278,109 @@ describe('leave workflow (People & HR)', () => {
     await expect(
       hrApi.decideLeave(pending.id, 'Approved', manager),
     ).rejects.toThrow('already rejected');
+  });
+});
+
+describe('cross-application workflow (Sales Hub → Solutions → Sales Hub)', () => {
+  const salesUser = {
+    id: 'portal-sales',
+    name: 'Sales Tester',
+    roles: ['SALES'],
+  };
+  const solutionsUser = {
+    id: 'portal-solutions',
+    name: 'Solutions Tester',
+    roles: ['SOLUTIONS'],
+  };
+
+  it('creates an opportunity, hands proposal work to Solutions and reports back when it is done', async () => {
+    const opportunity = await salesApi.createOpportunity(
+      {
+        customerId: 'C-101',
+        name: 'UPI Merchant Payments',
+        product: 'Merchant Acquiring (UPI + Soundbox)',
+        value: 25_000_000,
+        expectedClose: '2027-02-15',
+        owner: 'Rahul Kulkarni',
+      },
+      salesUser,
+    );
+    expect(opportunity).toMatchObject({
+      customerName: 'ABC Bank',
+      stage: 'Opportunity',
+    });
+
+    const task = await salesApi.requestSolutionProposal(
+      opportunity.id,
+      {
+        title: 'Prepare solution proposal – ABC Bank',
+        due: '2027-01-10',
+        priority: 'High',
+        note: '',
+      },
+      salesUser,
+    );
+
+    // Solutions: the task is in their queue and their bell.
+    expect(
+      (await workApi.forUser(solutionsUser)).some((t) => t.id === task.id),
+    ).toBe(true);
+    const solutionsInbox = await notificationService.inbox(solutionsUser);
+    expect(solutionsInbox[0]).toMatchObject({
+      title: 'Proposal task assigned: ABC Bank',
+      link: `/projects/tasks?task=${task.id}`,
+    });
+    // Sales does not get Solutions' notification.
+    expect(
+      (await notificationService.inbox(salesUser)).some(
+        (n) => n.id === solutionsInbox[0]?.id,
+      ),
+    ).toBe(false);
+
+    await workApi.updateStatus(task.id, 'In progress', solutionsUser);
+    await workApi.updateStatus(task.id, 'Done', solutionsUser);
+
+    // Sales: notified, and the opportunity shows the work.
+    const salesInbox = await notificationService.inbox(salesUser);
+    expect(salesInbox[0]).toMatchObject({
+      title:
+        'Completed by Solutions Tester: Prepare solution proposal – ABC Bank',
+      link: `/sales/opportunities/${opportunity.id}`,
+    });
+    const found = await salesApi.getOpportunity(opportunity.id);
+    expect(found?.opportunity.timeline.map((t) => t.text).slice(0, 3)).toEqual([
+      'Task completed: Prepare solution proposal – ABC Bank',
+      'Work started: Prepare solution proposal – ABC Bank',
+      `Solution proposal requested from the Solutions team (${task.id})`,
+    ]);
+    const [latest] = await activityService.recent({
+      appIds: ['projects'],
+      limit: 1,
+    });
+    expect(latest?.text).toBe(
+      'Task “Prepare solution proposal – ABC Bank” completed',
+    );
+  });
+});
+
+describe('searchApi', () => {
+  it('finds records only in the apps the user may open', async () => {
+    const all = await searchApi.search('abc bank', [
+      'sales-hub',
+      'projects',
+      'people-hr',
+    ]);
+    expect(
+      all.some(
+        (r) =>
+          r.kind === 'Opportunity' && r.link === '/sales/opportunities/OP-1043',
+      ),
+    ).toBe(true);
+    expect(await searchApi.search('abc bank', ['people-hr'])).toEqual([]);
+    const people = await searchApi.search('priya sharma', ['people-hr']);
+    expect(people[0]).toMatchObject({
+      kind: 'Employee',
+      title: 'Priya Sharma',
+    });
   });
 });

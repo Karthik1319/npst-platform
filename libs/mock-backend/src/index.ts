@@ -24,12 +24,16 @@ export type {
   ResourceLoad,
   UpcomingMilestone,
 } from './api/projects';
+export { searchApi } from './api/search';
+export type { SearchResult } from './api/search';
 export { OPEN_STAGES, salesApi } from './api/sales';
 export type {
   FunnelStage,
   LeadQuery,
   NewLead,
+  NewOpportunity,
   OpportunityQuery,
+  ProposalRequest,
   SalesActivity,
   SalesSummary,
 } from './api/sales';
