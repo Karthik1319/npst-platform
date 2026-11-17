@@ -26,6 +26,7 @@ import {
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { AppAvatar } from '@/components/common/AppAvatar';
+import { AppPortalLink } from '@/components/common/AppPortalLink';
 import { ConfirmDialog } from '@/components/common/ConfirmDialog';
 import { EmptyState } from '@/components/common/EmptyState';
 import { ColorPicker } from '@/components/branding/ColorPicker';
@@ -330,17 +331,17 @@ export default function ApplicationManagement() {
                 </div>
                 <div className={styles.div9}>
                   <span>Updated {timeAgo(app.lastUpdated)}</span>
-                  <a
-                    href={app.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  {/* Opens the application inside the portal (the URL is where it is deployed). */}
+                  <AppPortalLink
+                    appId={app.id}
+                    appName={app.name}
                     className={styles.a}
                   >
                     {app.url.replace(/^https?:\/\//, '')}{' '}
                     <ExternalLink
                       className={`${styles.externalLink} npst-sized`}
                     />
-                  </a>
+                  </AppPortalLink>
                 </div>
               </CardContent>
             </Card>
@@ -382,14 +383,13 @@ export default function ApplicationManagement() {
                       </div>
                     </TableCell>
                     <TableCell className={styles.tableHead}>
-                      <a
-                        href={app.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <AppPortalLink
+                        appId={app.id}
+                        appName={app.name}
                         className={styles.a2}
                       >
                         {app.url.replace(/^https?:\/\//, '')}
-                      </a>
+                      </AppPortalLink>
                     </TableCell>
                     <TableCell>
                       <StatusBadge
@@ -621,14 +621,13 @@ export default function ApplicationManagement() {
                   <Detail
                     label="URL"
                     value={
-                      <a
-                        href={viewing.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <AppPortalLink
+                        appId={viewing.id}
+                        appName={viewing.name}
                         className={styles.a2}
                       >
                         {viewing.url}
-                      </a>
+                      </AppPortalLink>
                     }
                   />
                   <Detail

@@ -34,7 +34,7 @@ export function seedApps(): NpstApplication[] {
       status: 'active',
       brandingStatus: 'published',
       notificationStatus: 'integrated',
-      employees: 3200,
+      employees: 500,
       lastUpdated: daysAgo(1),
     },
     {

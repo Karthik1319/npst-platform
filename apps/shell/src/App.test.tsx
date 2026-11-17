@@ -627,3 +627,14 @@ describe('published themes (Step 23)', () => {
     ).toBe('app-dealpulse');
   });
 });
+
+describe('application registry links', () => {
+  it('opens a hosted application inside the portal from its Dashboard card', async () => {
+    renderSignedInAt('superAdmin', '/');
+    await dashboard();
+    const link = await screen.findByTitle('Open Keka HR in the portal');
+    expect(link.getAttribute('href')).toBe('/keka');
+    expect(link.textContent).toContain('keka.npst.com');
+    expect(link.getAttribute('target')).toBeNull();
+  });
+});
