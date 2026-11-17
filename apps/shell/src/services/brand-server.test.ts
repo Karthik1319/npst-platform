@@ -1,10 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { subscribeToasts } from '@/lib/toast';
-import {
-  publishTheme,
-  PORTAL_APP_ID,
-  resetPublishedThemes,
-} from '@/services/brand-server';
+import { publishTheme, resetPublishedThemes } from '@/services/brand-server';
 import { brandingService } from '@/services/brandingService';
 import { BRAND_SERVER_URL, loadPublishedTheme } from '@/services/runtime-theme';
 import { NPST_DEFAULT_STYLE } from '@/utils/branding';
@@ -27,17 +23,17 @@ describe('Branding Publish → brand server (Step 23)', () => {
       .mockResolvedValue(new Response('/* css */', { status: 200 }));
     vi.stubGlobal('fetch', fetch);
 
-    await publishTheme(PORTAL_APP_ID, NPST_DEFAULT_STYLE, 4);
+    await publishTheme('app-keka', NPST_DEFAULT_STYLE, 4);
 
     const [url, init] = fetch.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe(`${BRAND_SERVER_URL}themes/app-portal`);
+    expect(url).toBe(`${BRAND_SERVER_URL}themes/app-keka`);
     expect(init.method).toBe('PUT');
     expect(JSON.parse(String(init.body))).toMatchObject({
       branding: { primary: '#1E40AF' },
       version: 4,
     });
     const [link] = publishedLinks();
-    expect(link?.href).toMatch(/\/themes\/app-portal\.css\?v=\d+$/);
+    expect(link?.href).toMatch(/\/themes\/app-keka\.css\?v=\d+$/);
   });
 
   it("publishing in the Branding module publishes the theme (the editor's Publish)", () => {
@@ -72,7 +68,7 @@ describe('Branding Publish → brand server (Step 23)', () => {
     const toasts: string[] = [];
     const stop = subscribeToasts((toast) => toasts.push(toast.message));
 
-    brandingService.publish('app-portal', NPST_DEFAULT_STYLE, {});
+    brandingService.publish('app-keka', NPST_DEFAULT_STYLE, {});
     await vi.waitFor(() =>
       expect(toasts[0]).toContain('Brand server not reachable'),
     );
@@ -92,7 +88,7 @@ describe('Branding Publish → brand server (Step 23)', () => {
       .fn()
       .mockResolvedValue(new Response(null, { status: 204 }));
     vi.stubGlobal('fetch', fetch);
-    loadPublishedTheme(PORTAL_APP_ID);
+    loadPublishedTheme('app-keka');
 
     await resetPublishedThemes();
 

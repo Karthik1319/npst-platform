@@ -11,19 +11,16 @@ import { App } from '@/App';
 import { Toaster } from '@/components/Toaster';
 import { AuthProvider } from '@/context/AuthContext';
 import { queryClient } from '@/lib/queryClient';
-import { PORTAL_APP_ID } from '@/services/brand-server';
 import {
-  loadPublishedTheme,
   loadRuntimeTheme,
   reloadPublishedThemes,
 } from '@/services/runtime-theme';
 import { SessionProvider } from '@/session/SessionContext';
 
-// The brand server's theme, loaded after the bundled one so its values win,
-// then the portal branding published from the Branding module (Step 23).
+// The brand server's theme, loaded after the bundled one so its values win.
 loadRuntimeTheme();
-loadPublishedTheme(PORTAL_APP_ID);
-// A publish in another tab changes the branding data: reload the live themes.
+// A publish in another tab changes the branding data: reload the applications'
+// published themes (Step 23).
 window.addEventListener('storage', (event) => {
   if (event.key === 'npst_branding_configs') reloadPublishedThemes();
 });

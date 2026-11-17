@@ -29,20 +29,20 @@ It has mock data in the browser's `localStorage`, no tests and no micro-frontend
 
 ## 2. Decisions
 
-| #   | Decision                                                                                                                                                                                                                                                        |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | His Admin Portal becomes the **host (shell)**. His modules stay **pages inside the host**, not MFEs: they are the portal's own administration screens                                                                                                           |
-| 2   | The **MFEs are the business applications**, under the names and ids of his application registry (table in section 3)                                                                                                                                            |
-| 3   | Same design, but following the NPST standards: **no UI library, CSS variables only, no inline styles**. Tailwind, shadcn/Base UI, lucide, sonner and react-day-picker are replaced by in-house code with the same look                                          |
-| 4   | Libraries: complete list with versions, purposes and compatibility (section 6), approved before installation                                                                                                                                                    |
-| 5   | His mock login and roles (Super Admin, Admin, Application Admin, Employee) replace the PoC's mock users. **Several seeded users** can sign in with **one demo password** (at least 4–5, covering the roles). His login form uses the central, cross-tab session |
-| 6   | `shared-contracts` kept. `platform-mocks` adapted to his users, roles and application registry. `mock-backend` kept where the stand-in apps need it                                                                                                             |
-| 7   | His Branding module stays. **Publish** is connected to the brand server and the runtime theme                                                                                                                                                                   |
-| 8   | **No logo:** his "N" mark and other company marks are not used                                                                                                                                                                                                  |
-| 9   | Copying his public repository was approved by him and the company. **Nothing is pushed without explicit approval**                                                                                                                                              |
-| 10  | ESLint for the whole workspace (his oxlint setup is not used), with rules adjusted only where needed                                                                                                                                                            |
-| 11  | Option **A**: two existing demo apps become stand-ins for business apps (Keka HR in Angular, Deal Pulse in React), so Module Federation and Angular stay demonstrated                                                                                           |
-| 12  | "NPST Portal" is added to his mock application registry, so its published branding drives the portal theme                                                                                                                                                      |
+| #   | Decision                                                                                                                                                                                                                                                              |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | His Admin Portal becomes the **host (shell)**. His modules stay **pages inside the host**, not MFEs: they are the portal's own administration screens                                                                                                                 |
+| 2   | The **MFEs are the business applications**, under the names and ids of his application registry (table in section 3)                                                                                                                                                  |
+| 3   | Same design, but following the NPST standards: **no UI library, CSS variables only, no inline styles**. Tailwind, shadcn/Base UI, lucide, sonner and react-day-picker are replaced by in-house code with the same look                                                |
+| 4   | Libraries: complete list with versions, purposes and compatibility (section 6), approved before installation                                                                                                                                                          |
+| 5   | His mock login and roles (Super Admin, Admin, Application Admin, Employee) replace the PoC's mock users. **Several seeded users** can sign in with **one demo password** (at least 4–5, covering the roles). His login form uses the central, cross-tab session       |
+| 6   | `shared-contracts` kept. `platform-mocks` adapted to his users, roles and application registry. `mock-backend` kept where the stand-in apps need it                                                                                                                   |
+| 7   | His Branding module stays. **Publish** is connected to the brand server and the runtime theme                                                                                                                                                                         |
+| 8   | **No logo:** his "N" mark and other company marks are not used                                                                                                                                                                                                        |
+| 9   | Copying his public repository was approved by him and the company. **Nothing is pushed without explicit approval**                                                                                                                                                    |
+| 10  | ESLint for the whole workspace (his oxlint setup is not used), with rules adjusted only where needed                                                                                                                                                                  |
+| 11  | Option **A**: two existing demo apps become stand-ins for business apps (Keka HR in Angular, Deal Pulse in React), so Module Federation and Angular stay demonstrated                                                                                                 |
+| 12  | ~~"NPST Portal" is added to his mock application registry, so its published branding drives the portal theme~~ Changed after Step 23: no separate "NPST Portal" entry; UI Branding themes the applications, the portal's look stays in the brand server's `theme.css` |
 
 Unchanged rules:
 
@@ -104,9 +104,9 @@ How administration reaches the employee applications (always through the platfor
 ## 5. Branding Publish → runtime theme
 
 1. The brand server gets a small **publish** endpoint (Vite middleware; no new dependency) that stores `themes/<appId>.css`.
-2. Publishing **NPST Portal** branding restyles the whole portal at runtime.
-3. Publishing **Keka HR** or **Deal Pulse** branding restyles only that application's area when it is open (theme scoped to the app's container).
-4. Logo upload in his editor is not applied (no-logo rule).
+2. Publishing **Keka HR** or **Deal Pulse** branding restyles only that application's area when it is open (theme scoped to the app's container).
+3. Logo upload in his editor is not applied (no-logo rule).
+4. The portal's own look is not edited in UI Branding (decision 12, changed after Step 23); it comes from the brand server's `theme.css` (Step 9).
 
 ## 6. Libraries
 

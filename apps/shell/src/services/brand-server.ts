@@ -8,15 +8,13 @@ import type { BrandingStyle } from '@/types';
 
 /**
  * Branding module API (simulated brand server, Step 23). Used only by the
- * portal's admin area: publishing a branding stores a generated theme on the
- * brand server, which every user's portal then loads at runtime.
+ * portal's admin area: publishing an application's branding stores a
+ * generated theme on the brand server; every user's portal then loads it at
+ * runtime inside that application's area.
  *
  * Real system: an administrator-only, authenticated API of the branding
  * module; it records who published what (audit) before the theme goes live.
  */
-
-/** The registry id of the portal itself: its branding restyles the whole portal. */
-export const PORTAL_APP_ID = 'app-portal';
 
 /** Sends the published branding to the brand server and applies it at once. */
 export async function publishTheme(

@@ -626,9 +626,4 @@ describe('published themes (Step 23)', () => {
       remote.closest('[data-app-theme]')?.getAttribute('data-app-theme'),
     ).toBe('app-dealpulse');
   });
-
-  it('lists NPST Portal in the branding registry, so its branding drives the portal theme', async () => {
-    renderSignedInAt('superAdmin', '/branding');
-    expect(await screen.findByText('NPST Portal')).toBeDefined();
-  });
 });

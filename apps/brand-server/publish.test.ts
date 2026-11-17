@@ -4,11 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { createThemeEndpoint, listPublished } from './theme-endpoint.mjs';
-import {
-  PORTAL_APP_ID,
-  themeCss,
-  validateBranding,
-} from './theme-generator.mjs';
+import { themeCss, validateBranding } from './theme-generator.mjs';
 
 const branding = {
   primary: '#7c3aed',
@@ -26,26 +22,19 @@ const branding = {
 };
 
 describe('theme generator', () => {
-  it('restyles the whole portal for NPST Portal, light mode colours only', () => {
-    const css = themeCss(PORTAL_APP_ID, branding, { version: 3 });
-    expect(css).toContain('(v3)');
-    expect(css).toMatch(
-      /:root \{\n {2}--radius: 14px;\n {2}--font-heading: 'Manrope Variable'/,
-    );
-    expect(css).toContain(':root:not(.dark):not(.high-contrast) {');
-    expect(css).toContain('--primary: #7C3AED;');
-    expect(css).toContain('--sidebar: #2E1065;');
-    // Body text keeps the portal font.
-    expect(css).not.toContain('--font-sans');
-  });
-
   it("scopes an application's theme to its area in the portal", () => {
-    const css = themeCss('app-keka', branding);
+    const css = themeCss('app-keka', branding, { version: 3 });
+    expect(css).toContain('(v3)');
     expect(css).toContain('[data-app-theme="app-keka"] {');
     expect(css).toContain(
       ':root:not(.dark):not(.high-contrast) [data-app-theme="app-keka"] {',
     );
     expect(css).not.toMatch(/^:root \{/m);
+    expect(css).toContain('--primary: #7C3AED;');
+    // Light mode colours only: dark and high contrast keep the portal's values.
+    expect(css).toMatch(
+      /^:root:not\(\.dark\):not\(\.high-contrast\) \[data-app-theme/m,
+    );
     // The NPST tokens the applications use are declared again inside the area.
     expect(css).toContain('--npst-color-action-primary: var(--primary);');
   });
@@ -106,21 +95,21 @@ describe('publish endpoint', () => {
     const handle = createThemeEndpoint(dir);
 
     expect(
-      (await call(handle, 'GET', '/themes/app-portal.css')).statusCode,
+      (await call(handle, 'GET', '/themes/app-dealpulse.css')).statusCode,
     ).toBe(404);
 
-    const published = await call(handle, 'PUT', '/themes/app-portal', {
+    const published = await call(handle, 'PUT', '/themes/app-dealpulse', {
       branding,
       version: 2,
     });
     expect(published.statusCode).toBe(200);
     expect(published.headers['access-control-allow-origin']).toBe('*');
 
-    const served = await call(handle, 'GET', '/themes/app-portal.css');
+    const served = await call(handle, 'GET', '/themes/app-dealpulse.css');
     expect(served.statusCode).toBe(200);
     expect(served.headers['content-type']).toContain('text/css');
     expect(served.body).toContain('--primary: #7C3AED;');
-    expect(await listPublished(dir)).toEqual(['app-portal']);
+    expect(await listPublished(dir)).toEqual(['app-dealpulse']);
 
     expect((await call(handle, 'DELETE', '/themes')).statusCode).toBe(204);
     expect(await listPublished(dir)).toEqual([]);

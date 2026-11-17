@@ -38,8 +38,7 @@ const publishedLinkId = (appId: string) => `npst-published-theme-${appId}`;
 
 /**
  * Loads the theme published from the Branding module for one application
- * (Step 23): `app-portal` restyles the whole portal; any other application's
- * theme only applies inside its area (`data-app-theme`). Nothing published
+ * (Step 23). It only applies inside the application's area (`data-app-theme`). Nothing published
  * yet (404) or brand server down: the link is removed and nothing changes.
  * Added after the main runtime theme, so its values win.
  */

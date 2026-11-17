@@ -1332,3 +1332,23 @@ pnpm nx run-many -t dev -p shell brand-server demo-react-a demo-angular --parall
 **Open issues:** none for this step. The published themes are demo data stored by the simulated brand server; the real branding module stores them centrally.
 
 **Next step:** Step 24 – clean-up and documents; removals only with approval (Projects & Delivery, old shell screens, folder names, unused `mock-backend` parts).
+
+### Step 23 follow-up: no separate "NPST Portal" entry
+
+**Change (your decision):** UI Branding already lives in the portal's sidebar, so the extra "NPST Portal" entry in the application registry was removed.
+
+- **Before:** it appeared as a fifth application on the Dashboard and the Branding page, and its branding restyled the whole portal.
+- **Now:**
+  - UI Branding themes the **applications** only (each inside its own area).
+  - The portal's own look comes from the brand server's `theme.css`, as in Step 9.
+  - The Dashboard and Branding pages match the original again.
+
+**Removed:** the registry entry (`data/seed.ts`), the portal-wide published theme (`main.tsx`, `services/brand-server.ts`, the brand server's generator) and their tests. Plan decision 12 and §5 are updated in `docs/admin-portal-integration.md`.
+
+**Verified:**
+
+- **Checks:** lint, test, typecheck and build for all 8 projects.
+- **Screenshots:** Dashboard 0.44% / 0.45% and Branding 0.32% / 0.32% (light / dark), back to the Step 19–21 values.
+- **Publish:** publishing Deal Pulse's branding still applies only inside Deal Pulse; the portal's primary colour is unchanged.
+
+**Try it:** Branding → Deal Pulse (or Keka HR) → Configure Branding → change Primary color → Publish Theme → open the application.
