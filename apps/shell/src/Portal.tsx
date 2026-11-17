@@ -25,6 +25,7 @@ import { usePlatform } from '@/platform/PlatformContext';
 import { RequireAppAccess } from '@/platform/RequireAppAccess';
 import { RemoteAppPage } from '@/remotes/RemoteAppPage';
 import { remotes } from '@/remotes/registry';
+import { loadPublishedTheme } from '@/services/runtime-theme';
 import { useNotifyMfeRouters } from '@/remotes/useNotifyMfeRouters';
 
 /**
@@ -225,10 +226,16 @@ function Guard({
 /** A loaded remote if one is registered for the app, otherwise a placeholder. */
 function AppView({ app }: { app: PortalApp }) {
   const remote = remotes[app.id];
-  return remote ? (
-    // Keyed by app: switching apps never reuses another app's loading state.
-    <RemoteAppPage key={app.id} app={app} remote={remote} />
-  ) : (
-    <AppPlaceholder app={app} />
+  // The application's published branding applies only inside its area.
+  useEffect(() => loadPublishedTheme(app.id), [app.id]);
+  return (
+    <div data-app-theme={app.id}>
+      {remote ? (
+        // Keyed by app: switching apps never reuses another app's loading state.
+        <RemoteAppPage key={app.id} app={app} remote={remote} />
+      ) : (
+        <AppPlaceholder app={app} />
+      )}
+    </div>
   );
 }

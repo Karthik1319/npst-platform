@@ -614,3 +614,21 @@ describe('Employee Management drives sign-in and access (mock RBAC and Provision
     );
   });
 });
+
+describe('published themes (Step 23)', () => {
+  it('renders an application inside its own theme area, so its published branding stays inside it', async () => {
+    renderSignedInAt('admin', '/deal-pulse');
+    const remote = await screen.findByRole('heading', {
+      level: 1,
+      name: 'Remote stub',
+    });
+    expect(
+      remote.closest('[data-app-theme]')?.getAttribute('data-app-theme'),
+    ).toBe('app-dealpulse');
+  });
+
+  it('lists NPST Portal in the branding registry, so its branding drives the portal theme', async () => {
+    renderSignedInAt('superAdmin', '/branding');
+    expect(await screen.findByText('NPST Portal')).toBeDefined();
+  });
+});

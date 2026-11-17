@@ -1,0 +1,157 @@
+/*
+ * Builds a published theme (CSS) from branding values (simulated branding
+ * module, Step 23). The server generates the CSS itself from validated values;
+ * it never stores CSS sent by a browser.
+ *
+ * - `app-portal` (NPST Portal): restyles the whole portal (`:root`).
+ * - any other application id: restyles only that application's area in the
+ *   portal (`[data-app-theme="<appId>"]`, the container the portal renders
+ *   the application in).
+ *
+ * Colours apply to the light mode only; dark and high-contrast modes keep the
+ * portal's own values. Logos are never part of a theme (no-logo rule).
+ */
+
+export const PORTAL_APP_ID = 'app-portal';
+
+/** Font names offered by the Branding editor → installed font families. */
+const FONTS = {
+  'Plus Jakarta Sans':
+    "'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', sans-serif",
+  Inter: "'Inter Variable', 'Inter', sans-serif",
+  Poppins: "'Poppins', sans-serif",
+  'IBM Plex Sans': "'IBM Plex Sans', sans-serif",
+  'DM Sans': "'DM Sans Variable', 'DM Sans', sans-serif",
+  Manrope: "'Manrope Variable', 'Manrope', sans-serif",
+  'Space Grotesk': "'Space Grotesk Variable', 'Space Grotesk', sans-serif",
+};
+
+const COLOR_FIELDS = [
+  'primary',
+  'accent',
+  'bg',
+  'sidebarBg',
+  'cardBg',
+  'text',
+  'borderColor',
+];
+const HEX = /^#[0-9a-fA-F]{6}$/;
+const APP_ID = /^[a-z0-9][a-z0-9-]{0,63}$/;
+
+/** Throws when the id cannot name a theme file. */
+export function assertAppId(appId) {
+  if (typeof appId !== 'string' || !APP_ID.test(appId))
+    throw new Error(`Invalid application id: ${String(appId)}`);
+}
+
+/** Checks the branding values; returns only the fields a theme uses. Throws on invalid input. */
+export function validateBranding(input) {
+  if (typeof input !== 'object' || input === null)
+    throw new Error('Branding values must be an object');
+  const out = {};
+  for (const field of COLOR_FIELDS) {
+    const value = input[field];
+    if (typeof value !== 'string' || !HEX.test(value))
+      throw new Error(`${field} must be a colour like #1E40AF`);
+    out[field] = value.toUpperCase();
+  }
+  if (!Object.hasOwn(FONTS, input.fontFamily))
+    throw new Error('fontFamily is not an offered font');
+  out.fontFamily = input.fontFamily;
+  const radius = Number(input.radius);
+  if (!Number.isFinite(radius) || radius < 0 || radius > 32)
+    throw new Error('radius must be between 0 and 32');
+  out.radius = Math.round(radius);
+  return out;
+}
+
+/** The Admin Portal tokens a published branding sets (same for the portal and an app). */
+function colourTokens(b) {
+  return [
+    ['--primary', b.primary],
+    ['--ring', b.primary],
+    ['--sidebar-primary', b.primary],
+    ['--accent-foreground', b.primary],
+    ['--sidebar-accent-foreground', b.accent],
+    ['--sidebar-ring', b.accent],
+    ['--background', b.bg],
+    ['--card', b.cardBg],
+    ['--popover', b.cardBg],
+    ['--foreground', b.text],
+    ['--card-foreground', b.text],
+    ['--popover-foreground', b.text],
+    ['--border', b.borderColor],
+    ['--sidebar', b.sidebarBg],
+  ];
+}
+
+/*
+ * Inside an application's area the NPST tokens (theme.css section 5) must be
+ * declared again: custom properties are resolved where they are declared, so
+ * the copies inherited from :root would keep the portal's values.
+ */
+const NPST_ALIASES = [
+  ['--npst-font-family', 'var(--font-sans)'],
+  ['--npst-color-action-primary', 'var(--primary)'],
+  [
+    '--npst-color-action-primary-hover',
+    'color-mix(in oklab, var(--primary) 80%, transparent)',
+  ],
+  ['--npst-color-text-default', 'var(--foreground)'],
+  ['--npst-color-text-strong', 'var(--foreground)'],
+  ['--npst-color-surface-page', 'var(--background)'],
+  ['--npst-color-surface-card', 'var(--card)'],
+  ['--npst-color-border-subtle', 'var(--border)'],
+  ['--npst-radius', 'var(--radius)'],
+  ['--npst-radius-lg', 'calc(var(--radius) * 1.4)'],
+  ['--npst-card-radius', 'calc(var(--radius) * 1.4)'],
+  [
+    '--npst-shadow-card',
+    '0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)',
+  ],
+  ['--npst-progress-fill', 'var(--primary)'],
+  ['--npst-button-primary-bg', 'var(--primary)'],
+  [
+    '--npst-button-primary-bg-hover',
+    'color-mix(in oklab, var(--primary) 80%, transparent)',
+  ],
+  ['--npst-button-secondary-bg', 'var(--background)'],
+  ['--npst-button-secondary-border', 'var(--border)'],
+  ['--npst-button-secondary-text', 'var(--foreground)'],
+];
+
+const block = (selector, declarations) =>
+  `${selector} {\n${declarations.map(([name, value]) => `  ${name}: ${value};`).join('\n')}\n}\n`;
+
+/** CSS of a published theme. `version` and `publishedAt` are written as a comment. */
+export function themeCss(appId, input, { version, publishedAt } = {}) {
+  assertAppId(appId);
+  const b = validateBranding(input);
+  const font = FONTS[b.fontFamily];
+  const header = `/* Published theme for ${appId}${version ? ` (v${version})` : ''}${publishedAt ? `, ${publishedAt}` : ''}. Generated by the brand server. */\n`;
+  if (appId === PORTAL_APP_ID) {
+    // The portal: headings use the chosen font; body text stays the portal font.
+    return (
+      header +
+      block(':root', [
+        ['--radius', `${b.radius}px`],
+        ['--font-heading', font],
+      ]) +
+      block(':root:not(.dark):not(.high-contrast)', colourTokens(b))
+    );
+  }
+  const scope = `[data-app-theme="${appId}"]`;
+  return (
+    header +
+    block(scope, [
+      ['--radius', `${b.radius}px`],
+      ['--font-sans', font],
+      ['--font-heading', font],
+      ...NPST_ALIASES,
+    ]) +
+    block(`:root:not(.dark):not(.high-contrast) ${scope}`, [
+      ...colourTokens(b),
+      ...NPST_ALIASES,
+    ])
+  );
+}

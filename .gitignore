@@ -48,3 +48,6 @@ Thumbs.db
 .nx/migrate-runs
 # local working notes
 CLAUDE.md
+
+# Themes published to the simulated brand server (demo data)
+/apps/brand-server/published

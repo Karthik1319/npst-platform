@@ -306,3 +306,32 @@
     height: calc(var(--spacing) * 9);
   }
 }
+
+/* Variants used directly (e.g. buttonVariants() on a link) are not passed through
+   tailwind-merge in the original, so Tailwind's CSS order decides: the base wins here. */
+@layer ui {
+  /* border-transparent wins over border-border */
+  :where(:global(.npst-unmerged)).outline {
+    border-color: transparent;
+  }
+
+  /* rounded-lg wins over rounded-[min(var(--radius-md),10px)] */
+  :where(:global(.npst-unmerged)).xs {
+    border-radius: var(--radius);
+  }
+
+  /* rounded-lg wins over rounded-[min(var(--radius-md),12px)] */
+  :where(:global(.npst-unmerged)).sm {
+    border-radius: var(--radius);
+  }
+
+  /* rounded-lg wins over rounded-[min(var(--radius-md),10px)] */
+  :where(:global(.npst-unmerged)).iconXs {
+    border-radius: var(--radius);
+  }
+
+  /* rounded-lg wins over rounded-[min(var(--radius-md),12px)] */
+  :where(:global(.npst-unmerged)).iconSm {
+    border-radius: var(--radius);
+  }
+}

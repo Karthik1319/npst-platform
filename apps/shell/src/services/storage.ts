@@ -1,4 +1,5 @@
 import type { PlatformUser } from '@npst/shared-contracts';
+import { resetPublishedThemes } from '@/services/brand-server';
 import type { Session } from '@/types';
 import { toSession } from '@/context/session-shape';
 
@@ -76,6 +77,8 @@ export function readSession(): Session | null {
 
 /** Clears every mock-data key (used by Settings → Reset demo data). */
 export function resetAllData(): void {
+  // Published themes on the brand server are demo data too.
+  void resetPublishedThemes();
   Object.values(STORAGE_KEYS).forEach((key) => {
     localStorage.removeItem(key);
     sessionStorage.removeItem(key);

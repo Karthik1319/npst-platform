@@ -27,6 +27,7 @@ const ts = createRequire(new URL('../../package.json', import.meta.url))(
   'typescript',
 );
 const postcss = hisRequire('postcss');
+const { twMerge } = hisRequire('tailwind-merge');
 const { compile } = await import(
   join(appDir, 'node_modules/@tailwindcss/node/dist/index.mjs')
 );
@@ -151,6 +152,45 @@ HIS_CLASSES.add('sr-only-x');
 
 // Unprefixed font-size utilities (text-sm, text-2xl, text-[10px], …).
 const FONT_SIZE = /^text-(?:xs|sm|base|lg|[2-9]?xl|\[[\d.]+(?:px|rem|em)\])$/;
+
+// ---------- Tailwind's order between classes on the same element ----------
+// In the original every utility lives in one stylesheet, so when two classes
+// on an element set the same property, Tailwind's output order decides. In a
+// cva() call the base and variant classes always meet on one element.
+const propsCache = new Map();
+function plainProps(token) {
+  if (!propsCache.has(token)) {
+    const props = new Set();
+    if (!token.includes(':') && isUtility(token)) {
+      const root = postcss.parse(rulesFor([token]));
+      root.each((node) => {
+        if (
+          node.type === 'rule' &&
+          classRe(token).test(node.selector) &&
+          node.selector.trim().startsWith('.')
+        )
+          node.each(
+            (d) =>
+              d.type === 'decl' &&
+              !d.prop.startsWith('--') &&
+              props.add(d.prop),
+          );
+      });
+    }
+    propsCache.set(token, props);
+  }
+  return propsCache.get(token);
+}
+/** True when `variant` never applies next to `base` (same properties, earlier in Tailwind's CSS). */
+function losesTo(variant, base) {
+  const pv = plainProps(variant);
+  const pb = plainProps(base);
+  if (pv.size === 0 || ![...pv].every((p) => pb.has(p))) return false;
+  const css = utilityCss(compiler.build([variant, base]));
+  const iv = css.search(classRe(variant));
+  const ib = css.search(classRe(base));
+  return iv >= 0 && ib > iv;
+}
 
 // ---------- fonts → tokens ----------
 const FONT_TOKENS = [
@@ -293,8 +333,36 @@ function convertFile(file) {
     return n === 1 && !names.has(base) ? base : `${base}${n}`;
   }
   // Returns replacement expression for static class text, or null if nothing to convert.
+  let cvaBase = null; // base tokens while converting a cva() call's variants
+  const unmergedPending = []; // variant tokens that lose to a base token when not merged
+  const unmergedRules = [];
   function siteExpr(staticText, hint) {
-    const tokens = tokenize(staticText);
+    let tokens = tokenize(staticText);
+    if (cvaBase && staticText !== cvaBase.text) {
+      // The original passes cva's output through tailwind-merge first (it
+      // removes the earlier of two conflicts it recognises); for conflicts it
+      // does not recognise, Tailwind's CSS order decides.
+      const merged = new Set(
+        tokenize(twMerge(`${cvaBase.text} ${staticText}`)),
+      );
+      const dropped = tokens.filter(
+        (t) =>
+          merged.has(t) &&
+          cvaBase.tokens.some((b) => merged.has(b) && losesTo(t, b)),
+      );
+      if (dropped.length) {
+        report.overridden = [
+          ...(report.overridden ?? []),
+          `${relFile}: ${dropped.join(' ')}`,
+        ];
+        tokens = tokens.filter((t) => !dropped.includes(t));
+      }
+      // Called directly (no tailwind-merge): CSS order alone decides.
+      for (const t of tokens)
+        for (const b of cvaBase.tokens)
+          if (losesTo(t, b))
+            unmergedPending.push({ token: t, base: b, text: staticText });
+    }
     const utils = [];
     const keep = [];
     for (const t of tokens) {
@@ -308,6 +376,30 @@ function convertFile(file) {
     if (utils.length === 0) return null;
     const key = utils.join(' ');
     let local = bySet.get(key);
+    const resolveUnmerged = (cls) => {
+      for (const u of unmergedPending.splice(0)) {
+        const props = plainProps(u.token);
+        const root = postcss.parse(rulesFor([u.base]));
+        const decls = [];
+        root.each((node) => {
+          if (
+            node.type === 'rule' &&
+            classRe(u.base).test(node.selector) &&
+            node.selector.trim().startsWith('.')
+          )
+            node.each(
+              (d) =>
+                d.type === 'decl' &&
+                props.has(d.prop) &&
+                decls.push(`${d.prop}: ${d.value};`),
+            );
+        });
+        if (decls.length)
+          unmergedRules.push(
+            `/* ${u.base} wins over ${u.token} */\n:where(:global(.npst-unmerged)).${cls} {\n  ${decls.join('\n  ')}\n}`,
+          );
+      }
+    };
     if (!local) {
       local = nameFor(hint);
       names.set(local, true);
@@ -325,6 +417,7 @@ function convertFile(file) {
       blocks.push(`/* ${key} */\n${css}`);
       if (sized) report.sized = (report.sized ?? 0) + 1;
     }
+    resolveUnmerged(local);
     const sizedFlag = utils.some((u) => /^(?:[a-z-]+:)*size-/.test(u))
       ? ['npst-sized']
       : [];
@@ -474,7 +567,18 @@ function convertFile(file) {
       ['cn', 'cva'].includes(node.expression.text)
     ) {
       markHandled(node);
+      const first = node.arguments[0];
+      if (
+        node.expression.text === 'cva' &&
+        first &&
+        (ts.isStringLiteral(first) || ts.isNoSubstitutionTemplateLiteral(first))
+      )
+        cvaBase = {
+          text: first.text,
+          tokens: tokenize(first.text).filter((t) => !t.includes(':')),
+        };
       visitClassExpr(node, hintFrom(node));
+      cvaBase = null;
       return;
     }
     if (
@@ -555,7 +659,10 @@ function convertFile(file) {
       `/* Generated from the original Tailwind classes (Step 18 converter); variables only. */\n` +
       (isUi
         ? `@layer ui {\n${blocks.join('\n\n')}\n}\n`
-        : blocks.join('\n\n') + '\n');
+        : blocks.join('\n\n') + '\n') +
+      (unmergedRules.length
+        ? `\n/* Variants used directly (e.g. buttonVariants() on a link) are not passed through\n   tailwind-merge in the original, so Tailwind's CSS order decides: the base wins here. */\n@layer ui {\n${[...new Set(unmergedRules)].join('\n\n')}\n}\n`
+        : '');
     const cssOut = join(
       outDir,
       'src',

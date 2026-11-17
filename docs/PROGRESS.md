@@ -1263,3 +1263,72 @@ Page heights are identical to the original; no console errors.
   - both render inside his frame in his design, and links between pages work.
 
 **Next step:** Step 23 – Branding Publish to the brand server; the portal theme and per-application themes.
+
+## Step 23 – Branding Publish → brand server and runtime theme
+
+**Done:**
+
+- **Publish endpoint on the brand server** (`apps/brand-server/theme-endpoint.mjs`, a Vite middleware; no new dependency):
+
+  | Request                   | Effect                                                               |
+  | ------------------------- | -------------------------------------------------------------------- |
+  | `PUT /themes/<appId>`     | Branding values (JSON) in; the server generates and stores the theme |
+  | `GET /themes/<appId>.css` | The published theme; 404 when nothing is published                   |
+  | `DELETE /themes`          | Removes every published theme (demo reset)                           |
+
+  Published files live in `apps/brand-server/published/` (git-ignored demo data).
+
+- **The server writes the CSS itself** (`theme-generator.mjs`) from validated values only:
+  - hex colours;
+  - fonts from the editor's list;
+  - a radius between 0 and 32.
+
+  It never stores CSS sent by a browser, and logos are never part of a theme (no-logo rule).
+
+- **Portal theme:** "NPST Portal" (`app-portal`) is now in his application registry. Publishing its branding restyles the whole portal at runtime:
+  - primary colour, sidebar, background, cards, text, borders;
+  - heading font and radius.
+
+  Body text keeps the portal font.
+
+- **Application themes:** publishing Keka HR's or Deal Pulse's branding restyles only that application's area. The portal renders each application inside `data-app-theme="<appId>"`, and the theme is scoped to it. Inside the area, the NPST tokens the applications use are declared again, so they pick up the scoped values.
+- **Light only:** published colours apply to the light mode; dark and high-contrast keep the portal's values.
+- **Wiring in the portal (`services/brand-server.ts`):**
+  - **Publish:** every way his Branding module publishes (Publish Theme, checker approval in the Approval Queue, Apply to all applications) sends the theme to the brand server and reloads it at once.
+  - **Other tabs:** they reload when the branding data changes.
+  - **Brand server down:** the administrator gets an error toast; the configuration is still saved.
+  - **Reset demo data** (Settings): also removes the published themes.
+- **Converter fix:** his pages also call `buttonVariants()` directly for links styled as buttons. There, the original does not merge classes (no tailwind-merge), so Tailwind's CSS order decides: the base radius and border win.
+  - The converter now emits these few rules under a `npst-unmerged` marker.
+  - The exported `buttonVariants()` sets that marker; the `Button` component does not.
+  - Found by the screenshots: the "Configure Branding" links had 9.6px corners instead of 12px.
+
+**Verified:**
+
+- **Tests:** brand server 14 (generation, scoping, validation including CSS injection attempts, endpoint); portal 103 (publish flow, scoped app area, NPST Portal in the registry). Lint, typecheck and build pass for all 8 projects; Prettier clean.
+- **Browser, end to end** (brand server, portal production build, Deal Pulse):
+  1. Configure Branding → NPST Portal → primary `#7C3AED`, sidebar `#2E1065` → Publish Theme: toast "Theme v1 published to NPST Portal"; sidebar and buttons turn purple at once.
+  2. The same for Deal Pulse with a green primary: inside Deal Pulse the primary is green, the portal around it stays purple.
+  3. Dark mode keeps the portal's dark colours.
+- **Screenshots (all pages, nothing published):**
+  - **Unchanged:** every page stays within 0.3–0.9% of the original, with identical heights.
+  - **New card:** Dashboard and Branding (and overlays opened over the Dashboard) show the new NPST Portal card, 1.0–1.4%.
+  - **Configure Branding:** small glyph differences that vary between runs; positions, fonts and weights are identical to the original, so this is text-rendering noise.
+
+**Try it:**
+
+```bash
+pnpm nx run-many -t dev -p shell brand-server demo-react-a demo-angular --parallel=4
+# http://localhost:4200, sign in as admin@npst.com / Admin@123
+# UI Branding → NPST Portal → Configure Branding → change Primary color → Publish Theme
+# Settings → Reset demo data removes the published themes again
+```
+
+**Decisions:**
+
+- The editor's "Button", "Button hover", "Secondary" and "Header background" colours, shadows, component style and sizes are used by its preview only; the portal theme maps the colours the portal actually has (primary, accent, background, sidebar, cards, text, borders), the heading font and the radius.
+- Only portal administrators can reach Publish (RBAC, UI); the real branding API must authenticate the administrator and check the permission again.
+
+**Open issues:** none for this step. The published themes are demo data stored by the simulated brand server; the real branding module stores them centrally.
+
+**Next step:** Step 24 – clean-up and documents; removals only with approval (Projects & Delivery, old shell screens, folder names, unused `mock-backend` parts).

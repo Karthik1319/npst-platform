@@ -79,6 +79,22 @@ export function seedApps(): NpstApplication[] {
       employees: 120,
       lastUpdated: daysAgo(9),
     },
+    // Added for the portal integration: the portal itself. Its published
+    // branding restyles the whole portal (brand server, runtime theme).
+    {
+      id: 'app-portal',
+      name: 'NPST Portal',
+      code: 'NPST-PORTAL',
+      url: 'https://portal.npst.com',
+      description:
+        'The NPST portal itself — its published branding styles the portal shell for every user.',
+      color: '#1E40AF',
+      status: 'active',
+      brandingStatus: 'not-configured',
+      notificationStatus: 'integrated',
+      employees: 5410,
+      lastUpdated: daysAgo(0),
+    },
   ];
 }
 

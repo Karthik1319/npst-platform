@@ -149,3 +149,12 @@
     }
   }
 }
+
+/* Variants used directly (e.g. buttonVariants() on a link) are not passed through
+   tailwind-merge in the original, so Tailwind's CSS order decides: the base wins here. */
+@layer ui {
+  /* border-transparent wins over border-border */
+  :where(:global(.npst-unmerged)).outline {
+    border-color: transparent;
+  }
+}

@@ -30,3 +30,45 @@ export function loadRuntimeTheme(url: string = RUNTIME_THEME_URL): void {
   });
   document.head.append(link);
 }
+
+/** Base address of the brand server (where `theme.css` and published themes are served). */
+export const BRAND_SERVER_URL: string = new URL('.', RUNTIME_THEME_URL).href;
+
+const publishedLinkId = (appId: string) => `npst-published-theme-${appId}`;
+
+/**
+ * Loads the theme published from the Branding module for one application
+ * (Step 23): `app-portal` restyles the whole portal; any other application's
+ * theme only applies inside its area (`data-app-theme`). Nothing published
+ * yet (404) or brand server down: the link is removed and nothing changes.
+ * Added after the main runtime theme, so its values win.
+ */
+export function loadPublishedTheme(appId: string, reload = false): void {
+  const existing = document.getElementById(publishedLinkId(appId));
+  if (existing && !reload) return;
+  existing?.remove();
+  const link = document.createElement('link');
+  link.id = publishedLinkId(appId);
+  link.rel = 'stylesheet';
+  link.dataset['publishedTheme'] = appId;
+  // A new address on reload, so the browser fetches the new version.
+  link.href = `${BRAND_SERVER_URL}themes/${appId}.css${reload ? `?v=${Date.now()}` : ''}`;
+  link.addEventListener('error', () => link.remove());
+  document.head.append(link);
+}
+
+/** Reloads every published theme on the page (e.g. after a publish in another tab). */
+export function reloadPublishedThemes(appIds: readonly string[] = []): void {
+  const loaded = [
+    ...document.querySelectorAll<HTMLLinkElement>('link[data-published-theme]'),
+  ].map((link) => link.dataset['publishedTheme'] ?? '');
+  for (const appId of new Set([...loaded, ...appIds]))
+    if (appId) loadPublishedTheme(appId, true);
+}
+
+/** Removes every published theme from the page (demo reset). */
+export function removePublishedThemes(): void {
+  document
+    .querySelectorAll('link[data-published-theme]')
+    .forEach((link) => link.remove());
+}

@@ -1,3 +1,4 @@
+import { publishThemeInBackground } from './brand-server';
 import { createCrudService } from './mockApi';
 import { auditService } from './auditService';
 import { readSession, STORAGE_KEYS } from './storage';
@@ -389,6 +390,9 @@ export const brandingService = {
     if (idx >= 0) items[idx] = base;
     else items.unshift(base);
     persistConfigs(items);
+    // Published: the brand server makes it the live theme (Step 23).
+    if (status === 'published')
+      publishThemeInBackground(appId, style, base.version);
     return base;
   },
 };
