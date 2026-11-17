@@ -4,9 +4,9 @@ import { clone, recordActivity, sendNotification } from './common';
 
 /** Team that follows up work requested from each app. */
 const SOURCE_TEAM: Partial<Record<AppId, Team>> = {
-  'sales-hub': 'SALES',
+  'app-dealpulse': 'SALES',
   projects: 'SOLUTIONS',
-  'people-hr': 'ADMIN',
+  'app-keka': 'ADMIN',
 };
 
 export interface TaskQuery {
@@ -21,14 +21,14 @@ export interface TaskQuery {
 /** Portal path where a task is worked on. */
 export function taskLink(task: Task): string {
   switch (task.appId) {
-    case 'sales-hub':
+    case 'app-dealpulse':
       return task.opportunityId
-        ? `/sales/opportunities/${task.opportunityId}`
-        : '/sales/tasks';
+        ? `/deal-pulse/opportunities/${task.opportunityId}`
+        : '/deal-pulse/tasks';
     case 'projects':
       return `/projects/tasks?task=${task.id}`;
-    case 'people-hr':
-      return '/people';
+    case 'app-keka':
+      return '/keka';
   }
 }
 
@@ -79,7 +79,7 @@ export const workApi = {
           at: now,
           actor: actor.name,
           text,
-          ...(task.appId !== 'sales-hub' ? { appId: task.appId } : {}),
+          ...(task.appId !== 'app-dealpulse' ? { appId: task.appId } : {}),
         });
 
       if (status !== 'Done') {
@@ -111,7 +111,9 @@ export const workApi = {
             : 'The work you requested is done.',
           kind: 'success',
           appId: task.sourceAppId,
-          link: opportunity ? `/sales/opportunities/${opportunity.id}` : '/',
+          link: opportunity
+            ? `/deal-pulse/opportunities/${opportunity.id}`
+            : '/',
         });
       }
       return clone(task);

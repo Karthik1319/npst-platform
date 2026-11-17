@@ -1,6 +1,6 @@
 import type { BadgeVariant } from '@/ui/Badge';
 
-/** Badge colour for each status used in Sales Hub. */
+/** Badge colour for each status used in Deal Pulse. */
 export const LEAD_STATUS: Record<string, BadgeVariant> = {
   New: 'info',
   Contacted: 'accent',

@@ -8,7 +8,7 @@ type Platform = ReturnType<typeof createMockPlatform>;
 function propsFor(userId = 'user-7'): MfeProps & { platform: Platform } {
   const user = mockAuth.findUser(userId);
   if (!user) throw new Error('mock user missing');
-  return { user, basePath: '/people', platform: createMockPlatform({ user }) };
+  return { user, basePath: '/keka', platform: createMockPlatform({ user }) };
 }
 
 /** Waits until `find` returns an element inside the mounted app. */
@@ -25,12 +25,12 @@ const button = (root: HTMLElement, text: string) =>
     b.textContent?.trim().startsWith(text),
   );
 
-describe('People & HR (mount contract)', () => {
+describe('Keka HR (mount contract)', () => {
   let element: HTMLElement;
 
   beforeEach(() => {
     vi.spyOn(console, 'info').mockImplementation(() => undefined);
-    window.history.replaceState(null, '', '/people');
+    window.history.replaceState(null, '', '/keka');
     element = document.createElement('div');
     document.body.append(element);
   });
@@ -61,7 +61,7 @@ describe('People & HR (mount contract)', () => {
   });
 
   it('routes its own pages below the base path', async () => {
-    window.history.replaceState(null, '', '/people/employees');
+    window.history.replaceState(null, '', '/keka/employees');
     await mount(element, propsFor());
     await vi.waitFor(() =>
       expect(element.textContent).toContain('Showing 1–15 of 276'),
@@ -74,9 +74,7 @@ describe('People & HR (mount contract)', () => {
     first.click();
 
     await vi.waitFor(() =>
-      expect(window.location.pathname).toMatch(
-        /^\/people\/employees\/EMP-\d+$/,
-      ),
+      expect(window.location.pathname).toMatch(/^\/keka\/employees\/EMP-\d+$/),
     );
     await vi.waitFor(() =>
       expect(element.querySelector('h2')?.textContent).toBe(name),
@@ -86,7 +84,7 @@ describe('People & HR (mount contract)', () => {
   });
 
   it('filters the directory by department', async () => {
-    window.history.replaceState(null, '', '/people/employees');
+    window.history.replaceState(null, '', '/keka/employees');
     await mount(element, propsFor());
     const select = await waitFor(() =>
       element.querySelector<HTMLSelectElement>(
@@ -103,7 +101,7 @@ describe('People & HR (mount contract)', () => {
 
   it('lets an employee apply for leave; the manager is notified and approves; the employee is notified', async () => {
     // Employee applies (MFE → shell: toast; HR backend → manager: notification).
-    window.history.replaceState(null, '', '/people/leave');
+    window.history.replaceState(null, '', '/keka/leave');
     const employee = propsFor('user-7');
     const toasts: string[] = [];
     employee.platform.toasts.subscribe((toast) => toasts.push(toast.message));
@@ -167,7 +165,7 @@ describe('People & HR (mount contract)', () => {
   });
 
   it('hides Apply and Approve without the permissions (Sales has neither)', async () => {
-    window.history.replaceState(null, '', '/people/leave');
+    window.history.replaceState(null, '', '/keka/leave');
     await mount(element, propsFor('user-2'));
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(button(element, 'Apply for leave')).toBeUndefined();

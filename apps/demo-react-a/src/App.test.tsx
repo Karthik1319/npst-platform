@@ -10,15 +10,19 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
 
-/** Renders Sales Hub as the portal does: at `/sales/...` with the host props. */
+/** Renders Deal Pulse as the portal does: at `/deal-pulse/...` with the host props. */
 function renderAt(path: string, userId = 'user-2') {
-  window.history.replaceState(null, '', `/sales${path === '/' ? '' : path}`);
+  window.history.replaceState(
+    null,
+    '',
+    `/deal-pulse${path === '/' ? '' : path}`,
+  );
   const user = mockAuth.findUser(userId);
   if (!user) throw new Error('mock user missing');
   const platform = createMockPlatform({ user });
   const toasts: string[] = [];
   platform.toasts.subscribe((toast) => toasts.push(toast.message));
-  render(<App user={user} basePath="/sales" platform={platform} />);
+  render(<App user={user} basePath="/deal-pulse" platform={platform} />);
   return { toasts };
 }
 
@@ -32,7 +36,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('Sales Hub dashboard', () => {
+describe('Deal Pulse dashboard', () => {
   it('shows the sales figures', async () => {
     renderAt('/');
     const figures = await screen.findByRole('list', { name: 'Sales figures' });
@@ -51,14 +55,14 @@ describe('Sales Hub dashboard', () => {
 
   it('moves between its pages with the tabs and keeps the URL below the base path', async () => {
     renderAt('/');
-    const tabs = screen.getByRole('navigation', { name: 'Sales Hub' });
+    const tabs = screen.getByRole('navigation', { name: 'Deal Pulse' });
 
     act(() => within(tabs).getByRole('link', { name: 'Leads' }).click());
 
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Leads' }),
     ).toBeDefined();
-    expect(window.location.pathname).toBe('/sales/leads');
+    expect(window.location.pathname).toBe('/deal-pulse/leads');
     expect(
       within(tabs)
         .getByRole('link', { name: 'Leads' })
@@ -71,7 +75,7 @@ describe('Sales Hub dashboard', () => {
     await screen.findByRole('list', { name: 'Sales figures' });
 
     act(() => {
-      window.history.pushState(null, '', '/sales/tasks');
+      window.history.pushState(null, '', '/deal-pulse/tasks');
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
 
@@ -177,7 +181,7 @@ describe('Opportunities', () => {
         name: 'ABC Bank – Digital Banking Platform',
       }),
     ).toBeDefined();
-    expect(window.location.pathname).toBe('/sales/opportunities/OP-1043');
+    expect(window.location.pathname).toBe('/deal-pulse/opportunities/OP-1043');
     for (const section of [
       'Customer',
       'Overview',
@@ -260,7 +264,7 @@ describe('Tasks and follow-ups', () => {
   });
 });
 
-describe('Cross-application workflow (Sales Hub side)', () => {
+describe('Cross-application workflow (Deal Pulse side)', () => {
   it('creates an opportunity and opens it', async () => {
     const { toasts } = renderAt('/opportunities');
     act(() => screen.getByRole('button', { name: 'New opportunity' }).click());
@@ -289,7 +293,7 @@ describe('Cross-application workflow (Sales Hub side)', () => {
       }),
     ).toBeDefined();
     expect(window.location.pathname).toMatch(
-      /^\/sales\/opportunities\/OP-\d+$/,
+      /^\/deal-pulse\/opportunities\/OP-\d+$/,
     );
     expect(toasts).toEqual([
       expect.stringMatching(/^Opportunity OP-\d+ created for ABC Bank$/),

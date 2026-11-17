@@ -275,7 +275,7 @@ export function OpportunityDetailsPage({ id }: { id: string }) {
                       </span>
                       {open &&
                       canEdit &&
-                      task.appId === 'sales-hub' &&
+                      task.appId === 'app-dealpulse' &&
                       canWorkOn(task, user) ? (
                         <button
                           type="button"

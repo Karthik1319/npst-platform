@@ -31,9 +31,9 @@ const ready = <T,>(data: AsyncData<T>): T | null =>
 export function HomePage({ apps }: HomePageProps) {
   const platform = usePlatform();
   const can = platform.permissions.can;
-  const canSales = can('access', 'sales-hub');
+  const canSales = can('access', 'app-dealpulse');
   const canProjects = can('access', 'projects');
-  const canPeople = can('access', 'people-hr');
+  const canPeople = can('access', 'app-keka');
   const canApprove = can('approve', 'leave');
   const allowedIds =
     apps.status === 'ready' ? apps.data.map((app) => app.id).join(',') : '';
@@ -80,7 +80,7 @@ export function HomePage({ apps }: HomePageProps) {
       ? [
           {
             title: `Approve leave requests (${hr.pendingApprovals} pending)`,
-            link: '/people/leave',
+            link: '/keka/leave',
           },
         ]
       : [];
@@ -144,7 +144,7 @@ function buildKpis({
       value: formatInr(sales.pipelineValue),
       icon: 'target',
       tone: 1,
-      link: '/sales',
+      link: '/deal-pulse',
       trend: {
         direction: change >= 0 ? 'up' : 'down',
         text: `${Math.abs(change)}% vs last quarter`,
@@ -181,7 +181,7 @@ function buildKpis({
       value: formatNumber(hr.totalEmployees),
       icon: 'people',
       tone: 3,
-      link: '/people/employees',
+      link: '/keka/employees',
       trend:
         hr.joinedLast30Days > 0
           ? {
@@ -199,7 +199,7 @@ function buildKpis({
       value: String(hr.pendingApprovals),
       icon: 'clock',
       tone: 4,
-      link: '/people/leave',
+      link: '/keka/leave',
       trend: { direction: 'flat', text: 'Leave requests', good: true },
     });
   }
@@ -210,7 +210,7 @@ function buildKpis({
       value: formatInr(sales.wonValue),
       icon: 'checkCircle',
       tone: 2,
-      link: '/sales/opportunities',
+      link: '/deal-pulse/opportunities',
       trend: {
         direction: 'up',
         text: `${sales.wonDeals} deals closed`,
@@ -241,7 +241,7 @@ function buildKpis({
       value: String(hr.onLeaveToday),
       icon: 'calendar',
       tone: 3,
-      link: '/people/leave',
+      link: '/keka/leave',
     });
   }
   if (openTasks !== null) {

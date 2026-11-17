@@ -1234,3 +1234,32 @@ Page heights are identical to the original; no console errors.
 **Verified:** lint, test (shell: 95 tests), typecheck and build for all 8 projects; Prettier clean.
 
 **Next step:** Step 22 – stand-ins: People & HR becomes Keka HR (Angular), Sales Hub becomes Deal Pulse (React), with his theme.
+
+## Step 22 – Stand-ins: Keka HR (Angular) and Deal Pulse (React)
+
+**Done:**
+
+- **Renamed to the registry's applications:**
+
+  | Before      | Now        | Id              | Path          | Remote                             |
+  | ----------- | ---------- | --------------- | ------------- | ---------------------------------- |
+  | People & HR | Keka HR    | `app-keka`      | `/keka`       | `demo-angular` (mount contract)    |
+  | Sales Hub   | Deal Pulse | `app-dealpulse` | `/deal-pulse` | `demo-react-a` (Module Federation) |
+
+  The project folders keep their names (`demo-angular`, `demo-react-a`); renaming folders is part of the Step 24 clean-up, with approval.
+
+- **Same ids everywhere:** app names, data ids (`app-keka`, `app-dealpulse` in tasks, notifications and search), permission resources (`export:app-dealpulse`) and every link the backends and notifications use (`/deal-pulse/…`, `/keka/…`). The bell's links now open the right pages.
+- **His theme for the applications:** a new section in the theme (`theme.css` section 5, also in the brand server's copy) points the NPST semantic tokens the applications use (`--npst-color-*`, buttons, inputs, tables, radii, font) at the Admin Portal's tokens.
+  - The applications now use his font, colours, radii and card style.
+  - They follow the portal's light, dark and high-contrast modes without any code change in the applications.
+- **Small fix:** the applications' tab bars showed a vertical scrollbar thumb under his global scrollbar styles; they now hide vertical overflow.
+
+**Verified:**
+
+- **Tests and checks:** lint, test, typecheck and build for all 8 projects (tests of the three remotes and `mock-backend` updated for the new names and paths); Prettier clean.
+- **Browser:** the portal's production build with both remotes running, signed in as Priya Nair (Admin) and Neha Kapoor (Employee):
+  - Deal Pulse dashboard and opportunities, light and dark;
+  - Keka HR dashboard and leave management;
+  - both render inside his frame in his design, and links between pages work.
+
+**Next step:** Step 23 – Branding Publish to the brand server; the portal theme and per-application themes.

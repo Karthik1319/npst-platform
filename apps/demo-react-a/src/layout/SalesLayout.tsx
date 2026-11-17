@@ -10,7 +10,7 @@ const TABS: { to: string; label: string; icon: IconName }[] = [
   { to: '/tasks', label: 'Tasks & follow-ups', icon: 'tasks' },
 ];
 
-/** Sales Hub frame: app title and the page tabs. Pages render below. */
+/** Deal Pulse frame: app title and the page tabs. Pages render below. */
 export function SalesLayout({ children }: { children: ReactNode }) {
   const { path } = useRouter();
   const current = (to: string) =>
@@ -20,13 +20,13 @@ export function SalesLayout({ children }: { children: ReactNode }) {
     <div className={styles.app}>
       <div className={styles.header}>
         <div>
-          <p className={styles.eyebrow}>Sales Hub</p>
+          <p className={styles.eyebrow}>Deal Pulse</p>
           <h1 className={styles.title}>
-            {TABS.find((tab) => current(tab.to))?.label ?? 'Sales Hub'}
+            {TABS.find((tab) => current(tab.to))?.label ?? 'Deal Pulse'}
           </h1>
         </div>
       </div>
-      <nav className={styles.tabs} aria-label="Sales Hub">
+      <nav className={styles.tabs} aria-label="Deal Pulse">
         {TABS.map((tab) => (
           <Link
             key={tab.to}

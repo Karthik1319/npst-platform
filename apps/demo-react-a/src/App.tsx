@@ -10,11 +10,11 @@ import { Link, Router, useRouter } from '@/routing/router';
 import controls from '@/ui/controls.module.css';
 
 /**
- * Sales Hub micro-frontend (exposed as `./App` through Module Federation).
- * - Portal → Sales Hub: `MfeProps` (signed-in user, base path, platform).
- * - Sales Hub → portal: calls on `platform` (toasts, permission checks, audit).
- * - Its own pages live below `basePath` (e.g. `/sales/leads`).
- * Business data comes from the Sales Hub backend (see `services/sales.ts`).
+ * Deal Pulse micro-frontend (exposed as `./App` through Module Federation).
+ * - Portal → Deal Pulse: `MfeProps` (signed-in user, base path, platform).
+ * - Deal Pulse → portal: calls on `platform` (toasts, permission checks, audit).
+ * - Its own pages live below `basePath` (e.g. `/deal-pulse/leads`).
+ * Business data comes from the Deal Pulse backend (see `services/sales.ts`).
  */
 export function App({ user, basePath, platform }: MfeProps) {
   return (
@@ -48,7 +48,7 @@ function Pages() {
       return (
         <p className={controls.empty}>
           This page does not exist.{' '}
-          <Link to="/">Go to the Sales Hub dashboard</Link>
+          <Link to="/">Go to the Deal Pulse dashboard</Link>
         </p>
       );
   }

@@ -70,7 +70,7 @@ export function seedTasks(
     description:
       'Sales assigned this opportunity to Solutions. Check the RFP’s technical requirements and confirm the solution fit before the proposal is finalised.',
     appId: 'projects',
-    sourceAppId: 'sales-hub',
+    sourceAppId: 'app-dealpulse',
     assignee: { kind: 'team', team: 'SOLUTIONS' },
     priority: 'High',
     status: 'To do',
@@ -113,7 +113,7 @@ export function seedTasks(
 
   add({
     title: 'Review RFP for ABC Bank',
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     assignee: { kind: 'team', team: 'SALES' },
     priority: 'High',
     status: 'To do',
@@ -124,7 +124,7 @@ export function seedTasks(
   });
   add({
     title: 'Send revised commercials to Meridian Co-operative Bank',
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     assignee: { kind: 'team', team: 'SALES' },
     priority: 'High',
     status: 'To do',
@@ -135,7 +135,7 @@ export function seedTasks(
   });
   add({
     title: 'Share contract redlines with Vista Fintech',
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     assignee: { kind: 'team', team: 'SALES' },
     priority: 'Medium',
     status: 'To do',
@@ -146,7 +146,7 @@ export function seedTasks(
   });
   add({
     title: 'Schedule discovery workshop with Northwind SFB',
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     assignee: { kind: 'team', team: 'SALES' },
     priority: 'Medium',
     status: 'To do',
@@ -160,7 +160,7 @@ export function seedTasks(
     title: 'Approve discount for the ABC Bank proposal',
     description:
       'Sales asks for a 12% discount on licence fees to stay competitive.',
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     assignee: { kind: 'team', team: 'ADMIN' },
     priority: 'High',
     status: 'To do',
@@ -182,7 +182,7 @@ export function seedTasks(
 
   add({
     title: 'Complete annual information security training',
-    appId: 'people-hr',
+    appId: 'app-keka',
     assignee: { kind: 'team', team: 'EMPLOYEE' },
     priority: 'Medium',
     status: 'To do',
@@ -191,7 +191,7 @@ export function seedTasks(
   });
   add({
     title: 'Submit investment declaration for FY 2026–27',
-    appId: 'people-hr',
+    appId: 'app-keka',
     assignee: { kind: 'team', team: 'EMPLOYEE' },
     priority: 'Low',
     status: 'To do',
@@ -213,7 +213,7 @@ export function seedTasks(
     }[kind];
     add({
       title: text,
-      appId: 'sales-hub',
+      appId: 'app-dealpulse',
       assignee: { kind: 'person', name: deal.owner },
       priority: random.pick(['High', 'Medium', 'Medium', 'Low'] as const),
       status: random.chance(0.2) ? 'Done' : 'To do',
@@ -228,7 +228,7 @@ export function seedTasks(
     .slice(0, 8)) {
     add({
       title: `Intro call with ${lead.contactName} (${lead.company})`,
-      appId: 'sales-hub',
+      appId: 'app-dealpulse',
       assignee: { kind: 'person', name: lead.owner },
       priority: 'Medium',
       status: 'To do',

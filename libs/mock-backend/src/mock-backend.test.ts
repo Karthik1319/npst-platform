@@ -139,7 +139,7 @@ describe('workApi', () => {
   });
 });
 
-describe('Sales Hub write operations', () => {
+describe('Deal Pulse write operations', () => {
   const actor = { id: 'viewer-sales', name: 'Sales Tester', roles: ['SALES'] };
 
   it('creates a lead as New and records it in Recent Activity', async () => {
@@ -163,7 +163,7 @@ describe('Sales Hub write operations', () => {
     const first = (await salesApi.listLeads()).items[0];
     expect(first?.id).toBe(lead.id);
     const [latest] = await activityService.recent({
-      appIds: ['sales-hub'],
+      appIds: ['app-dealpulse'],
       limit: 1,
     });
     expect(latest?.text).toBe('New lead “Harbor Urban Co-op Bank” added');
@@ -201,7 +201,7 @@ describe('Sales Hub write operations', () => {
   });
 });
 
-describe('leave workflow (People & HR)', () => {
+describe('leave workflow (Keka HR)', () => {
   const employee = {
     id: 'portal-user-3',
     name: 'Employee Tester',
@@ -233,7 +233,7 @@ describe('leave workflow (People & HR)', () => {
     expect(managerInbox[0]).toMatchObject({
       title: 'Leave request from Employee Tester',
       read: false,
-      link: '/people/leave',
+      link: '/keka/leave',
     });
 
     await hrApi.decideLeave(request.id, 'Approved', manager);
@@ -281,7 +281,7 @@ describe('leave workflow (People & HR)', () => {
   });
 });
 
-describe('cross-application workflow (Sales Hub → Solutions → Sales Hub)', () => {
+describe('cross-application workflow (Deal Pulse → Solutions → Deal Pulse)', () => {
   const salesUser = {
     id: 'portal-sales',
     name: 'Sales Tester',
@@ -345,7 +345,7 @@ describe('cross-application workflow (Sales Hub → Solutions → Sales Hub)', (
     expect(salesInbox[0]).toMatchObject({
       title:
         'Completed by Solutions Tester: Prepare solution proposal – ABC Bank',
-      link: `/sales/opportunities/${opportunity.id}`,
+      link: `/deal-pulse/opportunities/${opportunity.id}`,
     });
     const found = await salesApi.getOpportunity(opportunity.id);
     expect(found?.opportunity.timeline.map((t) => t.text).slice(0, 3)).toEqual([
@@ -366,18 +366,19 @@ describe('cross-application workflow (Sales Hub → Solutions → Sales Hub)', (
 describe('searchApi', () => {
   it('finds records only in the apps the user may open', async () => {
     const all = await searchApi.search('abc bank', [
-      'sales-hub',
+      'app-dealpulse',
       'projects',
-      'people-hr',
+      'app-keka',
     ]);
     expect(
       all.some(
         (r) =>
-          r.kind === 'Opportunity' && r.link === '/sales/opportunities/OP-1043',
+          r.kind === 'Opportunity' &&
+          r.link === '/deal-pulse/opportunities/OP-1043',
       ),
     ).toBe(true);
-    expect(await searchApi.search('abc bank', ['people-hr'])).toEqual([]);
-    const people = await searchApi.search('priya sharma', ['people-hr']);
+    expect(await searchApi.search('abc bank', ['app-keka'])).toEqual([]);
+    const people = await searchApi.search('priya sharma', ['app-keka']);
     expect(people[0]).toMatchObject({
       kind: 'Employee',
       title: 'Priya Sharma',

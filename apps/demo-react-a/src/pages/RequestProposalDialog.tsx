@@ -18,7 +18,7 @@ const inDays = (days: number) => {
 };
 
 /**
- * Asks the Solutions team to prepare the proposal. The Sales Hub backend
+ * Asks the Solutions team to prepare the proposal. The Deal Pulse backend
  * creates the task in the Solutions queue (Projects & Delivery) and the
  * Notification Service tells the team; nothing passes between the two apps
  * in the browser.

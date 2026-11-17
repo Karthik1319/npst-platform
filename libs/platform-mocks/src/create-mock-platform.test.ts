@@ -71,7 +71,7 @@ describe('createMockPlatform', () => {
         'Karan Malhotra',
       ],
     ],
-    ['export:sales-hub', ['Aarav Mehta']],
+    ['export:app-dealpulse', ['Aarav Mehta']],
     [
       'create:lead',
       ['Aarav Mehta', 'Priya Nair', 'Vikram Desai', 'Karan Malhotra'],

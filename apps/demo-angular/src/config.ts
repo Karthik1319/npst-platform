@@ -1,6 +1,6 @@
 /** This app's id in the portal (its permission is `access` on this id). */
 export const APP_ID = 'app-keka';
-export const APP_NAME = 'People & HR';
+export const APP_NAME = 'Keka HR';
 
 /**
  * Portal address used on the production page. Change it per environment

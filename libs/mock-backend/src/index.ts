@@ -1,6 +1,6 @@
 /*
- * Simulated business backends for the demo (Sales Hub, Projects & Delivery,
- * People & HR, the shared task service, and the server side of the
+ * Simulated business backends for the demo (Deal Pulse, Projects & Delivery,
+ * Keka HR, the shared task service, and the server side of the
  * Notification Service).
  *
  * Apps call these only from their own `services/` folder, the same place they

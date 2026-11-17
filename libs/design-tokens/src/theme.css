@@ -485,3 +485,56 @@
   --reminder-chart-overdue: #dc2626;
   --reminder-chart-due: #2563eb;
 }
+
+/*
+ * 5. NPST semantic tokens follow the Admin Portal design (Step 22).
+ *    The business applications (MFEs) use the NPST tokens above; here the
+ *    semantic and component layers point at the Admin Portal's tokens, so
+ *    every application looks like the portal, in light, dark and high
+ *    contrast (the portal's mode class switches the values underneath).
+ */
+:root {
+  --npst-font-family: var(--font-sans);
+  --npst-color-action-primary: var(--primary);
+  --npst-color-action-primary-hover: color-mix(
+    in oklab,
+    var(--primary) 80%,
+    transparent
+  );
+  --npst-color-text-default: var(--foreground);
+  --npst-color-text-strong: var(--foreground);
+  --npst-color-text-secondary: var(--muted-foreground);
+  --npst-color-text-muted: var(--muted-foreground);
+  --npst-color-text-inverse: var(--primary-foreground);
+  --npst-color-surface-page: var(--background);
+  --npst-color-surface-card: var(--card);
+  --npst-color-surface-subtle: var(--muted);
+  --npst-color-border-default: var(--input);
+  --npst-color-border-subtle: var(--border);
+  --npst-color-status-error: var(--destructive);
+  --npst-chart-track: var(--muted);
+  --npst-radius: var(--radius);
+  --npst-radius-lg: calc(var(--radius) * 1.4);
+  --npst-shadow-card: 0 0 0 1px
+    color-mix(in oklab, var(--foreground) 10%, transparent);
+  --npst-card-radius: calc(var(--radius) * 1.4);
+  --npst-nav-active-bg: var(--accent);
+  --npst-avatar-bg: var(--accent);
+  --npst-avatar-text: var(--accent-foreground);
+  --npst-table-header-bg: var(--muted);
+  --npst-table-row-hover-bg: color-mix(in oklab, var(--muted) 50%, transparent);
+  --npst-progress-track: var(--muted);
+  --npst-progress-fill: var(--primary);
+  --npst-input-border: var(--input);
+  --npst-button-secondary-bg: var(--background);
+  --npst-button-secondary-border: var(--border);
+  --npst-button-secondary-text: var(--foreground);
+  --npst-button-primary-bg: var(--primary);
+  --npst-button-primary-bg-hover: color-mix(
+    in oklab,
+    var(--primary) 80%,
+    transparent
+  );
+  --npst-button-primary-text: var(--primary-foreground);
+  --npst-focus-ring: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent);
+}

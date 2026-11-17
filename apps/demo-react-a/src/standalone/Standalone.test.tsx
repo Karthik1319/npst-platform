@@ -33,17 +33,19 @@ describe('standalone mode (development only)', () => {
       screen.getByRole('heading', { level: 1, name: 'Access denied' }),
     ).toBeDefined();
     expect(
-      screen.getByText(`${who} does not have permission to open Sales Hub.`),
+      screen.getByText(`${who} does not have permission to open Deal Pulse.`),
     ).toBeDefined();
-    expect(screen.queryByRole('navigation', { name: 'Sales Hub' })).toBeNull();
+    expect(screen.queryByRole('navigation', { name: 'Deal Pulse' })).toBeNull();
   });
 
   it.each([
     ['user-2', 'Priya Nair'],
     ['user-1', 'Aarav Mehta'],
-  ])('opens Sales Hub for ?user=%s', (userId, who) => {
+  ])('opens Deal Pulse for ?user=%s', (userId, who) => {
     render(<Standalone search={`?user=${userId}`} />);
-    expect(screen.getByRole('navigation', { name: 'Sales Hub' })).toBeDefined();
+    expect(
+      screen.getByRole('navigation', { name: 'Deal Pulse' }),
+    ).toBeDefined();
     expect(currentUser()).toBe(who);
   });
 
@@ -65,6 +67,6 @@ describe('standalone mode (development only)', () => {
     expect(screen.getByRole('alert').textContent).toContain(
       'Unknown mock user',
     );
-    expect(screen.queryByRole('navigation', { name: 'Sales Hub' })).toBeNull();
+    expect(screen.queryByRole('navigation', { name: 'Deal Pulse' })).toBeNull();
   });
 });

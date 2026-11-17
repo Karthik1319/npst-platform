@@ -42,7 +42,7 @@ export interface ProposalRequest {
   note: string;
 }
 
-/** One entry of the Sales Hub's activity feed. */
+/** One entry of the Deal Pulse's activity feed. */
 export interface SalesActivity extends TimelineEntry {
   opportunityId: string;
   opportunityName: string;
@@ -95,7 +95,7 @@ export interface OpportunityQuery {
   owner?: string;
 }
 
-/** Simulated Sales Hub backend (read side). */
+/** Simulated Deal Pulse backend (read side). */
 export const salesApi = {
   async summary(): Promise<SalesSummary> {
     const { leads, opportunities, benchmarks } = readData();
@@ -226,10 +226,10 @@ export const salesApi = {
       };
       data.leads.unshift(lead);
       recordActivity(data, {
-        appId: 'sales-hub',
+        appId: 'app-dealpulse',
         actor: actor.name,
         text: `New lead “${lead.company}” added`,
-        link: '/sales/leads',
+        link: '/deal-pulse/leads',
       });
       return clone(lead);
     });
@@ -276,18 +276,18 @@ export const salesApi = {
       };
       data.opportunities.unshift(opportunity);
       recordActivity(data, {
-        appId: 'sales-hub',
+        appId: 'app-dealpulse',
         actor: actor.name,
         text: `Opportunity “${customer.name} – ${input.name}” created`,
-        link: `/sales/opportunities/${id}`,
+        link: `/deal-pulse/opportunities/${id}`,
       });
       sendNotification(data, {
         to: { team: 'ADMIN' },
         title: `New opportunity: ${customer.name}`,
-        description: `${actor.name} created “${input.name}” (${id}) in Sales Hub.`,
+        description: `${actor.name} created “${input.name}” (${id}) in Deal Pulse.`,
         kind: 'info',
-        appId: 'sales-hub',
-        link: `/sales/opportunities/${id}`,
+        appId: 'app-dealpulse',
+        link: `/deal-pulse/opportunities/${id}`,
       });
       return clone(opportunity);
     });
@@ -317,7 +317,7 @@ export const salesApi = {
           request.note ||
           `Prepare the solution proposal for ${opportunity.customerName} (${opportunity.product}).`,
         appId: 'projects',
-        sourceAppId: 'sales-hub',
+        sourceAppId: 'app-dealpulse',
         assignee: { kind: 'team', team: 'SOLUTIONS' },
         priority: request.priority,
         status: 'To do',
@@ -350,10 +350,10 @@ export const salesApi = {
         link: `/projects/tasks?task=${task.id}`,
       });
       recordActivity(data, {
-        appId: 'sales-hub',
+        appId: 'app-dealpulse',
         actor: actor.name,
         text: `Proposal work for “${opportunity.customerName}” assigned to the Solutions team`,
-        link: `/sales/opportunities/${opportunityId}`,
+        link: `/deal-pulse/opportunities/${opportunityId}`,
       });
       return clone(task);
     });

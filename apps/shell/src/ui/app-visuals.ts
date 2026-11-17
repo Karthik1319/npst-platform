@@ -4,9 +4,9 @@ import type { IconName } from '@/ui/Icon';
 export type Tone = 1 | 2 | 3 | 4 | 5;
 
 const VISUALS: Record<string, { icon: IconName; tone: Tone; short: string }> = {
-  'sales-hub': { icon: 'sales', tone: 1, short: 'Sales Hub' },
+  'app-dealpulse': { icon: 'sales', tone: 1, short: 'Deal Pulse' },
   projects: { icon: 'projects', tone: 2, short: 'Projects' },
-  'people-hr': { icon: 'people', tone: 3, short: 'People & HR' },
+  'app-keka': { icon: 'people', tone: 3, short: 'Keka HR' },
   'admin-console': { icon: 'admin', tone: 4, short: 'Admin' },
 };
 

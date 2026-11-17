@@ -102,7 +102,7 @@ export function ProjectDetailsPage({ id }: { id: string }) {
               <dd>{project.phase}</dd>
               {project.opportunityId && (
                 <>
-                  <dt>Won in Sales Hub</dt>
+                  <dt>Won in Deal Pulse</dt>
                   <dd>{project.opportunityId}</dd>
                 </>
               )}

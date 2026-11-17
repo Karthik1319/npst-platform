@@ -1,4 +1,4 @@
-/** CSS class of the badge for each status in People & HR. */
+/** CSS class of the badge for each status in Keka HR. */
 export const EMPLOYMENT_STATUS: Record<string, string> = {
   Active: 'hr-badge--success',
   Probation: 'hr-badge--info',

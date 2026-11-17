@@ -17,7 +17,7 @@ export function PipelineCard({ summary }: { summary: SalesSummary }) {
   return (
     <Card
       title="Sales pipeline"
-      link={{ to: '/sales', label: 'Open Sales Hub' }}
+      link={{ to: '/deal-pulse', label: 'Open Deal Pulse' }}
     >
       <div className={styles.chartRow}>
         <svg

@@ -24,7 +24,7 @@ export const searchApi = {
     if (query.trim().length < 2) return [];
     const data = readData();
     const results: SearchResult[] = [];
-    if (appIds.includes('sales-hub')) {
+    if (appIds.includes('app-dealpulse')) {
       results.push(
         ...data.opportunities
           .filter((o) =>
@@ -32,21 +32,21 @@ export const searchApi = {
           )
           .slice(0, perKind)
           .map((o): SearchResult => ({
-            appId: 'sales-hub',
+            appId: 'app-dealpulse',
             kind: 'Opportunity',
             title: `${o.customerName} – ${o.name}`,
             subtitle: `${o.id} · ${o.stage}`,
-            link: `/sales/opportunities/${o.id}`,
+            link: `/deal-pulse/opportunities/${o.id}`,
           })),
         ...data.leads
           .filter((l) => matches(query, l.id, l.company, l.contactName))
           .slice(0, perKind)
           .map((l): SearchResult => ({
-            appId: 'sales-hub',
+            appId: 'app-dealpulse',
             kind: 'Lead',
             title: l.company,
             subtitle: `${l.id} · ${l.contactName} · ${l.status}`,
-            link: '/sales/leads',
+            link: '/deal-pulse/leads',
           })),
       );
     }
@@ -66,17 +66,17 @@ export const searchApi = {
           })),
       );
     }
-    if (appIds.includes('people-hr')) {
+    if (appIds.includes('app-keka')) {
       results.push(
         ...data.employees
           .filter((e) => matches(query, e.id, e.name, e.designation))
           .slice(0, perKind)
           .map((e): SearchResult => ({
-            appId: 'people-hr',
+            appId: 'app-keka',
             kind: 'Employee',
             title: e.name,
             subtitle: `${e.id} · ${e.designation}, ${e.department}`,
-            link: `/people/employees/${e.id}`,
+            link: `/keka/employees/${e.id}`,
           })),
       );
     }

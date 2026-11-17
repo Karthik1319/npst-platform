@@ -5,7 +5,7 @@
  */
 
 /** Ids of the business applications (same ids as the portal's app catalogue). */
-export type AppId = 'sales-hub' | 'projects' | 'people-hr';
+export type AppId = 'app-dealpulse' | 'projects' | 'app-keka';
 
 /**
  * Teams that work queues and notifications are addressed to. They use the
@@ -20,7 +20,7 @@ export interface Actor {
   roles: readonly string[];
 }
 
-// ---------- Sales Hub ----------
+// ---------- Deal Pulse ----------
 
 export type LeadStatus =
   'New' | 'Contacted' | 'Qualified' | 'Unqualified' | 'Converted';
@@ -225,7 +225,7 @@ export interface Task {
   completedAt?: string;
 }
 
-// ---------- People & HR ----------
+// ---------- Keka HR ----------
 
 export type EmploymentStatus = 'Active' | 'Probation' | 'Notice period';
 export type EmploymentType = 'Full-time' | 'Contract' | 'Intern';

@@ -116,13 +116,13 @@ describe('Projects list', () => {
 });
 
 describe('Task board', () => {
-  it('lets the Solutions team move a task that came from Sales Hub', async () => {
+  it('lets the Solutions team move a task that came from Deal Pulse', async () => {
     const { toasts } = renderAt('/tasks');
     const todo = await screen.findByRole('region', { name: 'To do' });
     const card = within(todo).getByRole('listitem', {
       name: 'Technical evaluation: Trident Bank fraud risk RFP',
     });
-    expect(within(card).getByText(/From Sales Hub · OP-1041/)).toBeDefined();
+    expect(within(card).getByText(/From Deal Pulse · OP-1041/)).toBeDefined();
 
     await act(async () =>
       fireEvent.change(within(card).getByRole('combobox'), {

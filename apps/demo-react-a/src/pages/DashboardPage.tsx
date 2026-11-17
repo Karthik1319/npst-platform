@@ -13,7 +13,7 @@ import { STAGE } from '@/ui/status';
 import { ACTIVITY_ICON, assigneeName } from '@/ui/tasks';
 import styles from './pages.module.css';
 
-/** Sales Hub home: pipeline figures, stage breakdown, follow-ups and recent activity. */
+/** Deal Pulse home: pipeline figures, stage breakdown, follow-ups and recent activity. */
 export function DashboardPage() {
   const [summary] = useLoad(salesService.summary);
   const [activity] = useLoad(

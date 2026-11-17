@@ -21,8 +21,8 @@ const NOTIFICATIONS: NotificationSeed[] = [
     description:
       'Proposal v2 for OP-1043 (₹3.8 Cr) needs management sign-off before the CDO review.',
     kind: 'warning',
-    appId: 'sales-hub',
-    link: '/sales/opportunities/OP-1043',
+    appId: 'app-dealpulse',
+    link: '/deal-pulse/opportunities/OP-1043',
     minutesAgo: 10,
   },
   {
@@ -31,8 +31,8 @@ const NOTIFICATIONS: NotificationSeed[] = [
     description:
       'Rahul Kulkarni moved “ABC Bank – Digital Banking Platform” to the Proposal stage.',
     kind: 'success',
-    appId: 'sales-hub',
-    link: '/sales/opportunities/OP-1043',
+    appId: 'app-dealpulse',
+    link: '/deal-pulse/opportunities/OP-1043',
     minutesAgo: 28,
   },
   {
@@ -51,8 +51,8 @@ const NOTIFICATIONS: NotificationSeed[] = [
     description:
       'Seven leave requests are pending. The oldest was submitted four days ago.',
     kind: 'info',
-    appId: 'people-hr',
-    link: '/people/leave',
+    appId: 'app-keka',
+    link: '/keka/leave',
     minutesAgo: 180,
   },
   {
@@ -61,8 +61,8 @@ const NOTIFICATIONS: NotificationSeed[] = [
     description:
       'Arjun Malhotra joins Engineering today. Laptop and access requests are complete.',
     kind: 'info',
-    appId: 'people-hr',
-    link: '/people/employees',
+    appId: 'app-keka',
+    link: '/keka/employees',
     minutesAgo: 24 * 60,
     read: true,
   },
@@ -73,8 +73,8 @@ const NOTIFICATIONS: NotificationSeed[] = [
     description:
       'Send the revised commercials for the UPI Switch Migration (OP-1038).',
     kind: 'warning',
-    appId: 'sales-hub',
-    link: '/sales/opportunities/OP-1038',
+    appId: 'app-dealpulse',
+    link: '/deal-pulse/opportunities/OP-1038',
     minutesAgo: 35,
   },
   {
@@ -83,8 +83,8 @@ const NOTIFICATIONS: NotificationSeed[] = [
     description:
       'Management will review the 12% discount for the ABC Bank proposal (OP-1043).',
     kind: 'info',
-    appId: 'sales-hub',
-    link: '/sales/opportunities/OP-1043',
+    appId: 'app-dealpulse',
+    link: '/deal-pulse/opportunities/OP-1043',
     minutesAgo: 95,
   },
   {
@@ -132,10 +132,10 @@ const NOTIFICATIONS: NotificationSeed[] = [
   {
     to: { team: 'EMPLOYEE' },
     title: 'Holiday calendar for 2027 published',
-    description: 'See People & HR for the list of company holidays.',
+    description: 'See Keka HR for the list of company holidays.',
     kind: 'info',
-    appId: 'people-hr',
-    link: '/people',
+    appId: 'app-keka',
+    link: '/keka',
     minutesAgo: 4 * 60,
   },
   {
@@ -144,8 +144,8 @@ const NOTIFICATIONS: NotificationSeed[] = [
     description:
       'Complete the annual training before Friday to keep system access.',
     kind: 'warning',
-    appId: 'people-hr',
-    link: '/people',
+    appId: 'app-keka',
+    link: '/keka',
     minutesAgo: 26 * 60,
   },
 ];
@@ -167,7 +167,7 @@ export function seedReminders(now: Date): StoredReminder[] {
       to: { team: 'ADMIN' },
       title: 'Review team leave requests',
       dueAt: dateTimeFrom(now, 1, 10),
-      link: '/people/leave',
+      link: '/keka/leave',
     },
     {
       id: 'R-2',
@@ -180,7 +180,7 @@ export function seedReminders(now: Date): StoredReminder[] {
       to: { team: 'SALES' },
       title: 'Update the weekly sales forecast',
       dueAt: dateTimeFrom(now, 1, 17),
-      link: '/sales',
+      link: '/deal-pulse',
     },
     {
       id: 'R-4',
@@ -208,10 +208,10 @@ type ActivitySeed = Omit<Activity, 'id' | 'at'> & { minutesAgo: number };
 const ACTIVITY: ActivitySeed[] = [
   {
     minutesAgo: 15,
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     actor: 'Rahul Kulkarni',
     text: 'Proposal v2 uploaded for “ABC Bank – Digital Banking Platform”',
-    link: '/sales/opportunities/OP-1043',
+    link: '/deal-pulse/opportunities/OP-1043',
   },
   {
     minutesAgo: 42,
@@ -222,24 +222,24 @@ const ACTIVITY: ActivitySeed[] = [
   },
   {
     minutesAgo: 60,
-    appId: 'people-hr',
+    appId: 'app-keka',
     actor: 'HR System',
     text: 'New employee “Arjun Malhotra” added to Engineering',
-    link: '/people/employees',
+    link: '/keka/employees',
   },
   {
     minutesAgo: 130,
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     actor: 'Sneha Patil',
     text: 'Lead “Granite Urban Co-op Bank” qualified',
-    link: '/sales/leads',
+    link: '/deal-pulse/leads',
   },
   {
     minutesAgo: 190,
-    appId: 'people-hr',
+    appId: 'app-keka',
     actor: 'Ritu Saxena',
     text: 'Approved 3 leave requests for Quality Assurance',
-    link: '/people/leave',
+    link: '/keka/leave',
   },
   {
     minutesAgo: 300,
@@ -250,10 +250,10 @@ const ACTIVITY: ActivitySeed[] = [
   },
   {
     minutesAgo: 24 * 60,
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     actor: 'Imran Shaikh',
     text: 'Opportunity “Trident Bank – Fraud Risk Management” assigned to Solutions',
-    link: '/sales/opportunities/OP-1041',
+    link: '/deal-pulse/opportunities/OP-1041',
   },
   {
     minutesAgo: 26 * 60,
@@ -271,10 +271,10 @@ const ACTIVITY: ActivitySeed[] = [
   },
   {
     minutesAgo: 4 * 24 * 60,
-    appId: 'sales-hub',
+    appId: 'app-dealpulse',
     actor: 'Sneha Patil',
     text: 'Deal won: Pinnacle Payments Bank – Merchant Acquiring (₹2.9 Cr)',
-    link: '/sales/opportunities/OP-1029',
+    link: '/deal-pulse/opportunities/OP-1029',
   },
 ];
 

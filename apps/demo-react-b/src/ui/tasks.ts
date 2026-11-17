@@ -27,7 +27,7 @@ export function canWorkOn(task: Task, user: PlatformUser): boolean {
 }
 
 export const APP_NAMES: Record<string, string> = {
-  'sales-hub': 'Sales Hub',
+  'app-dealpulse': 'Deal Pulse',
   projects: 'Projects & Delivery',
-  'people-hr': 'People & HR',
+  'app-keka': 'Keka HR',
 };

@@ -33,7 +33,7 @@ const TABS: { path: string; label: string; icon: IconName; exact: boolean }[] =
   ];
 
 /**
- * People & HR root: app title, page tabs and the routed page.
+ * Keka HR root: app title, page tabs and the routed page.
  *
  * Styles: this component's stylesheets are not encapsulated so every page can
  * use the same classes, but every rule is scoped below `.hr-app`, so nothing
@@ -55,7 +55,7 @@ const TABS: { path: string; label: string; icon: IconName; exact: boolean }[] =
 export class App implements OnDestroy {
   protected readonly props = inject(MFE_PROPS);
   protected readonly tabs = TABS;
-  protected readonly title = signal('People & HR');
+  protected readonly title = signal('Keka HR');
   private readonly router = inject(Router);
 
   constructor() {
@@ -74,7 +74,7 @@ export class App implements OnDestroy {
     return (
       TABS.find((tab) =>
         tab.exact ? path === tab.path : path.startsWith(tab.path),
-      )?.label ?? 'People & HR'
+      )?.label ?? 'Keka HR'
     );
   }
 

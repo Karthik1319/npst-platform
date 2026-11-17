@@ -123,7 +123,7 @@ export const mockRolePermissions: Readonly<Record<string, readonly string[]>> =
     // Teams in the stand-in business apps.
     ADMIN: [
       'access:projects',
-      'export:sales-hub',
+      'export:app-dealpulse',
       'create:lead',
       'edit:opportunity',
       'update:project-task',

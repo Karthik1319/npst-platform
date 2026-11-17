@@ -20,9 +20,9 @@ import {
 import type { PlatformUser } from '@npst/shared-contracts';
 
 /**
- * Sales Hub backend calls. All data access of this app goes through this file.
+ * Deal Pulse backend calls. All data access of this app goes through this file.
  * In the POC it calls the simulated backend; in production it calls the
- * Sales Hub API over HTTP (the browser sends the portal's session cookie, so
+ * Deal Pulse API over HTTP (the browser sends the portal's session cookie, so
  * no user or token is passed by the app).
  */
 export type {
@@ -61,8 +61,8 @@ export const salesService = {
     id: string,
   ): Promise<{ opportunity: Opportunity; customer: Customer } | null> =>
     salesApi.getOpportunity(id),
-  /** Every Sales Hub task: follow-ups of named people and the Sales team queue. */
-  tasks: (): Promise<Task[]> => workApi.list({ appId: 'sales-hub' }),
+  /** Every Deal Pulse task: follow-ups of named people and the Sales team queue. */
+  tasks: (): Promise<Task[]> => workApi.list({ appId: 'app-dealpulse' }),
   /** Tasks of any team linked to one opportunity (e.g. work requested from Solutions). */
   tasksFor: (opportunityId: string): Promise<Task[]> =>
     workApi.list({ opportunityId }),
