@@ -4,26 +4,29 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 
 ## Current status
 
-| Step | Title                                           | Status |
-| ---- | ----------------------------------------------- | ------ |
-| 0    | Check setup                                     | Done   |
-| 1    | Workspace                                       | Done   |
-| 2    | Shell app                                       | Done   |
-| 3    | Shared libs + platform contract                 | Done   |
-| 3b   | Mock login + RBAC (enhancement)                 | Done   |
-| 4    | First React remote                              | Done   |
-| 5    | Second React remote + Shell ↔ MFE communication | Done   |
-| 6    | Angular remote                                  | Done   |
-| 7    | Failure handling                                | Done   |
-| 8    | Bundling review                                 | Done   |
-| 9    | Runtime theme                                   | Done   |
-| 10   | Business portal: Portal Home dashboard          | Done   |
-| 11   | Sales Hub (React remote)                        | Done   |
-| 12   | Projects & Delivery (React remote)              | Done   |
-| 13   | People & HR (Angular remote)                    | Done   |
-| 14   | Cross-application workflow and demo polish      | Done   |
-| 15   | Integration guides                              | Done   |
-| 16   | Reverse proxy (NGINX) and one session           | Done   |
+| Step  | Title                                           | Status |
+| ----- | ----------------------------------------------- | ------ |
+| 0     | Check setup                                     | Done   |
+| 1     | Workspace                                       | Done   |
+| 2     | Shell app                                       | Done   |
+| 3     | Shared libs + platform contract                 | Done   |
+| 3b    | Mock login + RBAC (enhancement)                 | Done   |
+| 4     | First React remote                              | Done   |
+| 5     | Second React remote + Shell ↔ MFE communication | Done   |
+| 6     | Angular remote                                  | Done   |
+| 7     | Failure handling                                | Done   |
+| 8     | Bundling review                                 | Done   |
+| 9     | Runtime theme                                   | Done   |
+| 10    | Business portal: Portal Home dashboard          | Done   |
+| 11    | Sales Hub (React remote)                        | Done   |
+| 12    | Projects & Delivery (React remote)              | Done   |
+| 13    | People & HR (Angular remote)                    | Done   |
+| 14    | Cross-application workflow and demo polish      | Done   |
+| 15    | Integration guides                              | Done   |
+| 16    | Reverse proxy (NGINX) and one session           | Done   |
+| 17    | Admin Portal integration: baseline              | Done   |
+| 18    | Design system (his design, no UI library)       | Next   |
+| 19–24 | Admin Portal integration (see plan)             |        |
 
 ## Toolchain
 
@@ -970,3 +973,37 @@ No MFE talks to another in the browser: the hand-over happens in the (simulated)
 **Open decisions:** listed in `docs/reverse-proxy.md` (section 6) and `docs/single-session.md` (section 4: timeouts and CSRF, for the authentication work).
 
 **Next step:** none planned; implement the proxy and the real session together with the first real backend.
+
+## Direction change (after Step 16): the teammate's Admin Portal
+
+A teammate built the **NPST Shared Services Admin Portal** (React, Tailwind, shadcn/ui; mock data) separately. It becomes the portal's UI on this workspace's architecture. Plan, decisions and library list: `docs/admin-portal-integration.md`.
+
+## Step 17 – Admin Portal integration: baseline
+
+**Done:**
+
+- **Inspection:** his frontend is one React app for administering the shared platform services (applications, approvals, branding, notifications, reminders, employees, audit). It is not a set of business apps, has no micro-frontends and no tests. Its business applications (Keka HR, Deal Pulse, SkillUp Lounge, NPST Finance) become the portal's MFEs.
+- **Reference copy:** his source, unchanged, at commit `5905b7b`, in `reference/admin-portal-original/`. It is not built, not installed and not linted or formatted (`.nxignore`, `.prettierignore`, ESLint ignore).
+- **Left out:** his `.github` workflow (it force-pushes his repository to another repository with a secret token), Emergent crash recordings, and npm/yarn lock files.
+- **Original screenshots:** 33 shots (login; every page; the accessibility and bell overlays; light and dark) in `reference/screenshots/admin-portal-original/`. His app was built and run in a temporary folder outside the workspace, without its two Emergent editor packages and with install scripts disabled. No console errors.
+- **Plan document:** `docs/admin-portal-integration.md`, with the approved decisions, target architecture (Admin Portal and employee applications in one portal), the design-system approach, Branding Publish, steps, risks and the **library list for approval**.
+
+**Findings:**
+
+- **Libraries:** 13 libraries to add (data loading, forms, validation, dates, fonts), all compatible with React 19.3.1. Everything else of his is a UI library, an icon library, unused, or editor tooling, and is not adopted.
+- **Router:** his `react-router-dom` 7 imports all exist in the workspace's `react-router` 8.5.1, so no new router library is needed.
+- **Size:** his production build is one 1.3 MB JavaScript file (393 KB gzipped). It will be compared again after integration.
+
+**Files:**
+
+| File                                                | Purpose                                              |
+| --------------------------------------------------- | ---------------------------------------------------- |
+| `reference/admin-portal-original/**`                | His source, unchanged (reference only)               |
+| `reference/screenshots/admin-portal-original/*.jpg` | Original screenshots (design baseline)               |
+| `reference/README.md`                               | Source, commit, what was left out and why            |
+| `docs/admin-portal-integration.md`                  | Approved plan and library list                       |
+| `.nxignore`, `.prettierignore`, `eslint.config.mjs` | Keep the reference copy out of the workspace's tools |
+
+**Open issues:** the library list needs approval before Step 18 installs the fonts and Step 19 the data and form libraries.
+
+**Next step:** Step 18 – design system: his design as CSS variables and in-house components.

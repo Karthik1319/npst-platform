@@ -1,0 +1,497 @@
+import { addDays, subDays, subHours } from 'date-fns';
+import { extractVariables } from '@/utils/format';
+import type {
+  AuditEntry,
+  BrandingConfig,
+  BrandingVersion,
+  ChannelConfig,
+  EscalationLevel,
+  NotificationLog,
+  NotificationRule,
+  NotificationTemplate,
+  NpstApplication,
+  ReminderInstance,
+  ReminderPolicy,
+  ScheduleStep,
+  User,
+} from '@/types';
+import { NPST_DEFAULT_STYLE } from '@/utils/branding';
+
+const daysAgo = (n: number) => subDays(new Date(), n).toISOString();
+const hoursAgo = (n: number) => subHours(new Date(), n).toISOString();
+const daysAhead = (n: number) => addDays(new Date(), n).toISOString();
+
+export function seedApps(): NpstApplication[] {
+  return [
+    {
+      id: 'app-keka',
+      name: 'Keka HR',
+      code: 'KEKA-HR',
+      url: 'https://keka.npst.com',
+      description: 'Human capital management for 3,200+ NPST employees — payroll, attendance, leave and performance.',
+      color: '#2563EB',
+      status: 'active',
+      brandingStatus: 'published',
+      notificationStatus: 'integrated',
+      employees: 3200,
+      lastUpdated: daysAgo(1),
+    },
+    {
+      id: 'app-skillup',
+      name: 'SkillUp Lounge',
+      code: 'SKILLUP',
+      url: 'https://skillup.npst.com',
+      description: 'Enterprise learning platform hosting live cohorts, self-paced courses and certification tracks.',
+      color: '#0284C7',
+      status: 'active',
+      brandingStatus: 'published',
+      notificationStatus: 'partial',
+      employees: 1850,
+      lastUpdated: daysAgo(3),
+    },
+    {
+      id: 'app-finance',
+      name: 'NPST Finance',
+      code: 'NPST-FIN',
+      url: 'https://finance.npst.com',
+      description: 'Accounts payable, invoicing, expense claims and financial approvals for the finance organization.',
+      color: '#0F766E',
+      status: 'active',
+      brandingStatus: 'draft',
+      notificationStatus: 'partial',
+      employees: 240,
+      lastUpdated: daysAgo(5),
+    },
+    {
+      id: 'app-dealpulse',
+      name: 'Deal Pulse',
+      code: 'DEALPULSE',
+      url: 'https://deals.npst.com',
+      description: 'Sales pipeline intelligence tracking deals, quotes and revenue targets across regions.',
+      color: '#EA580C',
+      status: 'pending',
+      brandingStatus: 'not-configured',
+      notificationStatus: 'not-integrated',
+      employees: 120,
+      lastUpdated: daysAgo(9),
+    },
+  ];
+}
+
+const skillUpStyle = {
+  ...NPST_DEFAULT_STYLE,
+  primary: '#0E7490',
+  secondary: '#0284C7',
+  accent: '#22D3EE',
+  button: '#0E7490',
+  buttonHover: '#155E75',
+  fontFamily: 'Poppins',
+  radius: 14,
+  componentStyle: 'rounded' as const,
+};
+
+const corporateStyle = {
+  ...NPST_DEFAULT_STYLE,
+  primary: '#1D4ED8',
+  secondary: '#1E3A8A',
+  accent: '#60A5FA',
+  bg: '#EEF2FF',
+  sidebarBg: '#1E3A8A',
+  borderColor: '#C7D2FE',
+  button: '#1D4ED8',
+  buttonHover: '#1E40AF',
+  fontFamily: 'IBM Plex Sans',
+  radius: 8,
+  componentStyle: 'classic' as const,
+  shadow: 'sm' as const,
+};
+
+export function seedBrandingConfigs(): BrandingConfig[] {
+  return [
+    {
+      ...NPST_DEFAULT_STYLE,
+      id: 'cfg-keka',
+      appId: 'app-keka',
+      assets: {},
+      status: 'published',
+      version: 3,
+      lastPublished: daysAgo(2),
+      updatedBy: 'admin@npst.com',
+      updatedAt: daysAgo(2),
+    },
+    {
+      ...skillUpStyle,
+      id: 'cfg-skillup',
+      appId: 'app-skillup',
+      assets: {},
+      status: 'published',
+      version: 2,
+      lastPublished: daysAgo(6),
+      updatedBy: 'sneha.iyer@npst.com',
+      updatedAt: daysAgo(6),
+    },
+    {
+      ...corporateStyle,
+      id: 'cfg-finance',
+      appId: 'app-finance',
+      assets: {},
+      status: 'draft',
+      version: 1,
+      lastPublished: daysAgo(30),
+      updatedBy: 'admin@npst.com',
+      updatedAt: daysAgo(1),
+    },
+  ];
+}
+
+export function seedBrandingVersions(): BrandingVersion[] {
+  return [
+    { id: 'ver-keka-3', appId: 'app-keka', version: 3, modifiedBy: 'admin@npst.com', modifiedDate: daysAgo(2), publishedBy: 'admin@npst.com', status: 'published', style: NPST_DEFAULT_STYLE },
+    { id: 'ver-keka-2', appId: 'app-keka', version: 2, modifiedBy: 'priya.nair@npst.com', modifiedDate: daysAgo(16), publishedBy: 'admin@npst.com', status: 'archived', style: corporateStyle },
+    { id: 'ver-keka-1', appId: 'app-keka', version: 1, modifiedBy: 'admin@npst.com', modifiedDate: daysAgo(41), publishedBy: 'admin@npst.com', status: 'archived', style: { ...NPST_DEFAULT_STYLE, componentStyle: 'minimal', shadow: 'none', radius: 4, fontFamily: 'DM Sans' } },
+    { id: 'ver-skillup-2', appId: 'app-skillup', version: 2, modifiedBy: 'sneha.iyer@npst.com', modifiedDate: daysAgo(6), publishedBy: 'admin@npst.com', status: 'published', style: skillUpStyle },
+    { id: 'ver-skillup-1', appId: 'app-skillup', version: 1, modifiedBy: 'admin@npst.com', modifiedDate: daysAgo(28), publishedBy: 'admin@npst.com', status: 'archived', style: { ...skillUpStyle, fontFamily: 'Inter', radius: 10, componentStyle: 'modern' } },
+    { id: 'ver-finance-1', appId: 'app-finance', version: 1, modifiedBy: 'admin@npst.com', modifiedDate: daysAgo(30), publishedBy: 'admin@npst.com', status: 'published', style: corporateStyle },
+  ];
+}
+
+export function seedTemplates(): NotificationTemplate[] {
+  const t = (
+    id: string,
+    name: string,
+    code: string,
+    appId: string,
+    category: NotificationTemplate['category'],
+    channel: NotificationTemplate['channel'],
+    subject: string,
+    body: string,
+    priority: NotificationTemplate['priority'],
+    status: NotificationTemplate['status'],
+    ageDays: number,
+  ): NotificationTemplate => ({
+    id,
+    name,
+    code,
+    appId,
+    category,
+    channel,
+    channels: [channel],
+    subject,
+    body,
+    variables: extractVariables(`${subject} ${body}`),
+    priority,
+    status,
+    createdAt: daysAgo(ageDays + 30),
+    updatedAt: daysAgo(ageDays),
+  });
+
+  return [
+    t('tpl-1', 'Keka — New Hire Welcome', 'KEKA-WELCOME', 'app-keka', 'welcome', 'email', 'Welcome to Keka HR, {{employeeName}}!', 'Hi {{employeeName}},\n\nYour Keka HR account is ready. Sign in at https://keka.npst.com to complete your profile and review the onboarding checklist.\n\nYour reporting manager is {{managerName}}.\n\n— NPST Shared Services', 'medium', 'active', 2),
+    t('tpl-2', 'Keka — Leave Balance Low', 'KEKA-LEAVE-LOW', 'app-keka', 'reminder', 'inapp', 'Low leave balance ahead of {{dueDate}}', 'Hi {{employeeName}}, your accrued leave balance resets on {{dueDate}}. Plan upcoming time off with {{managerName}}.', 'low', 'active', 8),
+    t('tpl-3', 'Finance — Payslip Ready', 'FIN-PAYSLIP', 'app-finance', 'announcement', 'email', 'Payslip for {{dueDate}} is ready', 'Hi {{employeeName}}, your payslip has been published to NPST Finance. Download it from Payroll → Documents.', 'medium', 'active', 9),
+    t('tpl-4', 'Finance — Approval Pending', 'FIN-APPROVAL', 'app-finance', 'approval', 'inapp', 'Approval pending: {{taskName}}', 'Hi {{employeeName}}, an approval for {{taskName}} of {{amount}} is awaiting your action since {{dueDate}}. Please review to avoid escalation.', 'high', 'active', 4),
+    t('tpl-5', 'SkillUp — Course Due Soon', 'SKILL-COURSE-DUE', 'app-skillup', 'reminder', 'push', 'Course due on {{dueDate}}', '{{taskName}} is due on {{dueDate}}. Complete it to keep your certification track on schedule.', 'medium', 'active', 6),
+    t('tpl-6', 'SkillUp — Live Session Invite', 'SKILL-SESSION', 'app-skillup', 'announcement', 'email', 'Live session invite: {{taskName}}', 'Hi {{employeeName}}, you are enrolled in {{taskName}} starting {{dueDate}}. Add it to your calendar.', 'low', 'active', 12),
+    t('tpl-7', 'Deal Pulse — Deal Stage Update', 'DP-STAGE', 'app-dealpulse', 'alert', 'push', '{{taskName}} moved stage', 'Deal {{taskName}} worth {{amount}} changed stage. Open Deal Pulse for the latest pipeline position.', 'medium', 'active', 15),
+    t('tpl-8', 'Deal Pulse — Quote Expiry', 'DP-QUOTE-EXPIRY', 'app-dealpulse', 'alert', 'sms', 'Quote {{taskName}} expires {{dueDate}}', 'Quote of {{amount}} linked to {{taskName}} expires on {{dueDate}}. Renew it from Deal Pulse.', 'high', 'active', 15),
+    t('tpl-9', 'Finance — Tax Declaration Due', 'FIN-TAX-DUE', 'app-finance', 'reminder', 'email', 'Tax declaration due on {{dueDate}}', 'Hi {{employeeName}}, submit your tax declarations before {{dueDate}} to avoid payroll deductions.', 'medium', 'inactive', 21),
+  ];
+}
+
+export function seedRules(): NotificationRule[] {
+  return [
+    { id: 'rule-1', name: 'New Hire Welcome Blast', appId: 'app-keka', triggerEvent: 'employee-onboarding', recipient: 'employee', channels: ['email', 'inapp'], priority: 'medium', templateId: 'tpl-1', conditions: 'Fires on Day 0 of onboarding; skips contractors and interns', status: 'active', createdAt: daysAgo(30) },
+    { id: 'rule-2', name: 'Stale Approval Escalation', appId: 'app-finance', triggerEvent: 'approval-pending', recipient: 'approver', channels: ['inapp', 'email'], priority: 'high', templateId: 'tpl-4', conditions: 'Fires after 24h without action; repeats every 48h until cleared', status: 'active', createdAt: daysAgo(24) },
+    { id: 'rule-3', name: 'Certification Deadline Nudge', appId: 'app-skillup', triggerEvent: 'course-due', recipient: 'employee', channels: ['push'], priority: 'medium', templateId: 'tpl-5', conditions: 'Active cohorts only; suppressed once the course is completed', status: 'active', createdAt: daysAgo(20) },
+    { id: 'rule-4', name: 'Payslip Publication', appId: 'app-finance', triggerEvent: 'payment-received', recipient: 'employee', channels: ['email'], priority: 'low', templateId: 'tpl-3', conditions: 'Fires when the monthly payroll run completes', status: 'active', createdAt: daysAgo(18) },
+    { id: 'rule-5', name: 'Expiring Document Alert', appId: 'app-keka', triggerEvent: 'document-expiring', recipient: 'manager', channels: ['inapp'], priority: 'medium', templateId: 'tpl-2', conditions: 'Documents expiring within the next 30 days', status: 'active', createdAt: daysAgo(12) },
+    { id: 'rule-6', name: 'Deal Stage Notifications', appId: 'app-dealpulse', triggerEvent: 'deal-stage-change', recipient: 'manager', channels: ['push', 'sms'], priority: 'high', templateId: 'tpl-7', conditions: 'Deals above ₹5,00,000 only', status: 'inactive', createdAt: daysAgo(10) },
+  ];
+}
+
+export function seedChannels(): ChannelConfig[] {
+  return [
+    { id: 'ch-inapp', key: 'inapp', name: 'In-App Notifications', description: 'Real-time alerts rendered inside each integrated application.', enabled: true, configured: true, fields: { 'Retention (days)': '30', 'Bundle across apps': 'Enabled', 'Quiet hours': 'None' } },
+    { id: 'ch-email', key: 'email', name: 'Email (SMTP)', description: 'Transactional email relay for templates routed to the email channel.', enabled: true, configured: true, fields: { 'Sender name': 'NPST Shared Services', 'SMTP host': 'smtp.npst.com', 'Daily limit': '50,000' } },
+    { id: 'ch-sms', key: 'sms', name: 'SMS Gateway', description: 'High-priority text alerts via the NPST SMS provider.', enabled: false, configured: false, fields: { Provider: 'MSG91', Route: 'Transactional', 'Daily limit': '10,000' } },
+    { id: 'ch-push', key: 'push', name: 'Push Notifications', description: 'Mobile and desktop push delivered through the shared FCM project.', enabled: true, configured: true, fields: { Platform: 'Firebase Cloud Messaging', Project: 'npst-shared-prod', 'Daily limit': '25,000' } },
+  ];
+}
+
+const LOG_SEED: Array<[string, string, string, NotificationLog['channel'], NotificationLog['status'], NotificationLog['priority'], number, string]> = [
+  ['priya.sharma@npst.com', 'app-keka', 'Keka — New Hire Welcome', 'email', 'delivered', 'medium', 2, 'Welcome mail sent for onboarding Day 0'],
+  ['rohit.k@npst.com', 'app-finance', 'Finance — Approval Pending', 'inapp', 'delivered', 'high', 4, 'Approval for Vendor Payment #2231 is pending'],
+  ['aisha.khan@npst.com', 'app-skillup', 'SkillUp — Course Due Soon', 'push', 'delivered', 'medium', 6, 'Nudge for React Advanced cohort'],
+  ['finance-team@npst.com', 'app-finance', 'Finance — Payslip Ready', 'email', 'delivered', 'medium', 9, 'January payslips published to payroll'],
+  ['vikram.d@npst.com', 'app-finance', 'Finance — Approval Pending', 'inapp', 'failed', 'high', 12, 'Recipient mailbox unreachable'],
+  ['arjun.rao@npst.com', 'app-keka', 'Keka — Leave Balance Low', 'inapp', 'delivered', 'low', 16, 'Leave balance below 4 days'],
+  ['sales-west@npst.com', 'app-dealpulse', 'Deal Pulse — Deal Stage Update', 'push', 'delivered', 'medium', 20, 'Deal stage moved to Negotiation'],
+  ['neha.k@npst.com', 'app-keka', 'Keka — New Hire Welcome', 'email', 'delivered', 'medium', 26, 'Welcome mail sent for onboarding Day 0'],
+  ['aisha.khan@npst.com', 'app-skillup', 'SkillUp — Live Session Invite', 'email', 'pending', 'low', 30, 'Queued for the next send window'],
+  ['rohit.k@npst.com', 'app-finance', 'Finance — Tax Declaration Due', 'email', 'delivered', 'medium', 34, 'Tax declaration reminder'],
+  ['manager-west@npst.com', 'app-dealpulse', 'Deal Pulse — Quote Expiry', 'sms', 'delivered', 'high', 40, 'Quote NP-1147 expires in 48h'],
+  ['sneha.i@npst.com', 'app-skillup', 'SkillUp — Course Due Soon', 'push', 'failed', 'medium', 47, 'Device token expired'],
+  ['priya.sharma@npst.com', 'app-keka', 'Keka — Leave Balance Low', 'inapp', 'delivered', 'low', 54, 'Leave balance below 4 days'],
+  ['payroll@npst.com', 'app-finance', 'Finance — Approval Pending', 'email', 'delivered', 'high', 60, 'Escalation reminder for pending approvals'],
+  ['arjun.rao@npst.com', 'app-keka', 'Keka — New Hire Welcome', 'email', 'delivered', 'medium', 66, 'Welcome mail sent for onboarding Day 0'],
+  ['sales-west@npst.com', 'app-dealpulse', 'Deal Pulse — Quote Expiry', 'sms', 'pending', 'high', 72, 'Awaiting carrier acknowledgement'],
+  ['neha.k@npst.com', 'app-skillup', 'SkillUp — Live Session Invite', 'email', 'delivered', 'low', 80, 'Live session invite for Advanced Excel'],
+  ['finance-team@npst.com', 'app-finance', 'Finance — Payslip Ready', 'email', 'delivered', 'medium', 88, 'December payslips published to payroll'],
+  ['rohit.k@npst.com', 'app-finance', 'Finance — Approval Pending', 'inapp', 'delivered', 'high', 96, 'Approval for Vendor Payment #2218 is pending'],
+  ['aisha.khan@npst.com', 'app-skillup', 'SkillUp — Course Due Soon', 'push', 'delivered', 'medium', 104, 'Nudge for Data Analytics cohort'],
+  ['vikram.d@npst.com', 'app-finance', 'Finance — Tax Declaration Due', 'email', 'failed', 'medium', 112, 'SMTP relay 550 mailbox error'],
+  ['priya.sharma@npst.com', 'app-keka', 'Keka — Leave Balance Low', 'inapp', 'delivered', 'low', 118, 'Leave balance below 4 days'],
+  ['manager-west@npst.com', 'app-dealpulse', 'Deal Pulse — Deal Stage Update', 'push', 'delivered', 'medium', 126, 'Deal stage moved to Proposal'],
+  ['sneha.i@npst.com', 'app-skillup', 'SkillUp — Live Session Invite', 'email', 'delivered', 'low', 132, 'Live session invite for Leadership 101'],
+  ['arjun.rao@npst.com', 'app-keka', 'Keka — New Hire Welcome', 'email', 'delivered', 'medium', 140, 'Welcome mail sent for onboarding Day 0'],
+  ['payroll@npst.com', 'app-finance', 'Finance — Approval Pending', 'email', 'delivered', 'high', 148, 'Escalation reminder for pending approvals'],
+  ['sales-west@npst.com', 'app-dealpulse', 'Deal Pulse — Quote Expiry', 'sms', 'failed', 'high', 156, 'Invalid recipient number'],
+  ['neha.k@npst.com', 'app-keka', 'Keka — Leave Balance Low', 'inapp', 'pending', 'low', 162, 'Queued for the next send window'],
+];
+
+export function seedNotifLogs(): NotificationLog[] {
+  return LOG_SEED.map(([recipient, appId, templateName, channel, status, priority, hours, message], i) => ({
+    id: `nlog-${i + 1}`,
+    recipient,
+    appId,
+    templateName,
+    channel,
+    status,
+    priority,
+    sentAt: hoursAgo(hours),
+    message,
+  }));
+}
+
+const step = (policyId: string, day: number, label: string, type: ScheduleStep['type'], recipient: string, channels: ScheduleStep['channels']): ScheduleStep => ({
+  id: `${policyId}-d${day}`,
+  day,
+  label,
+  type,
+  recipient,
+  channels,
+});
+
+export function seedPolicies(): ReminderPolicy[] {
+  return [
+    {
+      id: 'pol-approval',
+      name: 'Pending Approval Follow-up',
+      code: 'REM-001',
+      appId: 'app-finance',
+      description: 'Chases approvers until finance approvals are cleared or escalated to the administrator.',
+      triggerEvent: 'approval-pending',
+      triggerDate: daysAhead(1),
+      frequency: 'daily',
+      firstReminderAfter: 1,
+      repeatInterval: 1,
+      maxCount: 5,
+      recipient: 'approver',
+      channels: ['inapp', 'email'],
+      priority: 'high',
+      status: 'active',
+      schedule: [
+        step('pol-approval', 0, 'Initial notification', 'initial', 'Approver', ['inapp', 'email']),
+        step('pol-approval', 1, 'First reminder', 'reminder', 'Approver', ['inapp']),
+        step('pol-approval', 3, 'Second reminder', 'reminder', 'Approver', ['inapp', 'email']),
+        step('pol-approval', 5, 'Escalate to Manager', 'escalation', 'Reporting Manager', ['email']),
+        step('pol-approval', 7, 'Escalate to Admin', 'escalation', 'Administrator', ['email', 'inapp']),
+      ],
+      createdAt: daysAgo(45),
+    },
+    {
+      id: 'pol-onboard-docs',
+      name: 'Onboarding Document Collection',
+      code: 'REM-002',
+      appId: 'app-keka',
+      description: 'Collects pending KYC documents from new joiners until their file is complete.',
+      triggerEvent: 'employee-onboarding',
+      triggerDate: daysAhead(3),
+      frequency: 'weekly',
+      firstReminderAfter: 3,
+      repeatInterval: 7,
+      maxCount: 4,
+      recipient: 'employee',
+      channels: ['email', 'inapp'],
+      priority: 'medium',
+      status: 'active',
+      schedule: [
+        step('pol-onboard-docs', 0, 'Initial notification', 'initial', 'Employee', ['email']),
+        step('pol-onboard-docs', 3, 'First reminder', 'reminder', 'Employee', ['email', 'inapp']),
+        step('pol-onboard-docs', 10, 'Second reminder', 'reminder', 'Employee', ['inapp']),
+        step('pol-onboard-docs', 17, 'Escalate to Manager', 'escalation', 'Reporting Manager', ['email']),
+      ],
+      createdAt: daysAgo(38),
+    },
+    {
+      id: 'pol-course',
+      name: 'Course Completion Nudge',
+      code: 'REM-003',
+      appId: 'app-skillup',
+      description: 'Nudges learners with courses due in active certification cohorts.',
+      triggerEvent: 'course-due',
+      triggerDate: daysAhead(2),
+      frequency: 'daily',
+      firstReminderAfter: 1,
+      repeatInterval: 2,
+      maxCount: 3,
+      recipient: 'employee',
+      channels: ['push', 'inapp'],
+      priority: 'medium',
+      status: 'active',
+      schedule: [
+        step('pol-course', 0, 'Initial notification', 'initial', 'Employee', ['push']),
+        step('pol-course', 2, 'First reminder', 'reminder', 'Employee', ['push', 'inapp']),
+        step('pol-course', 6, 'Escalate to Manager', 'escalation', 'Reporting Manager', ['email']),
+      ],
+      createdAt: daysAgo(30),
+    },
+    {
+      id: 'pol-payment',
+      name: 'Invoice Payment Due',
+      code: 'REM-004',
+      appId: 'app-finance',
+      description: 'Reminds vendors and finance of upcoming invoice due dates with a strict escalation ladder.',
+      triggerEvent: 'payment-received',
+      triggerDate: daysAhead(5),
+      frequency: 'monthly',
+      firstReminderAfter: 5,
+      repeatInterval: 10,
+      maxCount: 3,
+      recipient: 'approver',
+      channels: ['email', 'sms'],
+      priority: 'critical',
+      status: 'active',
+      schedule: [
+        step('pol-payment', 0, 'Initial notification', 'initial', 'Approver', ['email']),
+        step('pol-payment', 5, 'Due date reminder', 'reminder', 'Approver', ['email', 'sms']),
+        step('pol-payment', 15, 'Escalate to Dept Head', 'escalation', 'Department Head', ['email']),
+        step('pol-payment', 25, 'Escalate to Admin', 'escalation', 'Administrator', ['email']),
+      ],
+      createdAt: daysAgo(60),
+    },
+    {
+      id: 'pol-deal',
+      name: 'Deal Follow-up Cadence',
+      code: 'REM-005',
+      appId: 'app-dealpulse',
+      description: 'Keeps sales managers following up on stalled deals every two days.',
+      triggerEvent: 'deal-stage-change',
+      triggerDate: daysAhead(4),
+      frequency: 'custom',
+      customDays: 2,
+      firstReminderAfter: 2,
+      repeatInterval: 2,
+      maxCount: 4,
+      recipient: 'manager',
+      channels: ['push', 'email'],
+      priority: 'medium',
+      status: 'active',
+      schedule: [
+        step('pol-deal', 0, 'Initial notification', 'initial', 'Reporting Manager', ['push']),
+        step('pol-deal', 2, 'First reminder', 'reminder', 'Reporting Manager', ['push']),
+        step('pol-deal', 4, 'Second reminder', 'reminder', 'Reporting Manager', ['push', 'email']),
+        step('pol-deal', 6, 'Escalate to Admin', 'escalation', 'Administrator', ['email']),
+      ],
+      createdAt: daysAgo(22),
+    },
+    {
+      id: 'pol-probation',
+      name: 'Probation Review Reminder',
+      code: 'REM-006',
+      appId: 'app-keka',
+      description: 'One-time alert before probation end-date reviews fall due.',
+      triggerEvent: 'task-due',
+      triggerDate: daysAhead(10),
+      frequency: 'one-time',
+      firstReminderAfter: 7,
+      repeatInterval: 0,
+      maxCount: 1,
+      recipient: 'manager',
+      channels: ['email'],
+      priority: 'low',
+      status: 'inactive',
+      schedule: [
+        step('pol-probation', 0, 'Initial notification', 'initial', 'Reporting Manager', ['email']),
+        step('pol-probation', 7, 'Escalate to Dept Head', 'escalation', 'Department Head', ['email']),
+      ],
+      createdAt: daysAgo(14),
+    },
+  ];
+}
+
+export function seedEscalations(): EscalationLevel[] {
+  return [
+    { id: 'esc-1', policyId: 'pol-approval', appId: 'app-finance', level: 1, triggerCondition: 'No action after the first reminder', timeAfterDue: 1, recipient: 'Employee', channels: ['inapp'], message: 'Reminder: {{taskName}} approval is still pending your action.' },
+    { id: 'esc-2', policyId: 'pol-approval', appId: 'app-finance', level: 2, triggerCondition: 'Approval pending beyond 3 days', timeAfterDue: 3, recipient: 'Reporting Manager', channels: ['email'], message: 'Escalation: {{employeeName}} has an approval pending for 3+ days.' },
+    { id: 'esc-3', policyId: 'pol-approval', appId: 'app-finance', level: 3, triggerCondition: 'Approval pending beyond 5 days', timeAfterDue: 5, recipient: 'Department Head', channels: ['email', 'inapp'], message: 'Escalation L3: finance approval {{taskName}} is blocking the month-end close.' },
+    { id: 'esc-4', policyId: 'pol-approval', appId: 'app-finance', level: 4, triggerCondition: 'Approval pending beyond 7 days', timeAfterDue: 7, recipient: 'Administrator', channels: ['email'], message: 'Final escalation: unapproved item {{taskName}} for 7+ days.' },
+    { id: 'esc-5', policyId: 'pol-payment', appId: 'app-finance', level: 1, triggerCondition: 'Invoice unpaid 2 days past due', timeAfterDue: 2, recipient: 'Approver', channels: ['email'], message: 'Invoice {{taskName}} of {{amount}} crossed its due date.' },
+    { id: 'esc-6', policyId: 'pol-payment', appId: 'app-finance', level: 2, triggerCondition: 'Invoice unpaid 5 days past due', timeAfterDue: 5, recipient: 'Department Head', channels: ['email', 'sms'], message: 'Escalation: vendor payment {{taskName}} is 5 days overdue.' },
+    { id: 'esc-7', policyId: 'pol-payment', appId: 'app-finance', level: 3, triggerCondition: 'Invoice unpaid 10 days past due', timeAfterDue: 10, recipient: 'Administrator', channels: ['email'], message: 'Final escalation: vendor payment {{taskName}} overdue by 10 days.' },
+  ];
+}
+
+export function seedReminders(): ReminderInstance[] {
+  return [
+    { id: 'rmd-1', policyId: 'pol-approval', policyName: 'Pending Approval Follow-up', appId: 'app-finance', recipient: 'rohit.k@npst.com', scheduledDate: daysAgo(2), nextReminderDate: daysAhead(0), escalationLevel: 1, sentCount: 2, maxCount: 5, status: 'pending' },
+    { id: 'rmd-2', policyId: 'pol-approval', policyName: 'Pending Approval Follow-up', appId: 'app-finance', recipient: 'payroll@npst.com', scheduledDate: daysAgo(1), nextReminderDate: daysAhead(1), escalationLevel: 0, sentCount: 1, maxCount: 5, status: 'pending' },
+    { id: 'rmd-3', policyId: 'pol-approval', policyName: 'Pending Approval Follow-up', appId: 'app-finance', recipient: 'vikram.d@npst.com', scheduledDate: daysAgo(6), nextReminderDate: daysAgo(1), escalationLevel: 3, sentCount: 5, maxCount: 5, status: 'overdue' },
+    { id: 'rmd-4', policyId: 'pol-onboard-docs', policyName: 'Onboarding Document Collection', appId: 'app-keka', recipient: 'priya.sharma@npst.com', scheduledDate: daysAgo(4), nextReminderDate: daysAhead(3), escalationLevel: 1, sentCount: 2, maxCount: 4, status: 'pending' },
+    { id: 'rmd-5', policyId: 'pol-onboard-docs', policyName: 'Onboarding Document Collection', appId: 'app-keka', recipient: 'neha.k@npst.com', scheduledDate: daysAgo(12), nextReminderDate: daysAgo(2), escalationLevel: 2, sentCount: 4, maxCount: 4, status: 'overdue' },
+    { id: 'rmd-6', policyId: 'pol-onboard-docs', policyName: 'Onboarding Document Collection', appId: 'app-keka', recipient: 'arjun.rao@npst.com', scheduledDate: daysAgo(20), nextReminderDate: daysAgo(20), escalationLevel: 0, sentCount: 4, maxCount: 4, status: 'completed' },
+    { id: 'rmd-7', policyId: 'pol-course', policyName: 'Course Completion Nudge', appId: 'app-skillup', recipient: 'aisha.khan@npst.com', scheduledDate: daysAgo(1), nextReminderDate: daysAhead(1), escalationLevel: 0, sentCount: 1, maxCount: 3, status: 'pending' },
+    { id: 'rmd-8', policyId: 'pol-course', policyName: 'Course Completion Nudge', appId: 'app-skillup', recipient: 'sneha.i@npst.com', scheduledDate: daysAgo(8), nextReminderDate: daysAgo(2), escalationLevel: 1, sentCount: 3, maxCount: 3, status: 'overdue' },
+    { id: 'rmd-9', policyId: 'pol-course', policyName: 'Course Completion Nudge', appId: 'app-skillup', recipient: 'rahul.v@npst.com', scheduledDate: daysAgo(5), nextReminderDate: daysAgo(5), escalationLevel: 0, sentCount: 3, maxCount: 3, status: 'completed' },
+    { id: 'rmd-10', policyId: 'pol-payment', policyName: 'Invoice Payment Due', appId: 'app-finance', recipient: 'finance-team@npst.com', scheduledDate: daysAgo(10), nextReminderDate: daysAhead(5), escalationLevel: 0, sentCount: 1, maxCount: 3, status: 'pending' },
+    { id: 'rmd-11', policyId: 'pol-payment', policyName: 'Invoice Payment Due', appId: 'app-finance', recipient: 'payroll@npst.com', scheduledDate: daysAgo(25), nextReminderDate: daysAgo(3), escalationLevel: 2, sentCount: 3, maxCount: 3, status: 'overdue' },
+    { id: 'rmd-12', policyId: 'pol-payment', policyName: 'Invoice Payment Due', appId: 'app-finance', recipient: 'vikram.d@npst.com', scheduledDate: daysAgo(40), nextReminderDate: daysAgo(40), escalationLevel: 1, sentCount: 3, maxCount: 3, status: 'completed' },
+    { id: 'rmd-13', policyId: 'pol-deal', policyName: 'Deal Follow-up Cadence', appId: 'app-dealpulse', recipient: 'manager-west@npst.com', scheduledDate: daysAgo(3), nextReminderDate: daysAhead(1), escalationLevel: 1, sentCount: 2, maxCount: 4, status: 'pending' },
+    { id: 'rmd-14', policyId: 'pol-deal', policyName: 'Deal Follow-up Cadence', appId: 'app-dealpulse', recipient: 'sales-west@npst.com', scheduledDate: daysAgo(9), nextReminderDate: daysAgo(9), escalationLevel: 2, sentCount: 4, maxCount: 4, status: 'completed' },
+    { id: 'rmd-15', policyId: 'pol-probation', policyName: 'Probation Review Reminder', appId: 'app-keka', recipient: 'manager-west@npst.com', scheduledDate: daysAhead(10), nextReminderDate: daysAhead(10), escalationLevel: 0, sentCount: 0, maxCount: 1, status: 'pending' },
+  ];
+}
+
+export function seedUsers(): User[] {
+  return [
+    { id: 'user-1', name: 'Aarav Mehta', email: 'admin@npst.com', role: 'Super Admin', apps: ['app-keka', 'app-skillup', 'app-finance', 'app-dealpulse'], status: 'active', lastLogin: hoursAgo(1) },
+    { id: 'user-2', name: 'Priya Nair', email: 'priya.nair@npst.com', role: 'Admin', apps: ['app-keka', 'app-skillup', 'app-finance', 'app-dealpulse'], status: 'active', lastLogin: hoursAgo(5) },
+    { id: 'user-3', name: 'Rohit Kulkarni', email: 'rohit.kulkarni@npst.com', role: 'Application Admin', apps: ['app-keka'], status: 'active', lastLogin: daysAgo(1) },
+    { id: 'user-4', name: 'Sneha Iyer', email: 'sneha.iyer@npst.com', role: 'Application Admin', apps: ['app-skillup'], status: 'active', lastLogin: daysAgo(2) },
+    { id: 'user-5', name: 'Vikram Desai', email: 'vikram.desai@npst.com', role: 'Application Admin', apps: ['app-finance'], status: 'active', lastLogin: daysAgo(3) },
+    { id: 'user-6', name: 'Arjun Rao', email: 'arjun.rao@npst.com', role: 'Employee', apps: ['app-keka', 'app-skillup'], status: 'active', lastLogin: daysAgo(6) },
+    { id: 'user-7', name: 'Neha Kapoor', email: 'neha.kapoor@npst.com', role: 'Employee', apps: ['app-keka'], status: 'active', lastLogin: daysAgo(8) },
+    { id: 'user-8', name: 'Karan Malhotra', email: 'karan.malhotra@npst.com', role: 'Admin', apps: ['app-dealpulse'], status: 'inactive', lastLogin: daysAgo(21) },
+  ];
+}
+
+export function seedAuditLogs(): AuditEntry[] {
+  const entry = (
+    i: number,
+    user: string,
+    module: string,
+    action: string,
+    appId: string,
+    hours: number,
+    status: AuditEntry['status'] = 'success',
+  ): AuditEntry => ({ id: `aud-${i}`, user, module, action, appId, timestamp: hoursAgo(hours), ip: '10.24.8.41', status });
+
+  return [
+    entry(1, 'admin@npst.com', 'UI Branding', 'Published theme v3 for Keka HR', 'app-keka', 2),
+    entry(2, 'admin@npst.com', 'Notifications', 'Created template "Finance — Approval Pending"', 'app-finance', 4),
+    entry(3, 'rohit.kulkarni@npst.com', 'Reminders', 'Updated escalation levels for Pending Approval Follow-up', 'app-finance', 6),
+    entry(4, 'priya.nair@npst.com', 'Users', 'Assigned Application Admin role to Vikram Desai', 'app-finance', 9),
+    entry(5, 'admin@npst.com', 'Applications', 'Disabled integration for Deal Pulse', 'app-dealpulse', 12),
+    entry(6, 'sneha.iyer@npst.com', 'Notifications', 'Activated channel Push Notifications', 'app-skillup', 16),
+    entry(7, 'admin@npst.com', 'UI Branding', 'Submitted draft theme for approval — NPST Finance', 'app-finance', 20),
+    entry(8, 'admin@npst.com', 'Reminders', 'Created reminder policy "Invoice Payment Due"', 'app-finance', 26),
+    entry(9, 'rohit.kulkarni@npst.com', 'Notifications', 'Disabled rule "Expiring Document Alert"', 'app-keka', 34),
+    entry(10, 'priya.nair@npst.com', 'Users', 'Deactivated user Karan Malhotra', 'app-dealpulse', 41),
+    entry(11, 'admin@npst.com', 'UI Branding', 'Restored version 2 for Keka HR', 'app-keka', 47),
+    entry(12, 'vikram.desai@npst.com', 'Notifications', 'Duplicated template "Finance — Payslip Ready"', 'app-finance', 54),
+    entry(13, 'admin@npst.com', 'Applications', 'Added application Deal Pulse', 'app-dealpulse', 62),
+    entry(14, 'sneha.iyer@npst.com', 'Reminders', 'Modified reminder intervals for Course Completion Nudge', 'app-skillup', 72),
+    entry(15, 'admin@npst.com', 'Settings', 'Regenerated Shared Services API key', 'Portal', 88),
+    entry(16, 'admin@npst.com', 'Settings', 'Failed sign-in attempt from unknown device', 'Portal', 90, 'failed'),
+  ];
+}
