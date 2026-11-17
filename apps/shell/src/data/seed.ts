@@ -29,7 +29,7 @@ export function seedApps(): NpstApplication[] {
       code: 'KEKA-HR',
       url: 'https://keka.npst.com',
       description:
-        'Human capital management for 3,200+ NPST employees — payroll, attendance, leave and performance.',
+        'Human capital management for 500+ NPST employees — payroll, attendance, leave and performance.',
       color: '#2563EB',
       status: 'active',
       brandingStatus: 'published',

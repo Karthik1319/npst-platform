@@ -145,7 +145,7 @@ export const mockApps: readonly PortalApp[] = [
     id: 'app-keka',
     name: 'Keka HR',
     description:
-      'Human capital management for 3,200+ NPST employees — payroll, attendance, leave and performance.',
+      'Human capital management for 500+ NPST employees — payroll, attendance, leave and performance.',
     path: '/keka',
   },
   {
