@@ -1,0 +1,79 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+@layer ui {
+  /* flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 */
+  .textarea {
+    display: flex;
+    field-sizing: content;
+    min-height: calc(var(--spacing) * 16);
+    width: 100%;
+    border-radius: var(--radius);
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    border-color: var(--input);
+    background-color: transparent;
+    padding-inline: calc(var(--spacing) * 2.5);
+    padding-block: calc(var(--spacing) * 2);
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+    transition-property:
+      color, background-color, border-color, outline-color,
+      text-decoration-color, fill, stroke, --tw-gradient-from,
+      --tw-gradient-via, --tw-gradient-to;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+  .textarea::placeholder {
+    color: var(--muted-foreground);
+  }
+  .textarea:focus-visible {
+    border-color: var(--ring);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--ring);
+    --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+  .textarea:disabled {
+    cursor: not-allowed;
+    background-color: var(--input);
+    background-color: color-mix(in oklab, var(--input) 50%, transparent);
+    opacity: 50%;
+  }
+  .textarea[aria-invalid='true'] {
+    border-color: var(--destructive);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  @media (width >= 48rem) {
+    .textarea {
+      font-size: var(--text-sm);
+      line-height: var(--tw-leading, var(--text-sm--line-height));
+    }
+  }
+  .textarea:is(:global(.dark) *) {
+    background-color: var(--input);
+    background-color: color-mix(in oklab, var(--input) 30%, transparent);
+  }
+  .textarea:is(:global(.dark) *):disabled {
+    background-color: var(--input);
+    background-color: color-mix(in oklab, var(--input) 80%, transparent);
+  }
+  .textarea:is(:global(.dark) *)[aria-invalid='true'] {
+    border-color: var(--destructive);
+    border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+  }
+}

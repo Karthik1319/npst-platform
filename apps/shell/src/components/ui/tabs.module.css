@@ -1,0 +1,252 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+@layer ui {
+  /* flex gap-2 data-horizontal:flex-col */
+  .tabsPrimitiveRoot {
+    display: flex;
+    gap: calc(var(--spacing) * 2);
+  }
+  .tabsPrimitiveRoot:where([data-orientation='horizontal']) {
+    flex-direction: column;
+  }
+
+  /* inline-flex w-fit items-center justify-center rounded-lg p-[3px] text-muted-foreground group-data-horizontal/tabs:h-8 group-data-vertical/tabs:h-fit group-data-vertical/tabs:flex-col data-[variant=line]:rounded-none */
+  .tabsListVariants {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    padding: 3px;
+    color: var(--muted-foreground);
+  }
+  .tabsListVariants:is(
+    :where(:global(.npst-g-tabs)):where([data-orientation='horizontal']) *
+  ) {
+    height: calc(var(--spacing) * 8);
+  }
+  .tabsListVariants:is(
+    :where(:global(.npst-g-tabs)):where([data-orientation='vertical']) *
+  ) {
+    height: fit-content;
+    flex-direction: column;
+  }
+  .tabsListVariants[data-variant='line'] {
+    border-radius: 0;
+  }
+
+  /* bg-muted */
+  .default {
+    background-color: var(--muted);
+  }
+
+  /* gap-1 bg-transparent */
+  .line {
+    gap: var(--spacing);
+    background-color: transparent;
+  }
+
+  /* relative inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-md border border-transparent px-1.5 py-0.5 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all group-data-vertical/tabs:w-full group-data-vertical/tabs:justify-start hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring disabled:pointer-events-none disabled:opacity-50 has-data-[icon=inline-end]:pr-1 has-data-[icon=inline-start]:pl-1 aria-disabled:pointer-events-none aria-disabled:opacity-50 dark:text-muted-foreground dark:hover:text-foreground group-data-[variant=default]/tabs-list:data-active:shadow-sm group-data-[variant=line]/tabs-list:data-active:shadow-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 */
+  .tabsPrimitiveTab {
+    position: relative;
+    display: inline-flex;
+    height: calc(100% - 1px);
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--spacing) * 1.5);
+    border-radius: calc(var(--radius) * 0.8);
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    border-color: transparent;
+    padding-inline: calc(var(--spacing) * 1.5);
+    padding-block: calc(var(--spacing) * 0.5);
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    color: var(--foreground);
+    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+    transition-property: all;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .tabsPrimitiveTab:is(
+    :where(:global(.npst-g-tabs)):where([data-orientation='vertical']) *
+  ) {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  @media (hover: hover) {
+    .tabsPrimitiveTab:hover {
+      color: var(--foreground);
+    }
+  }
+  .tabsPrimitiveTab:focus-visible {
+    border-color: var(--ring);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--ring);
+    --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+    outline-style: var(--tw-outline-style);
+    outline-width: 1px;
+    outline-color: var(--ring);
+  }
+  .tabsPrimitiveTab:disabled {
+    pointer-events: none;
+    opacity: 50%;
+  }
+  .tabsPrimitiveTab:has([data-icon='inline-end']) {
+    padding-right: var(--spacing);
+  }
+  .tabsPrimitiveTab:has([data-icon='inline-start']) {
+    padding-left: var(--spacing);
+  }
+  .tabsPrimitiveTab[aria-disabled='true'] {
+    pointer-events: none;
+    opacity: 50%;
+  }
+  .tabsPrimitiveTab:is(:global(.dark) *) {
+    color: var(--muted-foreground);
+  }
+  @media (hover: hover) {
+    .tabsPrimitiveTab:is(:global(.dark) *):hover {
+      color: var(--foreground);
+    }
+  }
+  .tabsPrimitiveTab:is(
+      :where(:global(.npst-g-tabs-list))[data-variant='default'] *
+    ):where([data-state='active']),
+  .tabsPrimitiveTab:is(
+      :where(:global(.npst-g-tabs-list))[data-variant='default'] *
+    ):where([data-active]:not([data-active='false'])) {
+    --tw-shadow:
+      0 1px 3px 0 var(--tw-shadow-color, var(--fixed-black-a10)),
+      0 1px 2px -1px var(--tw-shadow-color, var(--fixed-black-a10));
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .tabsPrimitiveTab:is(
+      :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+    ):where([data-state='active']),
+  .tabsPrimitiveTab:is(
+      :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+    ):where([data-active]:not([data-active='false'])) {
+    --tw-shadow: 0 0 var(--fixed-transparent);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
+  .tabsPrimitiveTab svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .tabsPrimitiveTab svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+
+  /* group-data-[variant=line]/tabs-list:bg-transparent group-data-[variant=line]/tabs-list:data-active:bg-transparent dark:group-data-[variant=line]/tabs-list:data-active:border-transparent dark:group-data-[variant=line]/tabs-list:data-active:bg-transparent */
+  .tabsPrimitiveTab2:is(
+    :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+  ) {
+    background-color: transparent;
+  }
+  .tabsPrimitiveTab2:is(
+      :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+    ):where([data-state='active']),
+  .tabsPrimitiveTab2:is(
+      :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+    ):where([data-active]:not([data-active='false'])) {
+    background-color: transparent;
+  }
+  .tabsPrimitiveTab2:is(:global(.dark) *):is(
+      :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+    ):where([data-state='active']),
+  .tabsPrimitiveTab2:is(:global(.dark) *):is(
+      :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+    ):where([data-active]:not([data-active='false'])) {
+    border-color: transparent;
+    background-color: transparent;
+  }
+
+  /* data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground */
+  .tabsPrimitiveTab3:where([data-state='active']),
+  .tabsPrimitiveTab3:where([data-active]:not([data-active='false'])) {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+  .tabsPrimitiveTab3:is(:global(.dark) *):where([data-state='active']),
+  .tabsPrimitiveTab3:is(:global(.dark) *):where(
+      [data-active]:not([data-active='false'])
+    ) {
+    border-color: var(--input);
+    background-color: var(--input);
+    background-color: color-mix(in oklab, var(--input) 30%, transparent);
+    color: var(--foreground);
+  }
+
+  /* after:absolute after:bg-foreground after:opacity-0 after:transition-opacity group-data-horizontal/tabs:after:inset-x-0 group-data-horizontal/tabs:after:bottom-[-5px] group-data-horizontal/tabs:after:h-0.5 group-data-vertical/tabs:after:inset-y-0 group-data-vertical/tabs:after:-right-1 group-data-vertical/tabs:after:w-0.5 group-data-[variant=line]/tabs-list:data-active:after:opacity-100 */
+  .tabsPrimitiveTab4::after {
+    content: var(--tw-content);
+    position: absolute;
+    content: var(--tw-content);
+    background-color: var(--foreground);
+    content: var(--tw-content);
+    opacity: 0%;
+    content: var(--tw-content);
+    transition-property: opacity;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .tabsPrimitiveTab4:is(
+      :where(:global(.npst-g-tabs)):where([data-orientation='horizontal']) *
+    )::after {
+    content: var(--tw-content);
+    inset-inline: 0px;
+    content: var(--tw-content);
+    bottom: -5px;
+    content: var(--tw-content);
+    height: calc(var(--spacing) * 0.5);
+  }
+  .tabsPrimitiveTab4:is(
+      :where(:global(.npst-g-tabs)):where([data-orientation='vertical']) *
+    )::after {
+    content: var(--tw-content);
+    inset-block: 0px;
+    content: var(--tw-content);
+    right: calc(var(--spacing) * -1);
+    content: var(--tw-content);
+    width: calc(var(--spacing) * 0.5);
+  }
+  :is(
+    .tabsPrimitiveTab4:is(
+        :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+      ):where([data-state='active']),
+    .tabsPrimitiveTab4:is(
+        :where(:global(.npst-g-tabs-list))[data-variant='line'] *
+      ):where([data-active]:not([data-active='false']))
+  )::after {
+    content: var(--tw-content);
+    opacity: 100%;
+  }
+
+  /* flex-1 text-sm outline-none */
+  .tabsPrimitivePanel {
+    flex: 1;
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+}

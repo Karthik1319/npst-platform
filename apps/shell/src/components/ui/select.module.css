@@ -1,0 +1,330 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+@layer ui {
+  /* scroll-my-1 p-1 */
+  .selectPrimitiveGroup {
+    scroll-margin-block: var(--spacing);
+    padding: var(--spacing);
+  }
+
+  /* flex flex-1 text-left */
+  .selectPrimitiveValue {
+    display: flex;
+    flex: 1;
+    text-align: left;
+  }
+
+  /* flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 */
+  .selectPrimitiveTrigger {
+    display: flex;
+    width: fit-content;
+    align-items: center;
+    justify-content: space-between;
+    gap: calc(var(--spacing) * 1.5);
+    border-radius: var(--radius);
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    border-color: var(--input);
+    background-color: transparent;
+    padding-block: calc(var(--spacing) * 2);
+    padding-right: calc(var(--spacing) * 2);
+    padding-left: calc(var(--spacing) * 2.5);
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    white-space: nowrap;
+    transition-property:
+      color, background-color, border-color, outline-color,
+      text-decoration-color, fill, stroke, --tw-gradient-from,
+      --tw-gradient-via, --tw-gradient-to;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-outline-style: none;
+    outline-style: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .selectPrimitiveTrigger:focus-visible {
+    border-color: var(--ring);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--ring);
+    --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+  .selectPrimitiveTrigger:disabled {
+    cursor: not-allowed;
+    opacity: 50%;
+  }
+  .selectPrimitiveTrigger[aria-invalid='true'] {
+    border-color: var(--destructive);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  .selectPrimitiveTrigger[data-placeholder] {
+    color: var(--muted-foreground);
+  }
+  .selectPrimitiveTrigger[data-size='default'] {
+    height: calc(var(--spacing) * 8);
+  }
+  .selectPrimitiveTrigger[data-size='sm'] {
+    height: calc(var(--spacing) * 7);
+    border-radius: min(var(--radius-md), 10px);
+  }
+  :is(.selectPrimitiveTrigger > *)[data-slot='select-value'] {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 1.5);
+  }
+  .selectPrimitiveTrigger:is(:global(.dark) *) {
+    background-color: var(--input);
+    background-color: color-mix(in oklab, var(--input) 30%, transparent);
+  }
+  @media (hover: hover) {
+    .selectPrimitiveTrigger:is(:global(.dark) *):hover {
+      background-color: var(--input);
+      background-color: color-mix(in oklab, var(--input) 50%, transparent);
+    }
+  }
+  .selectPrimitiveTrigger:is(:global(.dark) *)[aria-invalid='true'] {
+    border-color: var(--destructive);
+    border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+  }
+  .selectPrimitiveTrigger svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .selectPrimitiveTrigger svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+
+  /* pointer-events-none size-4 text-muted-foreground */
+  .chevronDownIcon {
+    pointer-events: none;
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+    color: var(--muted-foreground);
+  }
+
+  /* isolate z-50 */
+  .selectPrimitivePositioner {
+    isolation: isolate;
+    z-index: 50;
+  }
+
+  /* relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 */
+  .selectPrimitivePopup {
+    position: relative;
+    isolation: isolate;
+    z-index: 50;
+    max-height: var(--available-height);
+    width: var(--anchor-width);
+    min-width: calc(var(--spacing) * 36);
+    transform-origin: var(--transform-origin);
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: var(--radius);
+    background-color: var(--popover);
+    color: var(--popover-foreground);
+    --tw-shadow:
+      0 4px 6px -1px var(--tw-shadow-color, var(--fixed-black-a10)),
+      0 2px 4px -2px var(--tw-shadow-color, var(--fixed-black-a10));
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--foreground);
+    --tw-ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+    --tw-duration: 100ms;
+    transition-duration: 100ms;
+  }
+  .selectPrimitivePopup[data-align-trigger='true'] {
+    animation: none;
+  }
+  .selectPrimitivePopup[data-side='bottom'] {
+    --tw-enter-translate-y: calc(2 * var(--spacing) * -1);
+  }
+  .selectPrimitivePopup[data-side='inline-end'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+  }
+  .selectPrimitivePopup[data-side='inline-start'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing));
+  }
+  .selectPrimitivePopup[data-side='left'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing));
+  }
+  .selectPrimitivePopup[data-side='right'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+  }
+  .selectPrimitivePopup[data-side='top'] {
+    --tw-enter-translate-y: calc(2 * var(--spacing));
+  }
+  .selectPrimitivePopup:where([data-state='open']),
+  .selectPrimitivePopup:where([data-open]:not([data-open='false'])) {
+    animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
+      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+      var(--tw-animation-iteration-count, 1)
+      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+    --tw-enter-opacity: calc(0/100);
+    --tw-enter-opacity: 0;
+    --tw-enter-scale: calc(95 * 1%);
+    --tw-enter-scale: 0.95;
+  }
+  .selectPrimitivePopup:where([data-state='closed']),
+  .selectPrimitivePopup:where([data-closed]:not([data-closed='false'])) {
+    animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
+      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+      var(--tw-animation-iteration-count, 1)
+      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+    --tw-exit-opacity: calc(0/100);
+    --tw-exit-opacity: 0;
+    --tw-exit-scale: calc(95 * 1%);
+    --tw-exit-scale: 0.95;
+  }
+
+  /* px-1.5 py-1 text-xs text-muted-foreground */
+  .selectPrimitiveGroupLabel {
+    padding-inline: calc(var(--spacing) * 1.5);
+    padding-block: var(--spacing);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    color: var(--muted-foreground);
+  }
+
+  /* relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 */
+  .selectPrimitiveItem {
+    position: relative;
+    display: flex;
+    width: 100%;
+    cursor: default;
+    align-items: center;
+    gap: calc(var(--spacing) * 1.5);
+    border-radius: calc(var(--radius) * 0.8);
+    padding-block: var(--spacing);
+    padding-right: calc(var(--spacing) * 8);
+    padding-left: calc(var(--spacing) * 1.5);
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    --tw-outline-style: none;
+    outline-style: none;
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .selectPrimitiveItem:focus {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+  :is(.selectPrimitiveItem:not([data-variant='destructive']):focus *) {
+    color: var(--accent-foreground);
+  }
+  .selectPrimitiveItem:where([data-disabled='true']),
+  .selectPrimitiveItem:where([data-disabled]:not([data-disabled='false'])) {
+    pointer-events: none;
+    opacity: 50%;
+  }
+  .selectPrimitiveItem svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .selectPrimitiveItem svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+  :is(.selectPrimitiveItem > *):is(span):last-child {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+  }
+
+  /* flex flex-1 shrink-0 gap-2 whitespace-nowrap */
+  .selectPrimitiveItemText {
+    display: flex;
+    flex: 1;
+    flex-shrink: 0;
+    gap: calc(var(--spacing) * 2);
+    white-space: nowrap;
+  }
+
+  /* pointer-events-none absolute right-2 flex size-4 items-center justify-center */
+  .span {
+    pointer-events: none;
+    position: absolute;
+    right: calc(var(--spacing) * 2);
+    display: flex;
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* pointer-events-none */
+  .checkIcon {
+    pointer-events: none;
+  }
+
+  /* pointer-events-none -mx-1 my-1 h-px bg-border */
+  .selectPrimitiveSeparator {
+    pointer-events: none;
+    margin-inline: calc(var(--spacing) * -1);
+    margin-block: var(--spacing);
+    height: 1px;
+    background-color: var(--border);
+  }
+
+  /* top-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4 */
+  .selectPrimitiveScrollUpArrow {
+    top: 0px;
+    z-index: 10;
+    display: flex;
+    width: 100%;
+    cursor: default;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--popover);
+    padding-block: var(--spacing);
+  }
+  .selectPrimitiveScrollUpArrow svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+
+  /* bottom-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4 */
+  .selectPrimitiveScrollDownArrow {
+    bottom: 0px;
+    z-index: 10;
+    display: flex;
+    width: 100%;
+    cursor: default;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--popover);
+    padding-block: var(--spacing);
+  }
+  .selectPrimitiveScrollDownArrow svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+}

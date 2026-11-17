@@ -5,12 +5,12 @@ import { describe, expect, it } from 'vitest';
 const read = (path: string) =>
   readFileSync(fileURLToPath(new URL(path, import.meta.url)), 'utf8');
 
-/** Custom properties (`--npst-…`) a stylesheet defines. */
+/** Custom properties a stylesheet defines (NPST and Admin Portal tokens). */
 const definedVariables = (css: string) =>
   new Set(
-    [
-      ...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/(--npst-[\w-]+)\s*:/g),
-    ].map((match) => match[1]),
+    [...css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/(--[\w-]+)\s*:/g)].map(
+      (match) => match[1],
+    ),
   );
 
 describe('published theme (brand server)', () => {

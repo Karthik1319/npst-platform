@@ -1,0 +1,10 @@
+/* Placement of popups (select, menu, popover). Coordinates come from
+   usePopupPosition() as CSS variables. */
+@layer ui {
+  .positioner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    translate: var(--npst-popup-x, 0) var(--npst-popup-y, 0);
+  }
+}

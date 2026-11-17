@@ -1,0 +1,348 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+@layer ui {
+  /* isolate z-50 outline-none */
+  .menuPrimitivePositioner {
+    isolation: isolate;
+    z-index: 50;
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+
+  /* z-50 max-h-(--available-height) w-(--anchor-width) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 outline-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:overflow-hidden data-closed:fade-out-0 data-closed:zoom-out-95 */
+  .menuPrimitivePopup {
+    z-index: 50;
+    max-height: var(--available-height);
+    width: var(--anchor-width);
+    min-width: calc(var(--spacing) * 32);
+    transform-origin: var(--transform-origin);
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: var(--radius);
+    background-color: var(--popover);
+    padding: var(--spacing);
+    color: var(--popover-foreground);
+    --tw-shadow:
+      0 4px 6px -1px var(--tw-shadow-color, var(--fixed-black-a10)),
+      0 2px 4px -2px var(--tw-shadow-color, var(--fixed-black-a10));
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--foreground);
+    --tw-ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+    --tw-duration: 100ms;
+    transition-duration: 100ms;
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+  .menuPrimitivePopup[data-side='bottom'] {
+    --tw-enter-translate-y: calc(2 * var(--spacing) * -1);
+  }
+  .menuPrimitivePopup[data-side='inline-end'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+  }
+  .menuPrimitivePopup[data-side='inline-start'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing));
+  }
+  .menuPrimitivePopup[data-side='left'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing));
+  }
+  .menuPrimitivePopup[data-side='right'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+  }
+  .menuPrimitivePopup[data-side='top'] {
+    --tw-enter-translate-y: calc(2 * var(--spacing));
+  }
+  .menuPrimitivePopup:where([data-state='open']),
+  .menuPrimitivePopup:where([data-open]:not([data-open='false'])) {
+    animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
+      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+      var(--tw-animation-iteration-count, 1)
+      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+    --tw-enter-opacity: calc(0/100);
+    --tw-enter-opacity: 0;
+    --tw-enter-scale: calc(95 * 1%);
+    --tw-enter-scale: 0.95;
+  }
+  .menuPrimitivePopup:where([data-state='closed']),
+  .menuPrimitivePopup:where([data-closed]:not([data-closed='false'])) {
+    animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
+      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+      var(--tw-animation-iteration-count, 1)
+      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+    overflow: hidden;
+    --tw-exit-opacity: calc(0/100);
+    --tw-exit-opacity: 0;
+    --tw-exit-scale: calc(95 * 1%);
+    --tw-exit-scale: 0.95;
+  }
+
+  /* px-1.5 py-1 text-xs font-medium text-muted-foreground data-inset:pl-7 */
+  .menuPrimitiveGroupLabel {
+    padding-inline: calc(var(--spacing) * 1.5);
+    padding-block: var(--spacing);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+    color: var(--muted-foreground);
+  }
+  .menuPrimitiveGroupLabel[data-inset] {
+    padding-left: calc(var(--spacing) * 7);
+  }
+
+  /* relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive */
+  .menuPrimitiveItem {
+    position: relative;
+    display: flex;
+    cursor: default;
+    align-items: center;
+    gap: calc(var(--spacing) * 1.5);
+    border-radius: calc(var(--radius) * 0.8);
+    padding-inline: calc(var(--spacing) * 1.5);
+    padding-block: var(--spacing);
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    --tw-outline-style: none;
+    outline-style: none;
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .menuPrimitiveItem:focus {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+  :is(.menuPrimitiveItem:not([data-variant='destructive']):focus *) {
+    color: var(--accent-foreground);
+  }
+  .menuPrimitiveItem[data-inset] {
+    padding-left: calc(var(--spacing) * 7);
+  }
+  .menuPrimitiveItem[data-variant='destructive'] {
+    color: var(--destructive);
+  }
+  .menuPrimitiveItem[data-variant='destructive']:focus {
+    background-color: var(--destructive);
+    background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+    color: var(--destructive);
+  }
+  .menuPrimitiveItem:is(:global(.dark) *)[data-variant='destructive']:focus {
+    background-color: var(--destructive);
+    background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  .menuPrimitiveItem:where([data-disabled='true']),
+  .menuPrimitiveItem:where([data-disabled]:not([data-disabled='false'])) {
+    pointer-events: none;
+    opacity: 50%;
+  }
+  .menuPrimitiveItem svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .menuPrimitiveItem svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+  :is(.menuPrimitiveItem[data-variant='destructive'] > *):is(svg) {
+    color: var(--destructive);
+  }
+
+  /* flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-popup-open:bg-accent data-popup-open:text-accent-foreground data-open:bg-accent data-open:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 */
+  .menuPrimitiveSubmenuTrigger {
+    display: flex;
+    cursor: default;
+    align-items: center;
+    gap: calc(var(--spacing) * 1.5);
+    border-radius: calc(var(--radius) * 0.8);
+    padding-inline: calc(var(--spacing) * 1.5);
+    padding-block: var(--spacing);
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    --tw-outline-style: none;
+    outline-style: none;
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .menuPrimitiveSubmenuTrigger:focus {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+  :is(.menuPrimitiveSubmenuTrigger:not([data-variant='destructive']):focus *) {
+    color: var(--accent-foreground);
+  }
+  .menuPrimitiveSubmenuTrigger[data-inset] {
+    padding-left: calc(var(--spacing) * 7);
+  }
+  .menuPrimitiveSubmenuTrigger[data-popup-open] {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+  .menuPrimitiveSubmenuTrigger:where([data-state='open']),
+  .menuPrimitiveSubmenuTrigger:where([data-open]:not([data-open='false'])) {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+  .menuPrimitiveSubmenuTrigger svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .menuPrimitiveSubmenuTrigger svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+
+  /* ml-auto */
+  .chevronRightIcon {
+    margin-left: auto;
+  }
+
+  /* w-auto min-w-[96px] rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 */
+  .dropdownMenuContent {
+    width: auto;
+    min-width: 96px;
+    border-radius: var(--radius);
+    background-color: var(--popover);
+    padding: var(--spacing);
+    color: var(--popover-foreground);
+    --tw-shadow:
+      0 10px 15px -3px var(--tw-shadow-color, var(--fixed-black-a10)),
+      0 4px 6px -4px var(--tw-shadow-color, var(--fixed-black-a10));
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--foreground);
+    --tw-ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
+    --tw-duration: 100ms;
+    transition-duration: 100ms;
+  }
+  .dropdownMenuContent[data-side='bottom'] {
+    --tw-enter-translate-y: calc(2 * var(--spacing) * -1);
+  }
+  .dropdownMenuContent[data-side='left'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing));
+  }
+  .dropdownMenuContent[data-side='right'] {
+    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+  }
+  .dropdownMenuContent[data-side='top'] {
+    --tw-enter-translate-y: calc(2 * var(--spacing));
+  }
+  .dropdownMenuContent:where([data-state='open']),
+  .dropdownMenuContent:where([data-open]:not([data-open='false'])) {
+    animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
+      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+      var(--tw-animation-iteration-count, 1)
+      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+    --tw-enter-opacity: calc(0/100);
+    --tw-enter-opacity: 0;
+    --tw-enter-scale: calc(95 * 1%);
+    --tw-enter-scale: 0.95;
+  }
+  .dropdownMenuContent:where([data-state='closed']),
+  .dropdownMenuContent:where([data-closed]:not([data-closed='false'])) {
+    animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
+      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+      var(--tw-animation-iteration-count, 1)
+      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
+    --tw-exit-opacity: calc(0/100);
+    --tw-exit-opacity: 0;
+    --tw-exit-scale: calc(95 * 1%);
+    --tw-exit-scale: 0.95;
+  }
+
+  /* relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 */
+  .menuPrimitiveCheckboxItem {
+    position: relative;
+    display: flex;
+    cursor: default;
+    align-items: center;
+    gap: calc(var(--spacing) * 1.5);
+    border-radius: calc(var(--radius) * 0.8);
+    padding-block: var(--spacing);
+    padding-right: calc(var(--spacing) * 8);
+    padding-left: calc(var(--spacing) * 1.5);
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    --tw-outline-style: none;
+    outline-style: none;
+    @media (forced-colors: active) {
+      outline: 2px solid transparent;
+      outline-offset: 2px;
+    }
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .menuPrimitiveCheckboxItem:focus {
+    background-color: var(--accent);
+    color: var(--accent-foreground);
+  }
+  :is(.menuPrimitiveCheckboxItem:focus *) {
+    color: var(--accent-foreground);
+  }
+  .menuPrimitiveCheckboxItem[data-inset] {
+    padding-left: calc(var(--spacing) * 7);
+  }
+  .menuPrimitiveCheckboxItem:where([data-disabled='true']),
+  .menuPrimitiveCheckboxItem:where(
+    [data-disabled]:not([data-disabled='false'])
+  ) {
+    pointer-events: none;
+    opacity: 50%;
+  }
+  .menuPrimitiveCheckboxItem svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .menuPrimitiveCheckboxItem svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+
+  /* pointer-events-none absolute right-2 flex items-center justify-center */
+  .span {
+    pointer-events: none;
+    position: absolute;
+    right: calc(var(--spacing) * 2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* -mx-1 my-1 h-px bg-border */
+  .menuPrimitiveSeparator {
+    margin-inline: calc(var(--spacing) * -1);
+    margin-block: var(--spacing);
+    height: 1px;
+    background-color: var(--border);
+  }
+
+  /* ml-auto text-xs tracking-widest text-muted-foreground group-focus/dropdown-menu-item:text-accent-foreground */
+  .span2 {
+    margin-left: auto;
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-tracking: var(--tracking-widest);
+    letter-spacing: var(--tracking-widest);
+    color: var(--muted-foreground);
+  }
+  .span2:is(:where(:global(.npst-g-dropdown-menu-item)):focus *) {
+    color: var(--accent-foreground);
+  }
+}

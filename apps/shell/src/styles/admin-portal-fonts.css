@@ -1,0 +1,13 @@
+/*
+ * Fonts of the Admin Portal (self-hosted font files, no external requests).
+ * Inter: body, Plus Jakarta Sans: headings, JetBrains Mono: code.
+ * The others are font choices offered by the Branding module.
+ */
+@import '@fontsource-variable/plus-jakarta-sans';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/jetbrains-mono';
+@import '@fontsource-variable/dm-sans';
+@import '@fontsource-variable/manrope';
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource/poppins';
+@import '@fontsource/ibm-plex-sans';

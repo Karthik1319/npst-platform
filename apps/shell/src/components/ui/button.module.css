@@ -1,0 +1,308 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+@layer ui {
+  /* inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 */
+  .buttonVariants {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    border-color: transparent;
+    background-clip: padding-box;
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    transition-property: all;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-outline-style: none;
+    outline-style: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .buttonVariants:focus-visible {
+    border-color: var(--ring);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--ring);
+    --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+  .buttonVariants:active:not([aria-haspopup]) {
+    --tw-translate-y: 1px;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .buttonVariants:disabled {
+    pointer-events: none;
+    opacity: 50%;
+  }
+  .buttonVariants[aria-invalid='true'] {
+    border-color: var(--destructive);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  .buttonVariants:is(:global(.dark) *)[aria-invalid='true'] {
+    border-color: var(--destructive);
+    border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+  }
+  .buttonVariants svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  .buttonVariants svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+  }
+
+  /* bg-primary text-primary-foreground hover:bg-primary/80 */
+  .default {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+  @media (hover: hover) {
+    .default:hover {
+      background-color: var(--primary);
+      background-color: color-mix(in oklab, var(--primary) 80%, transparent);
+    }
+  }
+
+  /* border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 */
+  .outline {
+    border-color: var(--border);
+    background-color: var(--background);
+  }
+  @media (hover: hover) {
+    .outline:hover {
+      background-color: var(--muted);
+      color: var(--foreground);
+    }
+  }
+  .outline[aria-expanded='true'] {
+    background-color: var(--muted);
+    color: var(--foreground);
+  }
+  .outline:is(:global(.dark) *) {
+    border-color: var(--input);
+    background-color: var(--input);
+    background-color: color-mix(in oklab, var(--input) 30%, transparent);
+  }
+  @media (hover: hover) {
+    .outline:is(:global(.dark) *):hover {
+      background-color: var(--input);
+      background-color: color-mix(in oklab, var(--input) 50%, transparent);
+    }
+  }
+
+  /* bg-secondary text-secondary-foreground hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground */
+  .secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+  @media (hover: hover) {
+    .secondary:hover {
+      background-color: var(--secondary);
+      background-color: color-mix(
+        in oklch,
+        var(--secondary),
+        var(--foreground) 5%
+      );
+    }
+  }
+  .secondary[aria-expanded='true'] {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+
+  /* hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50 */
+  @media (hover: hover) {
+    .ghost:hover {
+      background-color: var(--muted);
+      color: var(--foreground);
+    }
+  }
+  .ghost[aria-expanded='true'] {
+    background-color: var(--muted);
+    color: var(--foreground);
+  }
+  @media (hover: hover) {
+    .ghost:is(:global(.dark) *):hover {
+      background-color: var(--muted);
+      background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    }
+  }
+
+  /* bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40 */
+  .destructive {
+    background-color: var(--destructive);
+    background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+    color: var(--destructive);
+  }
+  @media (hover: hover) {
+    .destructive:hover {
+      background-color: var(--destructive);
+      background-color: color-mix(
+        in oklab,
+        var(--destructive) 20%,
+        transparent
+      );
+    }
+  }
+  .destructive:focus-visible {
+    border-color: var(--destructive);
+    border-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  .destructive:is(:global(.dark) *) {
+    background-color: var(--destructive);
+    background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  @media (hover: hover) {
+    .destructive:is(:global(.dark) *):hover {
+      background-color: var(--destructive);
+      background-color: color-mix(
+        in oklab,
+        var(--destructive) 30%,
+        transparent
+      );
+    }
+  }
+  .destructive:is(:global(.dark) *):focus-visible {
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+  }
+
+  /* text-primary underline-offset-4 hover:underline */
+  .link {
+    color: var(--primary);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) {
+    .link:hover {
+      text-decoration-line: underline;
+    }
+  }
+
+  /* h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 */
+  .default2 {
+    height: calc(var(--spacing) * 8);
+    gap: calc(var(--spacing) * 1.5);
+    padding-inline: calc(var(--spacing) * 2.5);
+  }
+  .default2:has([data-icon='inline-end']) {
+    padding-right: calc(var(--spacing) * 2);
+  }
+  .default2:has([data-icon='inline-start']) {
+    padding-left: calc(var(--spacing) * 2);
+  }
+
+  /* h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3 */
+  .xs {
+    height: calc(var(--spacing) * 6);
+    gap: var(--spacing);
+    border-radius: min(var(--radius-md), 10px);
+    padding-inline: calc(var(--spacing) * 2);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+  }
+  :where([data-slot='button-group']) .xs {
+    border-radius: var(--radius);
+  }
+  .xs:has([data-icon='inline-end']) {
+    padding-right: calc(var(--spacing) * 1.5);
+  }
+  .xs:has([data-icon='inline-start']) {
+    padding-left: calc(var(--spacing) * 1.5);
+  }
+  .xs svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 3);
+    height: calc(var(--spacing) * 3);
+  }
+
+  /* h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5 */
+  .sm {
+    height: calc(var(--spacing) * 7);
+    gap: var(--spacing);
+    border-radius: min(var(--radius-md), 12px);
+    padding-inline: calc(var(--spacing) * 2.5);
+    font-size: 0.8rem;
+  }
+  :where([data-slot='button-group']) .sm {
+    border-radius: var(--radius);
+  }
+  .sm:has([data-icon='inline-end']) {
+    padding-right: calc(var(--spacing) * 1.5);
+  }
+  .sm:has([data-icon='inline-start']) {
+    padding-left: calc(var(--spacing) * 1.5);
+  }
+  .sm svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 3.5);
+    height: calc(var(--spacing) * 3.5);
+  }
+
+  /* h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 */
+  .lg {
+    height: calc(var(--spacing) * 9);
+    gap: calc(var(--spacing) * 1.5);
+    padding-inline: calc(var(--spacing) * 2.5);
+  }
+  .lg:has([data-icon='inline-end']) {
+    padding-right: calc(var(--spacing) * 2);
+  }
+  .lg:has([data-icon='inline-start']) {
+    padding-left: calc(var(--spacing) * 2);
+  }
+
+  /* size-8 */
+  .icon {
+    width: calc(var(--spacing) * 8);
+    height: calc(var(--spacing) * 8);
+  }
+
+  /* size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3 */
+  .iconXs {
+    width: calc(var(--spacing) * 6);
+    height: calc(var(--spacing) * 6);
+    border-radius: min(var(--radius-md), 10px);
+  }
+  :where([data-slot='button-group']) .iconXs {
+    border-radius: var(--radius);
+  }
+  .iconXs svg:not([class*='npst-sized']) {
+    width: calc(var(--spacing) * 3);
+    height: calc(var(--spacing) * 3);
+  }
+
+  /* size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg */
+  .iconSm {
+    width: calc(var(--spacing) * 7);
+    height: calc(var(--spacing) * 7);
+    border-radius: min(var(--radius-md), 12px);
+  }
+  :where([data-slot='button-group']) .iconSm {
+    border-radius: var(--radius);
+  }
+
+  /* size-9 */
+  .iconLg {
+    width: calc(var(--spacing) * 9);
+    height: calc(var(--spacing) * 9);
+  }
+}

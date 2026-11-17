@@ -1,0 +1,100 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+@layer ui {
+  /* relative flex size-4 shrink-0 items-center justify-center rounded-[4px] border border-input transition-colors outline-none group-has-disabled/field:opacity-50 after:absolute after:-inset-x-3 after:-inset-y-2 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 aria-invalid:aria-checked:border-primary dark:bg-input/30 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 data-checked:border-primary data-checked:bg-primary data-checked:text-primary-foreground dark:data-checked:bg-primary */
+  .checkboxPrimitiveRoot {
+    position: relative;
+    display: flex;
+    width: calc(var(--spacing) * 4);
+    height: calc(var(--spacing) * 4);
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    border-color: var(--input);
+    transition-property:
+      color, background-color, border-color, outline-color,
+      text-decoration-color, fill, stroke, --tw-gradient-from,
+      --tw-gradient-via, --tw-gradient-to;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-outline-style: none;
+    outline-style: none;
+  }
+  .checkboxPrimitiveRoot:is(:where(:global(.npst-g-field)):has(:disabled) *) {
+    opacity: 50%;
+  }
+  .checkboxPrimitiveRoot::after {
+    content: var(--tw-content);
+    position: absolute;
+    content: var(--tw-content);
+    inset-inline: calc(var(--spacing) * -3);
+    content: var(--tw-content);
+    inset-block: calc(var(--spacing) * -2);
+  }
+  .checkboxPrimitiveRoot:focus-visible {
+    border-color: var(--ring);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--ring);
+    --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+  .checkboxPrimitiveRoot:disabled {
+    cursor: not-allowed;
+    opacity: 50%;
+  }
+  .checkboxPrimitiveRoot[aria-invalid='true'] {
+    border-color: var(--destructive);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  .checkboxPrimitiveRoot[aria-invalid='true'][aria-checked='true'] {
+    border-color: var(--primary);
+  }
+  .checkboxPrimitiveRoot:is(:global(.dark) *) {
+    background-color: var(--input);
+    background-color: color-mix(in oklab, var(--input) 30%, transparent);
+  }
+  .checkboxPrimitiveRoot:is(:global(.dark) *)[aria-invalid='true'] {
+    border-color: var(--destructive);
+    border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+  }
+  .checkboxPrimitiveRoot:where([data-state='checked']),
+  .checkboxPrimitiveRoot:where([data-checked]:not([data-checked='false'])) {
+    border-color: var(--primary);
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+  .checkboxPrimitiveRoot:is(:global(.dark) *):where([data-state='checked']),
+  .checkboxPrimitiveRoot:is(:global(.dark) *):where(
+      [data-checked]:not([data-checked='false'])
+    ) {
+    background-color: var(--primary);
+  }
+
+  /* grid place-content-center text-current transition-none [&>svg]:size-3.5 */
+  .checkboxPrimitiveIndicator {
+    display: grid;
+    place-content: center;
+    color: currentcolor;
+    transition-property: none;
+  }
+  .checkboxPrimitiveIndicator > svg {
+    width: calc(var(--spacing) * 3.5);
+    height: calc(var(--spacing) * 3.5);
+  }
+}

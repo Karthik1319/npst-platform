@@ -25,8 +25,9 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 15    | Integration guides                              | Done   |
 | 16    | Reverse proxy (NGINX) and one session           | Done   |
 | 17    | Admin Portal integration: baseline              | Done   |
-| 18    | Design system (his design, no UI library)       | Next   |
-| 19–24 | Admin Portal integration (see plan)             |        |
+| 18    | Admin Portal design system (no UI library)      | Done   |
+| 19    | Admin Portal frame on the architecture          | Next   |
+| 20–24 | Admin Portal integration (see plan)             |        |
 
 ## Toolchain
 
@@ -1007,3 +1008,50 @@ A teammate built the **NPST Shared Services Admin Portal** (React, Tailwind, sha
 **Open issues:** the library list needs approval before Step 18 installs the fonts and Step 19 the data and form libraries.
 
 **Next step:** Step 18 – design system: his design as CSS variables and in-house components.
+
+## Step 18 – Admin Portal design system (no UI library)
+
+**Done:**
+
+- **Converter** (`tools/admin-portal-convert/`): turns every Tailwind class string of the Admin Portal into a class in a CSS module, using **Tailwind's own compiler**, so the CSS is exactly what Tailwind produced. Colours and fonts become variables. It is a one-off tool, not part of any build; re-running it reproduces the committed files exactly. Its README explains what is generated and what is done by hand.
+- **Theme tokens:** the Admin Portal's colours (light, dark, high contrast), fonts, sizes and radii were added to `libs/design-tokens/src/theme.css` as section 4, with the original names and values. The brand server's copy has the same block; its test now compares **all** variables, not only `--npst-*`.
+- **Base styles:** `apps/shell/src/styles/admin-portal-base.css` (the reset Tailwind applied, animations, the original global rules). `admin-portal-fonts.css` loads the 8 approved font packages (installed with exact versions 5.3.0).
+- **In-house components** in `apps/shell/src/components/ui/`, with the **same exports and props** as the original shadcn components, so the pages can be moved over unchanged:
+  - **Styling only:** button, badge, card, table, input, label and textarea.
+  - **With behaviour (was Base UI):** dialog, sheet, select, dropdown menu, popover, checkbox and tabs. They handle open and close, Escape, outside click, focus, keyboard navigation and popup placement.
+  - **Same attributes as Base UI:** they set the same `data-*` and `aria-*` attributes, so the original styles apply unchanged.
+- **Helpers:**
+  - `@/components/icons`: the 79 icons the pages use, drawn from Lucide's shapes (ISC licence noted), with the same SVG output as `lucide-react`.
+  - `@/lib/utils` (`cn`) and `@/lib/variants` (`cva`).
+  - `@/lib/toast`: same calls as `sonner`; every toast goes through `platform.notify.toast()`.
+
+**Concepts:**
+
+- **CSS module:** a CSS file whose class names are made unique per file at build time (`styles.card` → `_card_1a2b3c`), so pages cannot clash with each other or with MFEs.
+- **Cascade layer:** a named group of CSS rules (`@layer ui`) with a fixed priority. Base styles < shared components (`ui`) < page styles, so a page's class overrides a component's default. The original used `tailwind-merge` for this.
+
+**Decisions:**
+
+- His variable names (`--primary`, `--sidebar`, …) are kept unchanged. Renaming them would touch every generated rule, and his Branding module edits exactly these names.
+- His design is not visible yet: the shell still shows the current UI until Step 19 switches the frame. The components are covered by 12 behaviour tests now; screenshots are compared from Step 19.
+
+**Verified:** lint, test, typecheck and build pass for all 8 projects; Prettier is clean.
+
+**Files:**
+
+| File                                                                     | Purpose                                               |
+| ------------------------------------------------------------------------ | ----------------------------------------------------- |
+| `tools/admin-portal-convert/convert.mjs`, `README.md`                    | One-off converter (Tailwind classes → CSS modules)    |
+| `libs/design-tokens/src/theme.css`, `apps/brand-server/public/theme.css` | Admin Portal tokens (section 4)                       |
+| `apps/brand-server/theme.test.ts`                                        | Compares all variables of both theme copies           |
+| `apps/shell/src/styles/admin-portal-base.css`, `admin-portal-fonts.css`  | Base styles and fonts                                 |
+| `apps/shell/src/components/ui/*.tsx`, `*.module.css`                     | In-house components and their styles                  |
+| `apps/shell/src/components/ui/primitives.tsx`, `modal.tsx`               | Shared behaviour (render prop, popups, focus, Escape) |
+| `apps/shell/src/components/ui/ui.test.tsx`                               | Behaviour tests                                       |
+| `apps/shell/src/components/icons.tsx`                                    | Icons                                                 |
+| `apps/shell/src/lib/utils.ts`, `variants.ts`, `toast.ts`                 | Class helpers and the toast bridge                    |
+| `apps/shell/package.json`, `pnpm-lock.yaml`                              | 8 font packages, exact versions                       |
+
+**Open issues:** the popup placement is in-house; it is compared visually with the original's open menus and selects in Step 19.
+
+**Next step:** Step 19 – the Admin Portal frame (login, sidebar, top bar, dashboard, approval queue, settings) on the architecture: central session, `PlatformApi`, MFE loading.

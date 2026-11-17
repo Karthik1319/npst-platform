@@ -1,0 +1,151 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+@layer ui {
+  /* inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3! */
+  .badgeVariants {
+    display: inline-flex;
+    height: calc(var(--spacing) * 5);
+    width: fit-content;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing);
+    overflow: hidden;
+    border-radius: calc(var(--radius) * 2.6);
+    border-style: var(--tw-border-style);
+    border-width: 1px;
+    border-color: transparent;
+    padding-inline: calc(var(--spacing) * 2);
+    padding-block: calc(var(--spacing) * 0.5);
+    font-size: var(--text-xs);
+    line-height: var(--tw-leading, var(--text-xs--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+    transition-property: all;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+  }
+  .badgeVariants:focus-visible {
+    border-color: var(--ring);
+    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    --tw-ring-color: var(--ring);
+    --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+  }
+  .badgeVariants:has([data-icon='inline-end']) {
+    padding-right: calc(var(--spacing) * 1.5);
+  }
+  .badgeVariants:has([data-icon='inline-start']) {
+    padding-left: calc(var(--spacing) * 1.5);
+  }
+  .badgeVariants[aria-invalid='true'] {
+    border-color: var(--destructive);
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  .badgeVariants:is(:global(.dark) *)[aria-invalid='true'] {
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+  }
+  .badgeVariants > svg {
+    pointer-events: none;
+    width: calc(var(--spacing) * 3) !important;
+    height: calc(var(--spacing) * 3) !important;
+  }
+
+  /* bg-primary text-primary-foreground [a]:hover:bg-primary/80 */
+  .default {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+  }
+  @media (hover: hover) {
+    .default:is(a):hover {
+      background-color: var(--primary);
+      background-color: color-mix(in oklab, var(--primary) 80%, transparent);
+    }
+  }
+
+  /* bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80 */
+  .secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+  }
+  @media (hover: hover) {
+    .secondary:is(a):hover {
+      background-color: var(--secondary);
+      background-color: color-mix(in oklab, var(--secondary) 80%, transparent);
+    }
+  }
+
+  /* bg-destructive/10 text-destructive focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:focus-visible:ring-destructive/40 [a]:hover:bg-destructive/20 */
+  .destructive {
+    background-color: var(--destructive);
+    background-color: color-mix(in oklab, var(--destructive) 10%, transparent);
+    color: var(--destructive);
+  }
+  .destructive:focus-visible {
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  .destructive:is(:global(.dark) *) {
+    background-color: var(--destructive);
+    background-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+  }
+  .destructive:is(:global(.dark) *):focus-visible {
+    --tw-ring-color: var(--destructive);
+    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+  }
+  @media (hover: hover) {
+    .destructive:is(a):hover {
+      background-color: var(--destructive);
+      background-color: color-mix(
+        in oklab,
+        var(--destructive) 20%,
+        transparent
+      );
+    }
+  }
+
+  /* border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground */
+  .outline {
+    border-color: var(--border);
+    color: var(--foreground);
+  }
+  @media (hover: hover) {
+    .outline:is(a):hover {
+      background-color: var(--muted);
+      color: var(--muted-foreground);
+    }
+  }
+
+  /* hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50 */
+  @media (hover: hover) {
+    .ghost:hover {
+      background-color: var(--muted);
+      color: var(--muted-foreground);
+    }
+  }
+  @media (hover: hover) {
+    .ghost:is(:global(.dark) *):hover {
+      background-color: var(--muted);
+      background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+    }
+  }
+
+  /* text-primary underline-offset-4 hover:underline */
+  .link {
+    color: var(--primary);
+    text-underline-offset: 4px;
+  }
+  @media (hover: hover) {
+    .link:hover {
+      text-decoration-line: underline;
+    }
+  }
+}

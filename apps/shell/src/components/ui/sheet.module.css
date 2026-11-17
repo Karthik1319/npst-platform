@@ -1,0 +1,222 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+@layer ui {
+  /* fixed inset-0 z-50 bg-black/10 transition-opacity duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 supports-backdrop-filter:backdrop-blur-xs */
+  .sheetPrimitiveBackdrop {
+    position: fixed;
+    inset: 0px;
+    z-index: 50;
+    background-color: color-mix(in oklab, var(--color-black) 10%, transparent);
+    transition-property: opacity;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-duration: 150ms;
+    transition-duration: 150ms;
+  }
+  .sheetPrimitiveBackdrop[data-ending-style] {
+    opacity: 0%;
+  }
+  .sheetPrimitiveBackdrop[data-starting-style] {
+    opacity: 0%;
+  }
+  @supports (backdrop-filter: var(--tw)) {
+    .sheetPrimitiveBackdrop {
+      --tw-backdrop-blur: blur(var(--blur-xs));
+      -webkit-backdrop-filter: var(--tw-backdrop-blur,)
+        var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
+        var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
+        var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
+        var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+      backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
+        var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
+        var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
+        var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
+        var(--tw-backdrop-sepia,);
+    }
+  }
+
+  /* fixed z-50 flex flex-col gap-4 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out data-ending-style:opacity-0 data-starting-style:opacity-0 data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=bottom]:data-ending-style:translate-y-[2.5rem] data-[side=bottom]:data-starting-style:translate-y-[2.5rem] data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=left]:data-ending-style:translate-x-[-2.5rem] data-[side=left]:data-starting-style:translate-x-[-2.5rem] data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-3/4 data-[side=right]:border-l data-[side=right]:data-ending-style:translate-x-[2.5rem] data-[side=right]:data-starting-style:translate-x-[2.5rem] data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=top]:data-ending-style:translate-y-[-2.5rem] data-[side=top]:data-starting-style:translate-y-[-2.5rem] data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-sm */
+  .sheetPrimitivePopup {
+    position: fixed;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 4);
+    background-color: var(--popover);
+    background-clip: padding-box;
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    color: var(--popover-foreground);
+    --tw-shadow:
+      0 10px 15px -3px var(--tw-shadow-color, var(--fixed-black-a10)),
+      0 4px 6px -4px var(--tw-shadow-color, var(--fixed-black-a10));
+    box-shadow:
+      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+    transition-property:
+      color,
+      background-color,
+      border-color,
+      outline-color,
+      text-decoration-color,
+      fill,
+      stroke,
+      --tw-gradient-from,
+      --tw-gradient-via,
+      --tw-gradient-to,
+      opacity,
+      box-shadow,
+      transform,
+      translate,
+      scale,
+      rotate,
+      filter,
+      -webkit-backdrop-filter,
+      backdrop-filter,
+      display,
+      content-visibility,
+      overlay,
+      pointer-events;
+    transition-timing-function: var(
+      --tw-ease,
+      var(--default-transition-timing-function)
+    );
+    transition-duration: var(--tw-duration, var(--default-transition-duration));
+    --tw-duration: 200ms;
+    transition-duration: 200ms;
+    --tw-ease: var(--ease-in-out);
+    transition-timing-function: var(--ease-in-out);
+  }
+  .sheetPrimitivePopup[data-ending-style] {
+    opacity: 0%;
+  }
+  .sheetPrimitivePopup[data-starting-style] {
+    opacity: 0%;
+  }
+  .sheetPrimitivePopup[data-side='bottom'] {
+    inset-inline: 0px;
+    bottom: 0px;
+    height: auto;
+    border-top-style: var(--tw-border-style);
+    border-top-width: 1px;
+  }
+  .sheetPrimitivePopup[data-side='bottom'][data-ending-style] {
+    --tw-translate-y: 2.5rem;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .sheetPrimitivePopup[data-side='bottom'][data-starting-style] {
+    --tw-translate-y: 2.5rem;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .sheetPrimitivePopup[data-side='left'] {
+    inset-block: 0px;
+    left: 0px;
+    height: 100%;
+    width: calc(3 / 4 * 100%);
+    border-right-style: var(--tw-border-style);
+    border-right-width: 1px;
+  }
+  .sheetPrimitivePopup[data-side='left'][data-ending-style] {
+    --tw-translate-x: -2.5rem;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .sheetPrimitivePopup[data-side='left'][data-starting-style] {
+    --tw-translate-x: -2.5rem;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .sheetPrimitivePopup[data-side='right'] {
+    inset-block: 0px;
+    right: 0px;
+    height: 100%;
+    width: calc(3 / 4 * 100%);
+    border-left-style: var(--tw-border-style);
+    border-left-width: 1px;
+  }
+  .sheetPrimitivePopup[data-side='right'][data-ending-style] {
+    --tw-translate-x: 2.5rem;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .sheetPrimitivePopup[data-side='right'][data-starting-style] {
+    --tw-translate-x: 2.5rem;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .sheetPrimitivePopup[data-side='top'] {
+    inset-inline: 0px;
+    top: 0px;
+    height: auto;
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+  }
+  .sheetPrimitivePopup[data-side='top'][data-ending-style] {
+    --tw-translate-y: -2.5rem;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .sheetPrimitivePopup[data-side='top'][data-starting-style] {
+    --tw-translate-y: -2.5rem;
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  @media (width >= 40rem) {
+    .sheetPrimitivePopup[data-side='left'] {
+      max-width: var(--container-sm);
+    }
+    .sheetPrimitivePopup[data-side='right'] {
+      max-width: var(--container-sm);
+    }
+  }
+
+  /* absolute top-3 right-3 */
+  .button {
+    position: absolute;
+    top: calc(var(--spacing) * 3);
+    right: calc(var(--spacing) * 3);
+  }
+
+  /* sr-only */
+  .span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* flex flex-col gap-0.5 p-4 */
+  .div {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 0.5);
+    padding: calc(var(--spacing) * 4);
+  }
+
+  /* mt-auto flex flex-col gap-2 p-4 */
+  .div2 {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2);
+    padding: calc(var(--spacing) * 4);
+  }
+
+  /* font-heading text-base font-medium text-foreground */
+  .sheetPrimitiveTitle {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    line-height: var(--tw-leading, var(--text-base--line-height));
+    --tw-font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-medium);
+    color: var(--foreground);
+  }
+
+  /* text-sm text-muted-foreground */
+  .sheetPrimitiveDescription {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    color: var(--muted-foreground);
+  }
+}
