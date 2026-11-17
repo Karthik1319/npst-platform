@@ -1,4 +1,4 @@
-import { restoreSession } from '@/services/auth';
+import type { PlatformUser } from '@npst/shared-contracts';
 import type { Session } from '@/types';
 import { toSession } from '@/context/session-shape';
 
@@ -59,13 +59,18 @@ export function persistCollection<T>(key: string, items: T[]): void {
   }
 }
 
-/**
- * The signed-in user in the Admin Portal's own shape. It is read from the
- * portal's central session (`services/auth.ts`); this module never stores a
- * session itself.
- */
+// Where the signed-in user comes from: the portal's central session
+// (`services/auth.ts` registers itself; this module never stores a session).
+let sessionSource: () => PlatformUser | null = () => null;
+
+/** Called once by `services/auth.ts`. */
+export function setSessionSource(source: () => PlatformUser | null): void {
+  sessionSource = source;
+}
+
+/** The signed-in user in the Admin Portal's own shape (read from the central session). */
 export function readSession(): Session | null {
-  const user = restoreSession();
+  const user = sessionSource();
   return user ? toSession(user) : null;
 }
 

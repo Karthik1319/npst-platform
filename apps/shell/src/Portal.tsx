@@ -6,10 +6,15 @@ import AppLayout from '@/components/layout/AppLayout';
 import { useNavSections } from '@/components/layout/Sidebar';
 import { AccessDenied } from '@/pages/AccessDenied';
 import { AppPlaceholder } from '@/pages/AppPlaceholder';
-import { MovingSoon } from '@/pages/MovingSoon';
 import Dashboard from '@/pages/Dashboard';
 import ApprovalQueue from '@/pages/applications/ApprovalQueue';
 import Settings from '@/pages/settings/Settings';
+import AuditLogs from '@/pages/audit/AuditLogs';
+import EscalationManagement from '@/pages/reminders/EscalationManagement';
+import ReminderConfiguration from '@/pages/reminders/ReminderConfiguration';
+import ReminderDashboard from '@/pages/reminders/ReminderDashboard';
+import ReminderHistory from '@/pages/reminders/ReminderHistory';
+import UserManagement from '@/pages/users/UserManagement';
 import BrandingDashboard from '@/pages/branding/BrandingDashboard';
 import BrandingEditor from '@/pages/branding/BrandingEditor';
 import BrandingHistory from '@/pages/branding/BrandingHistory';
@@ -115,10 +120,34 @@ export function Portal() {
           }
         />
         <Route
-          path="reminders/*"
+          path="reminders"
           element={
             <Guard permission={['manage', 'reminders']}>
-              <MovingSoon page="Reminders" step={21} />
+              <ReminderDashboard />
+            </Guard>
+          }
+        />
+        <Route
+          path="reminders/configuration"
+          element={
+            <Guard permission={['manage', 'reminders']}>
+              <ReminderConfiguration />
+            </Guard>
+          }
+        />
+        <Route
+          path="reminders/escalations"
+          element={
+            <Guard permission={['manage', 'reminders']}>
+              <EscalationManagement />
+            </Guard>
+          }
+        />
+        <Route
+          path="reminders/history"
+          element={
+            <Guard permission={['manage', 'reminders']}>
+              <ReminderHistory />
             </Guard>
           }
         />
@@ -126,7 +155,7 @@ export function Portal() {
           path="users"
           element={
             <Guard permission={['manage', 'employees']}>
-              <MovingSoon page="Employee Management" step={21} />
+              <UserManagement />
             </Guard>
           }
         />
@@ -134,7 +163,7 @@ export function Portal() {
           path="audit-logs"
           element={
             <Guard permission={['view', 'audit-logs']}>
-              <MovingSoon page="Audit Logs" step={21} />
+              <AuditLogs />
             </Guard>
           }
         />

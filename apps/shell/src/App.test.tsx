@@ -12,6 +12,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
 import { Toaster } from '@/components/Toaster';
 import { AuthProvider } from '@/context/AuthContext';
+import { userService } from '@/services/adminService';
 import { SESSION_STORAGE_KEY } from '@/services/auth';
 import { SessionProvider } from '@/session/SessionContext';
 import { mountStub } from '@/test/mount-stub';
@@ -556,4 +557,60 @@ describe('Shared Services pages (Step 20)', () => {
       expect(await screen.findByText('Access denied')).toBeDefined();
     },
   );
+});
+
+describe('Shared Services pages (Step 21)', () => {
+  it.each([
+    ['appAdmin', '/reminders', 'Reminder Management'],
+    ['appAdmin', '/reminders/escalations', 'Escalation Management'],
+    ['admin', '/users', 'Employee Management'],
+    ['admin', '/audit-logs', 'Audit Logs'],
+  ] as const)('%s opens %s', async (who, path, title) => {
+    renderSignedInAt(who, path);
+    expect(
+      await screen.findByRole('heading', { level: 1, name: title }),
+    ).toBeDefined();
+  });
+
+  it('draws the reminder charts in-house', async () => {
+    renderSignedInAt('superAdmin', '/reminders');
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'Reminder Management',
+    });
+    // jsdom has no layout, so only the legend is checked here (geometry: geometry.test.ts).
+    expect(
+      screen.getByText('Completed', { selector: 'li span' }),
+    ).toBeDefined();
+  });
+
+  it.each(['/reminders', '/users', '/audit-logs'])(
+    'an Employee opening %s gets Access denied',
+    async (path) => {
+      renderSignedInAt('employee', path);
+      expect(await screen.findByText('Access denied')).toBeDefined();
+    },
+  );
+});
+
+describe('Employee Management drives sign-in and access (mock RBAC and Provisioning)', () => {
+  it('a user deactivated in Employee Management cannot sign in', async () => {
+    userService.update('user-6', { status: 'inactive' });
+    renderAt('/login');
+    await signInWithForm('arjun.rao@npst.com');
+    expect((await screen.findByRole('alert', {}, SLOW)).textContent).toContain(
+      'inactive',
+    );
+  });
+
+  it('applications assigned in Employee Management appear after sign-in', async () => {
+    userService.update(USERS.employee.id, {
+      apps: ['app-keka', 'app-finance'],
+    });
+    renderSignedInAt('employee', '/keka');
+    await screen.findByTestId('sidebar-nav');
+    await vi.waitFor(() =>
+      expect(applicationLinks()).toEqual(['Keka HR', 'NPST Finance']),
+    );
+  });
 });

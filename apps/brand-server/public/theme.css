@@ -470,3 +470,16 @@
   --preview-muted-strong: rgb(100 116 139 / 0.95);
   --preview-badge-dot: #ef4444;
 }
+
+/* Charts of the Admin Portal (fixed colours of the original charts). */
+:root {
+  --chart-tick: #64748b;
+  --chart-grid: #e2e8f0;
+  --chart-cursor: rgb(37 99 235 / 0.05);
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-shadow: rgb(15 23 42 / 0.1);
+  --reminder-chart-completed: #16a34a;
+  --reminder-chart-pending: #d97706;
+  --reminder-chart-overdue: #dc2626;
+  --reminder-chart-due: #2563eb;
+}

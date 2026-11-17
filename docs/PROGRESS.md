@@ -4,32 +4,33 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 
 ## Current status
 
-| Step  | Title                                           | Status |
-| ----- | ----------------------------------------------- | ------ |
-| 0     | Check setup                                     | Done   |
-| 1     | Workspace                                       | Done   |
-| 2     | Shell app                                       | Done   |
-| 3     | Shared libs + platform contract                 | Done   |
-| 3b    | Mock login + RBAC (enhancement)                 | Done   |
-| 4     | First React remote                              | Done   |
-| 5     | Second React remote + Shell ↔ MFE communication | Done   |
-| 6     | Angular remote                                  | Done   |
-| 7     | Failure handling                                | Done   |
-| 8     | Bundling review                                 | Done   |
-| 9     | Runtime theme                                   | Done   |
-| 10    | Business portal: Portal Home dashboard          | Done   |
-| 11    | Sales Hub (React remote)                        | Done   |
-| 12    | Projects & Delivery (React remote)              | Done   |
-| 13    | People & HR (Angular remote)                    | Done   |
-| 14    | Cross-application workflow and demo polish      | Done   |
-| 15    | Integration guides                              | Done   |
-| 16    | Reverse proxy (NGINX) and one session           | Done   |
-| 17    | Admin Portal integration: baseline              | Done   |
-| 18    | Admin Portal design system (no UI library)      | Done   |
-| 19    | Admin Portal frame on the architecture          | Done   |
-| 20    | Admin Portal: Branding and Notifications pages  | Done   |
-| 21    | Admin Portal: Reminders, Employees, Audit Logs  | Next   |
-| 22–24 | Admin Portal integration (see plan)             |        |
+| Step  | Title                                            | Status |
+| ----- | ------------------------------------------------ | ------ |
+| 0     | Check setup                                      | Done   |
+| 1     | Workspace                                        | Done   |
+| 2     | Shell app                                        | Done   |
+| 3     | Shared libs + platform contract                  | Done   |
+| 3b    | Mock login + RBAC (enhancement)                  | Done   |
+| 4     | First React remote                               | Done   |
+| 5     | Second React remote + Shell ↔ MFE communication  | Done   |
+| 6     | Angular remote                                   | Done   |
+| 7     | Failure handling                                 | Done   |
+| 8     | Bundling review                                  | Done   |
+| 9     | Runtime theme                                    | Done   |
+| 10    | Business portal: Portal Home dashboard           | Done   |
+| 11    | Sales Hub (React remote)                         | Done   |
+| 12    | Projects & Delivery (React remote)               | Done   |
+| 13    | People & HR (Angular remote)                     | Done   |
+| 14    | Cross-application workflow and demo polish       | Done   |
+| 15    | Integration guides                               | Done   |
+| 16    | Reverse proxy (NGINX) and one session            | Done   |
+| 17    | Admin Portal integration: baseline               | Done   |
+| 18    | Admin Portal design system (no UI library)       | Done   |
+| 19    | Admin Portal frame on the architecture           | Done   |
+| 20    | Admin Portal: Branding and Notifications pages   | Done   |
+| 21    | Admin Portal: Reminders, Employees, Audit Logs   | Done   |
+| 22    | Stand-ins: Keka HR (Angular), Deal Pulse (React) | Next   |
+| 23–24 | Admin Portal integration (see plan)              |        |
 
 ## Toolchain
 
@@ -1183,3 +1184,53 @@ Page heights are identical to the original; no console errors.
 **Verified:** lint, test (shell: 74 tests, 8 new for these pages and their access), typecheck and build; Prettier clean.
 
 **Next step:** Step 21 – Reminders, Employee Management and Audit Logs pages.
+
+## Step 21 – Admin Portal: Reminders, Employee Management and Audit Logs
+
+**Done:**
+
+- **Reminders:** Reminder Management dashboard (`/reminders`), Configuration, Escalations and History. Shown to Super Admin, Admin and Application Admin.
+- **Employee Management** (`/users`): Super Admin and Admin.
+- **Audit Logs** (`/audit-logs`): Super Admin and Admin.
+- **Charts without a chart library:**
+  - **The library:** his Reminders dashboard draws a donut and a bar chart with `recharts`. (Correction: the Step 17 library list called it unused.)
+  - **Why not add it:** it would need approval and goes against the no-UI-library rule.
+  - **In-house instead:** two small SVG charts (`components/charts/`) follow the same geometry, measured from the original's rendered charts: angles, padding, legend order, bar width, rounded corners, ticks and grid. Tests compare them with the library's real output, e.g. the axis ticks for 11 maximum values.
+  - **Colours:** come from theme tokens.
+  - **Difference:** the original animates the charts on load; these appear without animation.
+- **Employee Management drives sign-in (mock RBAC and Provisioning):**
+  - The portal's mock sign-in now reads the users of Employee Management instead of a fixed list.
+  - A user deactivated there cannot sign in.
+  - A new user can sign in with the demo password.
+  - Role and assigned applications take effect at the next sign-in.
+  - This is the "Employee Management → RBAC" link from the plan.
+- **Original code, minimal fixes:** unused imports removed in four pages; Escalations selects its first policy during render instead of in an effect (lint rule; same behaviour).
+- **Interim page removed:** every Admin Portal page is now in the portal.
+
+**Screenshot comparison, all pages** (production build, 1440×900, light / dark):
+
+| Page                      | Pixels different | Page                   | Pixels different |
+| ------------------------- | ---------------- | ---------------------- | ---------------- |
+| Login                     | 0.24% / –        | Reminders              | 0.44% / 0.49%    |
+| Dashboard                 | 0.43% / 0.44%    | Reminder Configuration | 0.28% / 0.28%    |
+| Approval Queue            | 0.45% / 0.46%    | Escalations            | 0.33% / 0.35%    |
+| Branding Dashboard        | 0.34% / 0.34%    | Reminder History       | 0.36% / 0.37%    |
+| Configure Branding (Keka) | 0.31% / 0.31%    | Employee Management    | 0.43% / 0.46%    |
+| Version History           | 0.56% / 0.48%    | Audit Logs             | 0.61% / 0.62%    |
+| Notification Templates    | 0.33% / 0.34%    | Settings               | 0.47% / 0.45%    |
+| Notification Channels     | 0.33% / 0.34%    | Accessibility panel    | 0.43% / 0.45%    |
+|                           |                  | Bell panel             | 1.88% / 2.06%    |
+
+- **Page heights:** all identical to the original.
+- **Remaining differences:** everywhere they are the intended ones:
+  - no logo;
+  - the new Applications section in the sidebar;
+  - the sidebar clock;
+  - the bell count;
+  - dates in the sample data, which are relative to "now".
+- **Bell panel:** now lists the applications' messages.
+- **Console:** no errors.
+
+**Verified:** lint, test (shell: 95 tests), typecheck and build for all 8 projects; Prettier clean.
+
+**Next step:** Step 22 – stand-ins: People & HR becomes Keka HR (Angular), Sales Hub becomes Deal Pulse (React), with his theme.

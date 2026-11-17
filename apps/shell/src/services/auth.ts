@@ -1,9 +1,19 @@
-import { mockAuth } from '@npst/platform-mocks';
+import {
+  DEMO_PASSWORD,
+  mockUsers,
+  SignInError,
+  type MockUser,
+} from '@npst/platform-mocks';
 import type { PlatformUser } from '@npst/shared-contracts';
+import { userService } from '@/services/adminService';
+import { setSessionSource } from '@/services/storage';
 
 /**
  * Sign-in for the portal (the only login; MFEs never log in themselves).
- * Mock for now: the seeded users sign in with email and the one demo password.
+ * Mock for now: the users provisioned in Employee Management (the Admin
+ * Portal's RBAC and Provisioning page) sign in with email and the one demo
+ * password. Deactivating a user there blocks their sign-in; their role and
+ * assigned applications decide what they see after their next sign-in.
  *
  * Real flow (docs/architecture.md, section 5): the backend authenticates the
  * user, creates a central session and sets a secure, browser-managed session
@@ -39,7 +49,14 @@ export async function signIn(
   email: string,
   password: string,
 ): Promise<PlatformUser> {
-  const user = await mockAuth.signIn(email, password);
+  const normalized = email.trim().toLowerCase();
+  const user = directory().find((candidate) => candidate.email === normalized);
+  if (!user || password !== DEMO_PASSWORD) throw new SignInError();
+  if (user.status !== 'active') {
+    throw new SignInError(
+      'This account is inactive. Contact your administrator.',
+    );
+  }
   try {
     sessionStore()?.setItem(SESSION_STORAGE_KEY, user.id);
   } catch {
@@ -60,7 +77,10 @@ export function signOut(): void {
 export function restoreSession(): PlatformUser | null {
   try {
     const userId = sessionStore()?.getItem(SESSION_STORAGE_KEY);
-    return userId ? (mockAuth.findUser(userId) ?? null) : null;
+    const user = userId
+      ? directory().find((candidate) => candidate.id === userId)
+      : undefined;
+    return user && user.status === 'active' ? user : null;
   } catch {
     return null;
   }
@@ -81,3 +101,30 @@ export function onSessionChange(listener: () => void): () => void {
   window.addEventListener('storage', onStorage);
   return () => window.removeEventListener('storage', onStorage);
 }
+
+/**
+ * Mock RBAC and Provisioning: the users of Employee Management, as platform
+ * users. The first role is the portal role; seeded users keep their team in
+ * the stand-in business apps as a second role (see `@npst/platform-mocks`).
+ */
+function directory(): MockUser[] {
+  return userService.list().map((user) => {
+    const seeded = mockUsers.find((candidate) => candidate.id === user.id);
+    const teams = seeded
+      ? seeded.roles.slice(1)
+      : user.role === 'Employee'
+        ? ['EMPLOYEE']
+        : [];
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email.toLowerCase(),
+      roles: [user.role, ...teams],
+      apps: user.apps,
+      status: user.status,
+    };
+  });
+}
+
+// The Admin Portal's services read the signed-in user from the central session.
+setSessionSource(restoreSession);

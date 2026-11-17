@@ -1,0 +1,199 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* space-y-6 */
+:where(.div > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 6) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* size-4 */
+.download {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+}
+
+/* shadow-sm */
+.card {
+  --tw-shadow:
+    0 1px 3px 0 var(--tw-shadow-color, var(--fixed-black-a10)),
+    0 1px 2px -1px var(--tw-shadow-color, var(--fixed-black-a10));
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+/* space-y-4 p-4 */
+:where(.cardContent > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 4) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+.cardContent {
+  padding: calc(var(--spacing) * 4);
+}
+
+/* flex flex-col gap-3 xl:flex-row xl:items-center */
+.div2 {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+}
+@media (width >= 80rem) {
+  .div2 {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* relative w-full xl:max-w-xs */
+.div3 {
+  position: relative;
+  width: 100%;
+}
+@media (width >= 80rem) {
+  .div3 {
+    max-width: var(--container-xs);
+  }
+}
+
+/* absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground */
+.search {
+  position: absolute;
+  top: calc(1 / 2 * 100%);
+  left: calc(var(--spacing) * 3);
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+  --tw-translate-y: calc(calc(1 / 2 * 100%) * -1);
+  translate: var(--tw-translate-x) var(--tw-translate-y);
+  color: var(--muted-foreground);
+}
+
+/* pl-9 */
+.input {
+  padding-left: calc(var(--spacing) * 9);
+}
+
+/* grid flex-1 grid-cols-2 gap-2 sm:grid-cols-4 */
+.div4 {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 2);
+}
+@media (width >= 40rem) {
+  .div4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* hidden xl:table-cell */
+.tableHead {
+  display: none;
+}
+@media (width >= 80rem) {
+  .tableHead {
+    display: table-cell;
+  }
+}
+
+/* hidden lg:table-cell */
+.tableHead2 {
+  display: none;
+}
+@media (width >= 64rem) {
+  .tableHead2 {
+    display: table-cell;
+  }
+}
+
+/* hidden md:table-cell */
+.tableHead3 {
+  display: none;
+}
+@media (width >= 48rem) {
+  .tableHead3 {
+    display: table-cell;
+  }
+}
+
+/* hidden xl:table-cell font-mono text-xs text-muted-foreground */
+.tableCell {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+@media (width >= 80rem) {
+  .tableCell {
+    display: table-cell;
+  }
+}
+.tableCell {
+  --tw-leading: initial;
+}
+
+/* whitespace-nowrap font-medium */
+.tableCell2 {
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+/* rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground */
+.span {
+  border-radius: calc(var(--radius) * 0.8);
+  background-color: var(--muted);
+  padding-inline: calc(var(--spacing) * 2);
+  padding-block: calc(var(--spacing) * 0.5);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--muted-foreground);
+}
+.span {
+  --tw-leading: initial;
+}
+
+/* max-w-72 truncate */
+.tableCell3 {
+  max-width: calc(var(--spacing) * 72);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* hidden md:table-cell whitespace-nowrap text-muted-foreground */
+.tableCell4 {
+  display: none;
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+@media (width >= 48rem) {
+  .tableCell4 {
+    display: table-cell;
+  }
+}
+
+/* border-t border-border pt-3 text-xs text-muted-foreground */
+.p {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1px;
+  border-color: var(--border);
+  padding-top: calc(var(--spacing) * 3);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.p {
+  --tw-leading: initial;
+}

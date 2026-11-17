@@ -1,0 +1,82 @@
+/* In-house charts (look of the original's chart library). */
+.chart {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.surface {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.legend {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  width: calc(100% - 10px);
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  text-align: center;
+  list-style: none;
+}
+
+.legendItem {
+  display: inline-block;
+  margin-right: 10px;
+  white-space: nowrap;
+}
+
+.legendIcon {
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.tick {
+  fill: var(--chart-tick);
+}
+
+.grid {
+  stroke: var(--chart-grid);
+  stroke-dasharray: 3 3;
+  fill: none;
+}
+
+.cursor {
+  fill: var(--chart-cursor);
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid var(--chart-grid);
+  border-radius: 10px;
+  background-color: var(--chart-tooltip-bg);
+  font-size: 12px;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px var(--chart-tooltip-shadow);
+  pointer-events: none;
+  translate: var(--tooltip-x, 0) var(--tooltip-y, 0);
+}
+
+.tooltipLabel {
+  margin: 0;
+}
+
+.tooltipList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tooltipItem {
+  display: block;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
