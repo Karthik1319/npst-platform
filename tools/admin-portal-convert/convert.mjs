@@ -149,6 +149,9 @@ HIS_CLASSES.add('toaster');
 HIS_CLASSES.add('cn-toast');
 HIS_CLASSES.add('sr-only-x');
 
+// Unprefixed font-size utilities (text-sm, text-2xl, text-[10px], …).
+const FONT_SIZE = /^text-(?:xs|sm|base|lg|[2-9]?xl|\[[\d.]+(?:px|rem|em)\])$/;
+
 // ---------- fonts → tokens ----------
 const FONT_TOKENS = [
   ["'Plus Jakarta Sans Variable', sans-serif", '--font-heading'],
@@ -208,6 +211,8 @@ function variablesOnly(root) {
   });
   root.walkDecls((d) => {
     if (d.prop.startsWith('--fixed-')) return;
+    // @property initial values must be fixed values (CSS forbids var() there).
+    if (d.parent?.type === 'atrule' && d.parent.name === 'property') return;
     if (d.value.includes('url(')) return;
     d.value = d.value.replace(COLOR_RE, (m) => tokenFor(m));
   });
@@ -308,7 +313,15 @@ function convertFile(file) {
       names.set(local, true);
       bySet.set(key, local);
       const sized = utils.some((u) => /^(?:[a-z-]+:)*size-/.test(u));
-      const css = cssForSite(utils, local, 'npst-sized');
+      let css = cssForSite(utils, local, 'npst-sized');
+      // tailwind-merge rule: a page's text size drops a component's `leading-*`
+      // (e.g. CardTitle). Text-size utilities read --tw-leading, so reset it here.
+      if (
+        !isUi &&
+        utils.some((u) => FONT_SIZE.test(u)) &&
+        !utils.some((u) => /^leading-/.test(u))
+      )
+        css += `\n.${local} {\n  --tw-leading: initial;\n}`;
       blocks.push(`/* ${key} */\n${css}`);
       if (sized) report.sized = (report.sized ?? 0) + 1;
     }
@@ -533,10 +546,11 @@ function convertFile(file) {
     const at = lastImport
       ? out.indexOf('\n', out.indexOf(lastImport.getText(sf).split('\n').pop()))
       : 0;
-    out =
-      out.slice(0, at) +
-      `\nimport styles from './${base}.module.css';` +
-      out.slice(at);
+    const importLine = `import styles from './${base}.module.css';`;
+    // After the last import, or at the top (own line) when the file has none.
+    out = lastImport
+      ? out.slice(0, at) + `\n${importLine}` + out.slice(at)
+      : `${importLine}\n\n${out}`;
     const cssText =
       `/* Generated from the original Tailwind classes (Step 18 converter); variables only. */\n` +
       (isUi

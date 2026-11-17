@@ -1,0 +1,511 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* overflow-hidden rounded-xl border border-[#CBD5E1] bg-white */
+.div {
+  overflow: hidden;
+  border-radius: calc(var(--radius) * 1.4);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--fixed-slate-300);
+  background-color: var(--color-white);
+}
+
+/* flex items-center gap-2 border-b border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2 */
+.div2 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--fixed-slate-200);
+  background-color: var(--fixed-slate-50);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 2);
+}
+
+/* size-2.5 rounded-full bg-[#F87171] */
+.span {
+  width: calc(var(--spacing) * 2.5);
+  height: calc(var(--spacing) * 2.5);
+  border-radius: calc(infinity * 1px);
+  background-color: var(--fixed-red-400);
+}
+
+/* size-2.5 rounded-full bg-[#FBBF24] */
+.span2 {
+  width: calc(var(--spacing) * 2.5);
+  height: calc(var(--spacing) * 2.5);
+  border-radius: calc(infinity * 1px);
+  background-color: var(--fixed-amber-400);
+}
+
+/* size-2.5 rounded-full bg-[#34D399] */
+.span3 {
+  width: calc(var(--spacing) * 2.5);
+  height: calc(var(--spacing) * 2.5);
+  border-radius: calc(infinity * 1px);
+  background-color: var(--fixed-emerald-400);
+}
+
+/* ml-2 flex-1 truncate rounded-md bg-white px-2.5 py-1 text-[10px] text-[#64748B] ring-1 ring-[#E2E8F0] */
+.span4 {
+  margin-left: calc(var(--spacing) * 2);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: calc(var(--radius) * 0.8);
+  background-color: var(--color-white);
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: var(--spacing);
+  font-size: 10px;
+  color: var(--fixed-slate-500);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+    calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-color: var(--fixed-slate-200);
+}
+.span4 {
+  --tw-leading: initial;
+}
+
+/* flex items-center gap-3 px-4 py-2.5 */
+.div3 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 2.5);
+}
+
+/* h-6 w-auto max-w-24 object-contain */
+.img {
+  height: calc(var(--spacing) * 6);
+  width: auto;
+  max-width: calc(var(--spacing) * 24);
+  object-fit: contain;
+}
+
+/* grid size-6 place-items-center text-[11px] font-bold */
+.span5 {
+  display: grid;
+  width: calc(var(--spacing) * 6);
+  height: calc(var(--spacing) * 6);
+  place-items: center;
+  font-size: 11px;
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.span5 {
+  --tw-leading: initial;
+}
+
+/* font-heading font-bold */
+.span6 {
+  font-family: var(--font-heading);
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+
+/* ml-auto flex items-center gap-2 */
+.span7 {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+/* size-3.5 */
+.search {
+  width: calc(var(--spacing) * 3.5);
+  height: calc(var(--spacing) * 3.5);
+}
+
+/* relative inline-flex */
+.span8 {
+  position: relative;
+  display: inline-flex;
+}
+
+/* grid size-6 place-items-center text-[10px] font-bold */
+.span9 {
+  display: grid;
+  width: calc(var(--spacing) * 6);
+  height: calc(var(--spacing) * 6);
+  place-items: center;
+  font-size: 10px;
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.span9 {
+  --tw-leading: initial;
+}
+
+/* absolute -right-0.5 -top-0.5 size-2 rounded-full */
+.span10 {
+  position: absolute;
+  top: calc(var(--spacing) * -0.5);
+  right: calc(var(--spacing) * -0.5);
+  width: calc(var(--spacing) * 2);
+  height: calc(var(--spacing) * 2);
+  border-radius: calc(infinity * 1px);
+}
+
+/* flex */
+.div4 {
+  display: flex;
+}
+
+/* w-32 shrink-0 space-y-1 px-2.5 py-3 */
+.div5 {
+  width: calc(var(--spacing) * 32);
+  flex-shrink: 0;
+}
+:where(.div5 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(var(--spacing) * var(--tw-space-y-reverse));
+  margin-block-end: calc(var(--spacing) * calc(1 - var(--tw-space-y-reverse)));
+}
+.div5 {
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: calc(var(--spacing) * 3);
+}
+
+/* flex items-center gap-2 truncate px-2 py-1.5 text-[11px] */
+.div6 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-inline: calc(var(--spacing) * 2);
+  padding-block: calc(var(--spacing) * 1.5);
+  font-size: 11px;
+}
+.div6 {
+  --tw-leading: initial;
+}
+
+/* size-1.5 rounded-full */
+.span11 {
+  width: calc(var(--spacing) * 1.5);
+  height: calc(var(--spacing) * 1.5);
+  border-radius: calc(infinity * 1px);
+}
+
+/* min-w-0 flex-1 space-y-3 p-3.5 */
+.div7 {
+  min-width: 0px;
+  flex: 1;
+}
+:where(.div7 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 3) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+.div7 {
+  padding: calc(var(--spacing) * 3.5);
+}
+
+/* font-heading font-bold leading-tight */
+.p {
+  font-family: var(--font-heading);
+  --tw-leading: var(--leading-tight);
+  line-height: var(--leading-tight);
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+
+/* grid grid-cols-3 gap-2.5 */
+.div8 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 2.5);
+}
+
+/* p-2.5 */
+.div9 {
+  padding: calc(var(--spacing) * 2.5);
+}
+
+/* text-[9px] uppercase tracking-wide */
+.p2 {
+  font-size: 9px;
+  --tw-tracking: var(--tracking-wide);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+}
+.p2 {
+  --tw-leading: initial;
+}
+
+/* mt-0.5 font-heading text-sm font-bold */
+.p3 {
+  margin-top: calc(var(--spacing) * 0.5);
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+}
+.p3 {
+  --tw-leading: initial;
+}
+
+/* flex items-center gap-2 px-3 py-2 text-[11px] font-medium */
+.div10 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 2);
+  font-size: 11px;
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+}
+.div10 {
+  --tw-leading: initial;
+}
+
+/* size-3.5 shrink-0 */
+.bell {
+  width: calc(var(--spacing) * 3.5);
+  height: calc(var(--spacing) * 3.5);
+  flex-shrink: 0;
+}
+
+/* flex flex-wrap items-center gap-2 */
+.div11 {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+/* px-3 py-1.5 text-[11px] font-semibold transition-colors */
+.button {
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 1.5);
+  font-size: 11px;
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+.button {
+  --tw-leading: initial;
+}
+
+/* px-3 py-1.5 text-[11px] font-semibold */
+.button2 {
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 1.5);
+  font-size: 11px;
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+.button2 {
+  --tw-leading: initial;
+}
+
+/* space-y-1.5 */
+:where(.div12 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* p-2.5 pt-2.5 */
+.div13 {
+  padding: calc(var(--spacing) * 2.5);
+  padding-top: calc(var(--spacing) * 2.5);
+}
+
+/* mb-1 block text-[10px] font-semibold */
+.label {
+  margin-bottom: var(--spacing);
+  display: block;
+  font-size: 10px;
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+.label {
+  --tw-leading: initial;
+}
+
+/* w-full bg-transparent px-2.5 py-1.5 text-[11px] outline-none */
+.input {
+  width: 100%;
+  background-color: transparent;
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: calc(var(--spacing) * 1.5);
+  font-size: 11px;
+  --tw-outline-style: none;
+  outline-style: none;
+}
+.input {
+  --tw-leading: initial;
+}
+
+/* overflow-hidden */
+.div14 {
+  overflow: hidden;
+}
+
+/* w-full text-left text-[10.5px] */
+.table {
+  width: 100%;
+  text-align: left;
+  font-size: 10.5px;
+}
+.table {
+  --tw-leading: initial;
+}
+
+/* px-2.5 py-1.5 font-semibold */
+.th {
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: calc(var(--spacing) * 1.5);
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* px-2.5 py-1.5 */
+.td {
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: calc(var(--spacing) * 1.5);
+}
+
+/* inline-block rounded-full px-1.5 py-0.5 font-semibold */
+.span12 {
+  display: inline-block;
+  border-radius: calc(infinity * 1px);
+  padding-inline: calc(var(--spacing) * 1.5);
+  padding-block: calc(var(--spacing) * 0.5);
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Values from the branding draft (were inline styles in the original); the
+   component sets the --pv-* variables on its root. */
+.pvApp {
+  background: var(--pv-bg);
+  color: var(--pv-text);
+  font-family: var(--pv-font-family);
+  font-size: var(--pv-body-size);
+  line-height: var(--pv-line-height);
+}
+.pvHeader {
+  background: var(--pv-header);
+  border-bottom: 1px solid var(--pv-border);
+}
+.pvMark {
+  background: var(--pv-primary);
+  color: var(--pv-button-label);
+  border-radius: calc(var(--pv-radius) * 0.5);
+}
+.pvTitle {
+  font-size: var(--pv-title-size);
+  font-weight: var(--pv-font-weight);
+}
+.pvMuted {
+  color: var(--preview-muted);
+}
+.pvMutedStrong {
+  color: var(--preview-muted-strong);
+}
+.pvAvatar {
+  background: var(--pv-accent);
+  color: var(--fixed-white);
+  border-radius: 999px;
+}
+.pvDot {
+  background: var(--preview-badge-dot);
+  border: 1.5px solid var(--pv-header);
+}
+.pvSidebar {
+  background: var(--pv-sidebar);
+  color: var(--pv-sidebar-text);
+}
+.pvNav {
+  color: var(--pv-sidebar-muted);
+  border-radius: calc(var(--pv-radius) * 0.6);
+}
+.pvNavActive {
+  background: color-mix(in srgb, var(--pv-primary) 32%, transparent);
+  color: var(--pv-sidebar-text);
+  border-radius: calc(var(--pv-radius) * 0.6);
+  font-weight: 600;
+}
+.pvNavDot {
+  background: currentColor;
+  opacity: 0.7;
+}
+.pvHeading {
+  font-size: var(--pv-heading-size);
+  font-weight: var(--pv-font-weight);
+}
+.pvWeight {
+  font-weight: var(--pv-font-weight);
+}
+.pvCard {
+  background: var(--pv-card);
+  color: var(--pv-text);
+  border-radius: var(--pv-radius);
+  border: 1px solid var(--pv-border);
+  box-shadow: var(--pv-shadow);
+}
+.pvNotice {
+  background: color-mix(in srgb, var(--pv-accent) 14%, var(--pv-card));
+  color: var(--pv-text);
+  border-radius: var(--pv-radius);
+  border: 1px solid color-mix(in srgb, var(--pv-accent) 45%, var(--pv-card));
+}
+.pvAccent {
+  color: var(--pv-accent);
+}
+.pvPrimary {
+  background: var(--pv-button);
+  color: var(--pv-button-label);
+  border-radius: var(--pv-control-radius);
+}
+.pvSecondary {
+  color: var(--pv-text);
+  border-radius: var(--pv-control-radius);
+  border: 1px solid var(--pv-border);
+  background: var(--pv-card);
+}
+.pvInput {
+  border: 1px solid var(--pv-border);
+  border-radius: var(--pv-input-radius);
+  color: var(--pv-text);
+}
+.pvRow {
+  border-bottom: 1px solid var(--pv-border);
+}
+tbody .pvRow:last-child {
+  border-bottom: none;
+}
+.table[data-striped] tbody .pvRow:nth-child(even) {
+  background: color-mix(in srgb, var(--pv-primary) 5%, var(--pv-card));
+}
+.pvStatus {
+  background: color-mix(in srgb, var(--pv-primary) 12%, var(--pv-card));
+  color: var(--pv-primary);
+}

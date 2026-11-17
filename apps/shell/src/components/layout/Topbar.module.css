@@ -1,0 +1,729 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* sticky top-0 z-30 flex h-16 items-center justify-between gap-3 border-b border-border bg-background/95 px-4 text-foreground backdrop-blur sm:px-6 */
+.header {
+  position: sticky;
+  top: 0px;
+  z-index: 30;
+  display: flex;
+  height: calc(var(--spacing) * 16);
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 3);
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--border);
+  background-color: var(--background);
+  background-color: color-mix(in oklab, var(--background) 95%, transparent);
+  padding-inline: calc(var(--spacing) * 4);
+  color: var(--foreground);
+  --tw-backdrop-blur: blur(8px);
+  -webkit-backdrop-filter: var(--tw-backdrop-blur,)
+    var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
+    var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
+    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
+    var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
+    var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
+    var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
+    var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
+    var(--tw-backdrop-sepia,);
+}
+@media (width >= 40rem) {
+  .header {
+    padding-inline: calc(var(--spacing) * 6);
+  }
+}
+
+/* flex min-w-0 items-center gap-3 */
+.div {
+  display: flex;
+  min-width: 0px;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+}
+
+/* md:hidden */
+@media (width >= 48rem) {
+  .button {
+    display: none;
+  }
+}
+
+/* size-5 */
+.menu {
+  width: calc(var(--spacing) * 5);
+  height: calc(var(--spacing) * 5);
+}
+
+/* flex min-w-0 items-center gap-1.5 text-sm */
+.nav {
+  display: flex;
+  min-width: 0px;
+  align-items: center;
+  gap: calc(var(--spacing) * 1.5);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+.nav {
+  --tw-leading: initial;
+}
+
+/* flex min-w-0 items-center gap-1.5 */
+.span {
+  display: flex;
+  min-width: 0px;
+  align-items: center;
+  gap: calc(var(--spacing) * 1.5);
+}
+
+/* size-3.5 shrink-0 text-muted-foreground/60 */
+.chevronRight {
+  width: calc(var(--spacing) * 3.5);
+  height: calc(var(--spacing) * 3.5);
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  color: color-mix(in oklab, var(--muted-foreground) 60%, transparent);
+}
+
+/* truncate */
+.span2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* font-semibold text-foreground */
+.span3 {
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
+}
+
+/* text-muted-foreground */
+.span4 {
+  color: var(--muted-foreground);
+}
+
+/* flex items-center gap-1.5 sm:gap-2 */
+.div2 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 1.5);
+}
+@media (width >= 40rem) {
+  .div2 {
+    gap: calc(var(--spacing) * 2);
+  }
+}
+
+/* hidden h-9 w-56 items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 text-sm text-muted-foreground transition-colors hover:bg-muted md:flex lg:w-72 */
+.button2 {
+  display: none;
+  height: calc(var(--spacing) * 9);
+  width: calc(var(--spacing) * 56);
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  border-radius: var(--radius);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--border);
+  background-color: var(--muted);
+  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+  padding-inline: calc(var(--spacing) * 3);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--muted-foreground);
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+@media (hover: hover) {
+  .button2:hover {
+    background-color: var(--muted);
+  }
+}
+@media (width >= 48rem) {
+  .button2 {
+    display: flex;
+  }
+}
+@media (width >= 64rem) {
+  .button2 {
+    width: calc(var(--spacing) * 72);
+  }
+}
+.button2 {
+  --tw-leading: initial;
+}
+
+/* size-4 */
+.search {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+}
+
+/* flex-1 text-left */
+.span5 {
+  flex: 1;
+  text-align: left;
+}
+
+/* w-[22rem] p-0 */
+.popoverContent {
+  width: 22rem;
+  padding: 0px;
+}
+
+/* border-b border-border p-3 */
+.div3 {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--border);
+  padding: calc(var(--spacing) * 3);
+}
+
+/* max-h-80 overflow-y-auto p-2 */
+.div4 {
+  max-height: calc(var(--spacing) * 80);
+  overflow-y: auto;
+  padding: calc(var(--spacing) * 2);
+}
+
+/* px-2 py-6 text-center text-xs text-muted-foreground */
+.p {
+  padding-inline: calc(var(--spacing) * 2);
+  padding-block: calc(var(--spacing) * 6);
+  text-align: center;
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.p {
+  --tw-leading: initial;
+}
+
+/* flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left transition-colors hover:bg-muted */
+.button3 {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  border-radius: var(--radius);
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: calc(var(--spacing) * 2);
+  text-align: left;
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+@media (hover: hover) {
+  .button3:hover {
+    background-color: var(--muted);
+  }
+}
+
+/* size-4 shrink-0 text-blue-600 */
+.resulticon {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+  flex-shrink: 0;
+  color: var(--color-blue-600);
+}
+
+/* min-w-0 flex-1 */
+.span6 {
+  min-width: 0px;
+  flex: 1;
+}
+
+/* block truncate text-sm font-medium text-foreground */
+.span7 {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+}
+.span7 {
+  --tw-leading: initial;
+}
+
+/* block text-xs text-muted-foreground */
+.span8 {
+  display: block;
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.span8 {
+  --tw-leading: initial;
+}
+
+/* size-4 shrink-0 text-muted-foreground/60 */
+.chevronRight2 {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  color: color-mix(in oklab, var(--muted-foreground) 60%, transparent);
+}
+
+/* size-[18px] */
+.sparkles {
+  width: 18px;
+  height: 18px;
+}
+
+/* hidden lg:inline */
+.span9 {
+  display: none;
+}
+@media (width >= 64rem) {
+  .span9 {
+    display: inline;
+  }
+}
+
+/* relative */
+.button4 {
+  position: relative;
+}
+
+/* absolute -right-0.5 -top-0.5 grid size-4 place-items-center rounded-full bg-red-500 text-[9px] font-bold text-white */
+.span10 {
+  position: absolute;
+  top: calc(var(--spacing) * -0.5);
+  right: calc(var(--spacing) * -0.5);
+  display: grid;
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+  place-items: center;
+  border-radius: calc(infinity * 1px);
+  background-color: var(--color-red-500);
+  font-size: 9px;
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+}
+.span10 {
+  --tw-leading: initial;
+}
+
+/* flex items-center justify-between border-b border-border px-4 py-3 */
+.div5 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--border);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 3);
+}
+
+/* font-heading text-sm font-semibold */
+.p2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+.p2 {
+  --tw-leading: initial;
+}
+
+/* text-xs font-medium text-blue-600 hover:underline */
+.button5 {
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-blue-600);
+}
+@media (hover: hover) {
+  .button5:hover {
+    text-decoration-line: underline;
+  }
+}
+.button5 {
+  --tw-leading: initial;
+}
+
+/* max-h-80 overflow-y-auto */
+.div6 {
+  max-height: calc(var(--spacing) * 80);
+  overflow-y: auto;
+}
+
+/* px-4 py-6 text-center text-xs text-muted-foreground */
+.p3 {
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 6);
+  text-align: center;
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.p3 {
+  --tw-leading: initial;
+}
+
+/* block border-b border-border/60 px-4 py-3 text-foreground last:border-0 hover:bg-muted */
+.link {
+  display: block;
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+  border-color: var(--border);
+  border-color: color-mix(in oklab, var(--border) 60%, transparent);
+  padding-inline: calc(var(--spacing) * 4);
+  padding-block: calc(var(--spacing) * 3);
+  color: var(--foreground);
+}
+.link:last-child {
+  border-style: var(--tw-border-style);
+  border-width: 0px;
+}
+@media (hover: hover) {
+  .link:hover {
+    background-color: var(--muted);
+  }
+}
+
+/* bg-accent */
+.link2 {
+  background-color: var(--accent);
+}
+
+/* text-sm font-medium text-foreground */
+.p4 {
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+}
+.p4 {
+  --tw-leading: initial;
+}
+
+/* mt-0.5 text-xs text-muted-foreground */
+.p5 {
+  margin-top: calc(var(--spacing) * 0.5);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.p5 {
+  --tw-leading: initial;
+}
+
+/* mt-1 text-[10px] text-muted-foreground */
+.p6 {
+  margin-top: var(--spacing);
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.p6 {
+  --tw-leading: initial;
+}
+
+/* w-56 */
+.popoverContent2 {
+  width: calc(var(--spacing) * 56);
+}
+
+/* mt-2 grid grid-cols-2 gap-2 */
+.div7 {
+  margin-top: calc(var(--spacing) * 2);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 2);
+}
+
+/* w-72 */
+.popoverContent3 {
+  width: calc(var(--spacing) * 72);
+}
+
+/* mt-1 text-xs text-muted-foreground */
+.p7 {
+  margin-top: var(--spacing);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.p7 {
+  --tw-leading: initial;
+}
+
+/* mt-3 space-y-1.5 */
+.div8 {
+  margin-top: calc(var(--spacing) * 3);
+}
+:where(.div8 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors hover:bg-muted */
+.button6 {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: calc(var(--spacing) * 2.5);
+  border-radius: var(--radius);
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: calc(var(--spacing) * 2);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+@media (hover: hover) {
+  .button6:hover {
+    background-color: var(--muted);
+  }
+}
+.button6 {
+  --tw-leading: initial;
+}
+
+/* size-4 text-blue-600 */
+.bookOpen {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+  color: var(--color-blue-600);
+}
+
+/* flex items-center justify-between rounded-lg px-2.5 py-2 text-sm */
+.div9 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius);
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: calc(var(--spacing) * 2);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+.div9 {
+  --tw-leading: initial;
+}
+
+/* flex items-center gap-2.5 text-muted-foreground */
+.span11 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2.5);
+  color: var(--muted-foreground);
+}
+
+/* rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-semibold */
+.kbd {
+  border-radius: 0.25rem;
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--border);
+  background-color: var(--muted);
+  padding-inline: calc(var(--spacing) * 1.5);
+  padding-block: calc(var(--spacing) * 0.5);
+  font-size: 10px;
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+.kbd {
+  --tw-leading: initial;
+}
+
+/* flex items-center gap-2 rounded-lg py-1 pl-1 pr-2 transition-colors hover:bg-muted */
+.button7 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  border-radius: var(--radius);
+  padding-block: var(--spacing);
+  padding-right: calc(var(--spacing) * 2);
+  padding-left: var(--spacing);
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+@media (hover: hover) {
+  .button7:hover {
+    background-color: var(--muted);
+  }
+}
+
+/* grid size-8 place-items-center rounded-full bg-blue-600 text-xs font-bold text-white */
+.span12 {
+  display: grid;
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
+  place-items: center;
+  border-radius: calc(infinity * 1px);
+  background-color: var(--color-blue-600);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+}
+.span12 {
+  --tw-leading: initial;
+}
+
+/* hidden text-left leading-tight lg:block */
+.span13 {
+  display: none;
+  text-align: left;
+  --tw-leading: var(--leading-tight);
+  line-height: var(--leading-tight);
+}
+@media (width >= 64rem) {
+  .span13 {
+    display: block;
+  }
+}
+
+/* block text-xs font-semibold text-foreground */
+.span14 {
+  display: block;
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
+}
+.span14 {
+  --tw-leading: initial;
+}
+
+/* block text-[10px] text-muted-foreground */
+.span15 {
+  display: block;
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.span15 {
+  --tw-leading: initial;
+}
+
+/* hidden size-3.5 rotate-90 text-muted-foreground lg:block */
+.chevronRight3 {
+  display: none;
+  width: calc(var(--spacing) * 3.5);
+  height: calc(var(--spacing) * 3.5);
+  rotate: 90deg;
+  color: var(--muted-foreground);
+}
+@media (width >= 64rem) {
+  .chevronRight3 {
+    display: block;
+  }
+}
+
+/* w-60 */
+.dropdownMenuContent {
+  width: calc(var(--spacing) * 60);
+}
+
+/* block text-sm font-semibold */
+.span16 {
+  display: block;
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+.span16 {
+  --tw-leading: initial;
+}
+
+/* block text-xs font-normal text-muted-foreground */
+.span17 {
+  display: block;
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  --tw-font-weight: var(--font-weight-normal);
+  font-weight: var(--font-weight-normal);
+  color: var(--muted-foreground);
+}
+.span17 {
+  --tw-leading: initial;
+}
+
+/* max-w-lg */
+.dialogContent {
+  max-width: var(--container-lg);
+}
+
+/* flex items-start justify-between gap-4 */
+.div10 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(var(--spacing) * 4);
+}
+
+/* mt-1 */
+.dialogDescription {
+  margin-top: var(--spacing);
+}
+
+/* space-y-3 */
+:where(.form > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 3) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* rounded-lg border border-border bg-muted p-3 text-sm text-muted-foreground */
+.p8 {
+  border-radius: var(--radius);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--border);
+  background-color: var(--muted);
+  padding: calc(var(--spacing) * 3);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--muted-foreground);
+}
+.p8 {
+  --tw-leading: initial;
+}

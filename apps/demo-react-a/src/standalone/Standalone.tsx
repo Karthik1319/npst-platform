@@ -6,7 +6,7 @@ import styles from './Standalone.module.css';
 import { StandaloneToasts } from './StandaloneToasts';
 
 /** Least privilege: standalone mode starts as a normal user, never Admin. */
-export const DEFAULT_USER_ID = 'u-1';
+export const DEFAULT_USER_ID = 'user-2';
 
 interface StandaloneProps {
   /** The page's query string; `?user=<id>` picks the mock user. */

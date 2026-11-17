@@ -5,7 +5,13 @@ import {
   type Toast,
 } from '@npst/shared-contracts';
 import { notificationService } from '@npst/mock-backend';
-import { mockApps, mockAuditEntries, mockRolePermissions } from './mock-data';
+import {
+  mockApps,
+  mockAuditEntries,
+  mockRolePermissions,
+  mockUsers,
+  type MockUser,
+} from './mock-data';
 
 export interface MockPlatformOptions {
   /**
@@ -29,7 +35,14 @@ export function createMockPlatform(
   const toastListeners = new Set<(toast: Toast) => void>();
   let nextToastId = 1;
 
+  // Applications assigned to the user (Employee Management): `access:<appId>`.
+  const assignedApps: readonly string[] =
+    (user as Partial<MockUser>).apps ??
+    mockUsers.find((candidate) => candidate.id === user.id)?.apps ??
+    [];
+
   const can = (action: string, resource: string): boolean =>
+    (action === 'access' && assignedApps.includes(resource)) ||
     user.roles.some((role) =>
       (mockRolePermissions[role] ?? []).includes(`${action}:${resource}`),
     );

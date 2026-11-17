@@ -14,7 +14,9 @@ function user(name: string): PlatformUser {
 
 describe('createMockPlatform', () => {
   it('follows the current contract version', () => {
-    expect(createMockPlatform({ user: user('User 1') }).version).toBe('1.1.0');
+    expect(createMockPlatform({ user: user('Priya Nair') }).version).toBe(
+      '1.1.0',
+    );
   });
 
   it('requires a user (no default user)', () => {
@@ -27,11 +29,20 @@ describe('createMockPlatform', () => {
     ).toThrow('needs the signed-in user');
   });
 
+  const allApps = [
+    'app-keka',
+    'app-dealpulse',
+    'app-skillup',
+    'app-finance',
+    'projects',
+  ];
   it.each([
-    ['Admin User', ['sales-hub', 'projects', 'people-hr', 'admin-console']],
-    ['User 1', ['sales-hub', 'projects']],
-    ['User 2', ['projects', 'people-hr']],
-    ['User 3', ['people-hr']],
+    ['Aarav Mehta', allApps],
+    ['Priya Nair', allApps],
+    ['Rohit Kulkarni', ['app-keka', 'projects']],
+    ['Vikram Desai', ['app-finance', 'projects']],
+    ['Arjun Rao', ['app-keka', 'app-skillup']],
+    ['Neha Kapoor', ['app-keka']],
   ])('%s may access exactly %j', async (name, expectedIds) => {
     const platform = createMockPlatform({ user: user(name) });
 
@@ -47,12 +58,36 @@ describe('createMockPlatform', () => {
   });
 
   it.each([
-    ['export:sales-hub', ['Admin User']],
-    ['create:lead', ['Admin User', 'User 1']],
-    ['edit:opportunity', ['Admin User', 'User 1']],
-    ['update:project-task', ['Admin User', 'User 2']],
-    ['approve:leave', ['Admin User']],
-    ['apply:leave', ['Admin User', 'User 2', 'User 3']],
+    ['manage:settings', ['Aarav Mehta']],
+    ['view:applications', ['Aarav Mehta', 'Priya Nair', 'Karan Malhotra']],
+    [
+      'manage:branding',
+      [
+        'Aarav Mehta',
+        'Priya Nair',
+        'Rohit Kulkarni',
+        'Sneha Iyer',
+        'Vikram Desai',
+        'Karan Malhotra',
+      ],
+    ],
+    ['export:sales-hub', ['Aarav Mehta']],
+    [
+      'create:lead',
+      ['Aarav Mehta', 'Priya Nair', 'Vikram Desai', 'Karan Malhotra'],
+    ],
+    ['update:project-task', ['Aarav Mehta', 'Rohit Kulkarni', 'Sneha Iyer']],
+    ['approve:leave', ['Aarav Mehta']],
+    [
+      'apply:leave',
+      [
+        'Aarav Mehta',
+        'Rohit Kulkarni',
+        'Sneha Iyer',
+        'Arjun Rao',
+        'Neha Kapoor',
+      ],
+    ],
   ])('grants the in-app permission %s only to %j', (permission, names) => {
     const [action = '', resource = ''] = permission.split(':');
     for (const candidate of mockUsers) {
@@ -66,16 +101,16 @@ describe('createMockPlatform', () => {
     }
   });
 
-  it('lists all four apps in the catalogue for every user', async () => {
+  it('lists every registered app in the catalogue for every user', async () => {
     const catalogue = await createMockPlatform({
-      user: user('User 3'),
+      user: user('Neha Kapoor'),
     }).apps.catalogue();
-    expect(catalogue).toHaveLength(4);
+    expect(catalogue.map((app) => app.id)).toEqual(allApps);
   });
 
   it('sends toasts to subscribers until they unsubscribe', () => {
     vi.spyOn(console, 'info').mockImplementation(() => undefined);
-    const platform = createMockPlatform({ user: user('User 1') });
+    const platform = createMockPlatform({ user: user('Priya Nair') });
     const listener = vi.fn();
     const unsubscribe = platform.toasts.subscribe(listener);
 
@@ -90,7 +125,7 @@ describe('createMockPlatform', () => {
   });
 
   it("lists the notifications addressed to the user's role, and marks them read", async () => {
-    const platform = createMockPlatform({ user: user('User 1') });
+    const platform = createMockPlatform({ user: user('Priya Nair') });
     const inbox = await platform.inbox.list();
     expect(inbox.length).toBeGreaterThan(0);
     expect(inbox.some((item) => item.title.includes('Meridian'))).toBe(true);
@@ -110,7 +145,7 @@ describe('createMockPlatform', () => {
 
   it("lists the reminders for the user's role", async () => {
     const reminders = await createMockPlatform({
-      user: user('User 3'),
+      user: user('Neha Kapoor'),
     }).reminders.list();
     expect(reminders.map((reminder) => reminder.title)).toContain(
       'Submit timesheet',
@@ -119,12 +154,12 @@ describe('createMockPlatform', () => {
 
   it('returns audit history only with the view:audit permission', async () => {
     const history = await createMockPlatform({
-      user: user('Admin User'),
+      user: user('Aarav Mehta'),
     }).audit.history('leave-request', 'LR-42');
     expect(history).toHaveLength(2);
 
     await expect(
-      createMockPlatform({ user: user('User 1') }).audit.history(
+      createMockPlatform({ user: user('Arjun Rao') }).audit.history(
         'leave-request',
         'LR-42',
       ),

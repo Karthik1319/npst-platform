@@ -1,0 +1,57 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* max-w-md */
+.dialogContent {
+  max-width: var(--container-md);
+}
+
+/* flex items-start gap-3 text-left */
+.div {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--spacing) * 3);
+  text-align: left;
+}
+
+/* grid size-10 shrink-0 place-items-center rounded-full */
+.div2 {
+  display: grid;
+  width: calc(var(--spacing) * 10);
+  height: calc(var(--spacing) * 10);
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: calc(infinity * 1px);
+}
+
+/* bg-red-50 text-red-600 */
+.div3 {
+  background-color: var(--color-red-50);
+  color: var(--color-red-600);
+}
+
+/* bg-blue-50 text-blue-600 */
+.div4 {
+  background-color: var(--color-blue-50);
+  color: var(--color-blue-600);
+}
+
+/* size-5 */
+.alertTriangle {
+  width: calc(var(--spacing) * 5);
+  height: calc(var(--spacing) * 5);
+}
+
+/* space-y-1.5 */
+:where(.div5 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* gap-2 */
+.dialogFooter {
+  gap: calc(var(--spacing) * 2);
+}

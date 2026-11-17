@@ -7,4 +7,19 @@
     left: 0;
     translate: var(--npst-popup-x, 0) var(--npst-popup-y, 0);
   }
+
+  /* Form value of a select or checkbox, hidden like Base UI's (same layout effect). */
+  .hiddenInput {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
 }

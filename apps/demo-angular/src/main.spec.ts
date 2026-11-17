@@ -5,7 +5,7 @@ import { mount, unmount } from './main';
 
 type Platform = ReturnType<typeof createMockPlatform>;
 
-function propsFor(userId = 'u-3'): MfeProps & { platform: Platform } {
+function propsFor(userId = 'user-7'): MfeProps & { platform: Platform } {
   const user = mockAuth.findUser(userId);
   if (!user) throw new Error('mock user missing');
   return { user, basePath: '/people', platform: createMockPlatform({ user }) };
@@ -43,7 +43,7 @@ describe('People & HR (mount contract)', () => {
   });
 
   it('shows the HR dashboard with figures for the signed-in user (shell → MFE)', async () => {
-    await mount(element, propsFor('u-3'));
+    await mount(element, propsFor('user-7'));
     await vi.waitFor(() =>
       expect(element.textContent).toContain('Total employees'),
     );
@@ -54,7 +54,7 @@ describe('People & HR (mount contract)', () => {
   });
 
   it('shows the approval queue to managers (approve:leave)', async () => {
-    await mount(element, propsFor('u-admin'));
+    await mount(element, propsFor('user-1'));
     await vi.waitFor(() =>
       expect(element.textContent).toContain('Pending leave approvals'),
     );
@@ -104,7 +104,7 @@ describe('People & HR (mount contract)', () => {
   it('lets an employee apply for leave; the manager is notified and approves; the employee is notified', async () => {
     // Employee applies (MFE → shell: toast; HR backend → manager: notification).
     window.history.replaceState(null, '', '/people/leave');
-    const employee = propsFor('u-3');
+    const employee = propsFor('user-7');
     const toasts: string[] = [];
     employee.platform.toasts.subscribe((toast) => toasts.push(toast.message));
     await mount(element, employee);
@@ -139,20 +139,22 @@ describe('People & HR (mount contract)', () => {
     await unmount(element);
 
     // Manager sees it in the bell and approves it.
-    const manager = propsFor('u-admin');
+    const manager = propsFor('user-1');
     expect((await manager.platform.inbox.list())[0]?.title).toBe(
-      'Leave request from User 3',
+      'Leave request from Neha Kapoor',
     );
     await mount(element, manager);
     const approve = await waitFor(() =>
       element.querySelector<HTMLButtonElement>(
-        'button[aria-label="Approve leave for User 3"]',
+        'button[aria-label="Approve leave for Neha Kapoor"]',
       ),
     );
     approve.click();
     await vi.waitFor(() =>
       expect(
-        element.querySelector('button[aria-label="Approve leave for User 3"]'),
+        element.querySelector(
+          'button[aria-label="Approve leave for Neha Kapoor"]',
+        ),
       ).toBeNull(),
     );
 
@@ -166,7 +168,7 @@ describe('People & HR (mount contract)', () => {
 
   it('hides Apply and Approve without the permissions (Sales has neither)', async () => {
     window.history.replaceState(null, '', '/people/leave');
-    await mount(element, propsFor('u-1'));
+    await mount(element, propsFor('user-2'));
     await new Promise((resolve) => setTimeout(resolve, 50));
     expect(button(element, 'Apply for leave')).toBeUndefined();
     expect(

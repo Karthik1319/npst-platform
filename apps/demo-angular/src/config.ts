@@ -1,5 +1,5 @@
 /** This app's id in the portal (its permission is `access` on this id). */
-export const APP_ID = 'people-hr';
+export const APP_ID = 'app-keka';
 export const APP_NAME = 'People & HR';
 
 /**

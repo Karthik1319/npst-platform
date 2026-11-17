@@ -1,0 +1,260 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* space-y-6 */
+:where(.div > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 6) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* grid grid-cols-1 gap-5 xl:grid-cols-2 */
+.div2 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 5);
+}
+@media (width >= 80rem) {
+  .div2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* shadow-sm */
+.card {
+  --tw-shadow:
+    0 1px 3px 0 var(--tw-shadow-color, var(--fixed-black-a10)),
+    0 1px 2px -1px var(--tw-shadow-color, var(--fixed-black-a10));
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+/* flex items-center gap-2 font-heading text-base */
+.cardTitle {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  font-family: var(--font-heading);
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
+}
+.cardTitle {
+  --tw-leading: initial;
+}
+
+/* size-4 text-blue-600 */
+.globe {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+  color: var(--color-blue-600);
+}
+
+/* space-y-4 */
+:where(.cardContent > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 4) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* space-y-1.5 */
+:where(.div3 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 1.5) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* grid gap-4 sm:grid-cols-2 */
+.div4 {
+  display: grid;
+  gap: calc(var(--spacing) * 4);
+}
+@media (width >= 40rem) {
+  .div4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* size-4 */
+.save {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+}
+
+/* flex w-fit cursor-pointer items-center gap-2 text-sm */
+.label {
+  display: flex;
+  width: fit-content;
+  cursor: pointer;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+.label {
+  --tw-leading: initial;
+}
+
+/* space-y-2 */
+:where(.div5 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 2) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* flex items-center gap-3 rounded-lg border border-border bg-muted/40 px-3.5 py-2.5 */
+.div6 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 3);
+  border-radius: var(--radius);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--border);
+  background-color: var(--muted);
+  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+  padding-inline: calc(var(--spacing) * 3.5);
+  padding-block: calc(var(--spacing) * 2.5);
+}
+
+/* rounded-md bg-blue-600 px-1.5 py-0.5 font-mono text-[10px] font-bold text-white */
+.span {
+  border-radius: calc(var(--radius) * 0.8);
+  background-color: var(--color-blue-600);
+  padding-inline: calc(var(--spacing) * 1.5);
+  padding-block: calc(var(--spacing) * 0.5);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+}
+.span {
+  --tw-leading: initial;
+}
+
+/* font-mono text-sm */
+.span2 {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+.span2 {
+  --tw-leading: initial;
+}
+
+/* ml-auto hidden text-xs text-muted-foreground sm:block */
+.span3 {
+  margin-left: auto;
+  display: none;
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+@media (width >= 40rem) {
+  .span3 {
+    display: block;
+  }
+}
+.span3 {
+  --tw-leading: initial;
+}
+
+/* flex items-center gap-2 */
+.div7 {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+/* flex-1 truncate rounded-lg border border-border bg-muted/40 px-3 py-2 font-mono text-sm */
+.code {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: var(--radius);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--border);
+  background-color: var(--muted);
+  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
+  padding-inline: calc(var(--spacing) * 3);
+  padding-block: calc(var(--spacing) * 2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+.code {
+  --tw-leading: initial;
+}
+
+/* size-4 text-emerald-600 */
+.check {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+  color: var(--color-emerald-600);
+}
+
+/* text-xs text-muted-foreground */
+.p {
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.p {
+  --tw-leading: initial;
+}
+
+/* space-y-3 */
+:where(.cardContent2 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 3) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* text-sm text-muted-foreground */
+.p2 {
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--muted-foreground);
+}
+.p2 {
+  --tw-leading: initial;
+}
+
+/* flex flex-wrap gap-2 */
+.div8 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--spacing) * 2);
+}
+
+/* text-red-600 hover:bg-red-50 hover:text-red-700 */
+.button {
+  color: var(--color-red-600);
+}
+@media (hover: hover) {
+  .button:hover {
+    background-color: var(--color-red-50);
+    color: var(--color-red-700);
+  }
+}

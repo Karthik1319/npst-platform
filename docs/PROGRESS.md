@@ -26,8 +26,9 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 16    | Reverse proxy (NGINX) and one session           | Done   |
 | 17    | Admin Portal integration: baseline              | Done   |
 | 18    | Admin Portal design system (no UI library)      | Done   |
-| 19    | Admin Portal frame on the architecture          | Next   |
-| 20–24 | Admin Portal integration (see plan)             |        |
+| 19    | Admin Portal frame on the architecture          | Done   |
+| 20    | Admin Portal: Branding and Notifications pages  | Next   |
+| 21–24 | Admin Portal integration (see plan)             |        |
 
 ## Toolchain
 
@@ -1055,3 +1056,101 @@ A teammate built the **NPST Shared Services Admin Portal** (React, Tailwind, sha
 **Open issues:** the popup placement is in-house; it is compared visually with the original's open menus and selects in Step 19.
 
 **Next step:** Step 19 – the Admin Portal frame (login, sidebar, top bar, dashboard, approval queue, settings) on the architecture: central session, `PlatformApi`, MFE loading.
+
+## Step 19 – Admin Portal frame on the architecture
+
+**Done:**
+
+- **His frame is now the portal:** his login page, sidebar, top bar, Dashboard (application registry), Approval Queue and Portal Settings run in the shell, together with his data services, seed data and types. File paths are the same as in his app (`pages/`, `components/layout/`, `components/common/`, `services/`, `data/`, `types/`).
+- **Central session:**
+  - His login form signs in through the portal's session (`services/auth.ts`): one session for all tabs, and sign-out ends it everywhere (Step 16).
+  - His `useAuth()` keeps its API (`context/AuthContext.tsx`) but is backed by that session. His own session store (`npst_session`) and `authService.ts` are not used.
+- **Users and roles:**
+  - His 8 seeded users sign in with **one demo password, `Admin@123`**: Super Admin, Admin, Application Admin and Employee. The inactive user is refused.
+  - `platform-mocks` now holds his users, roles and application registry.
+  - **App access:** `access:<appId>` comes from each user's assigned applications.
+  - **Page permissions:** come from the portal role.
+- **RBAC in the frame:** sidebar items and routes follow `platform.permissions.can()`.
+
+  | Role              | Sees                                              |
+  | ----------------- | ------------------------------------------------- |
+  | Super Admin       | Everything                                        |
+  | Admin             | Everything except Settings                        |
+  | Application Admin | Branding, Notifications and Reminders             |
+  | Employee          | Only their applications (starts in the first one) |
+
+  Other pages show "Access denied".
+
+- **Applications section:** a new sidebar section (his nav style) lists the apps the user may open (`platform.apps.allowed()`). Each app opens at its own path:
+
+  | App                 | Path          | Served by                                  |
+  | ------------------- | ------------- | ------------------------------------------ |
+  | Keka HR             | `/keka`       | Angular remote (mount contract)            |
+  | Deal Pulse          | `/deal-pulse` | React remote (Module Federation)           |
+  | SkillUp Lounge      | `/skillup`    | Placeholder                                |
+  | NPST Finance        | `/finance`    | Placeholder                                |
+  | Projects & Delivery | `/projects`   | React remote (earlier demo, until Step 24) |
+
+  Loading, the time limit, retry and the fallback are unchanged; the fallback now uses his design.
+
+- **Platform wiring:**
+  - **Bell:** shows `platform.inbox`, which now combines the administrative notifications and the applications' messages.
+  - **Toasts:** every toast (`toast.success(…)` in his pages) goes through `platform.notify.toast()`. The portal's toaster shows it in his toast style (light and dark colours as tokens).
+  - **MFE routers:** they still follow portal navigation (`popstate`).
+- **No logo:** the "N" mark is removed from the sidebar and the login page. The rows keep their original height, so nothing else moves.
+- **Remaining inline styles of these pages:** replaced.
+  - Application colours (avatar, colour picker) and the branding preview (used by the Approval Queue) now set CSS variables from code (`lib/css-vars.ts`) and read them in CSS.
+  - The login panel gradient became a token.
+- **Libraries:** `@tanstack/react-query`, `react-hook-form`, `@hookform/resolvers`, `zod` and `date-fns` installed with exact versions (approved list).
+- **Remotes:** app ids follow the registry (`app-dealpulse`, `app-keka`). Their standalone mode and tests use his users with the same rights as before:
+
+  | Old user       | New user                |
+  | -------------- | ----------------------- |
+  | Admin          | Aarav Mehta             |
+  | Sales user     | Priya Nair (Sales team) |
+  | Solutions user | Rohit Kulkarni          |
+  | Employee       | Neha Kapoor             |
+
+  The stand-in apps' team roles (ADMIN, SALES, SOLUTIONS, EMPLOYEE) are kept as each user's second role, because their demo workflows address tasks to teams.
+
+**Fixes to Step 18 found by the screenshots:**
+
+- **Base UI's hidden inputs:**
+  - Base UI renders a hidden `<input>` after a select trigger and after a checkbox. In `space-y-*` containers this adds spacing.
+  - The in-house Select and Checkbox now render the same hidden input (found by comparing the original's live DOM).
+- **tailwind-merge's line-height rule:**
+  - A page's text size removes a component's `leading-*` (e.g. card titles).
+  - The converter now resets `--tw-leading` in that case.
+  - Without it, cards were 2px shorter and the Settings page lost its scrollbar, which made the layout 10px wider.
+- **CSS build error:** the converter had turned colours inside `@property` initial values into variables, which CSS does not allow. They are fixed values again; the production build failed on this.
+
+**Screenshot comparison** (production build, 1440×900, same sign-in, light and dark):
+
+| Page                | Pixels different (light / dark) | What differs                                                    |
+| ------------------- | ------------------------------- | --------------------------------------------------------------- |
+| Login               | 0.24% / –                       | Logo mark removed                                               |
+| Dashboard           | 0.44% / 0.45%                   | Sidebar: no logo, new Applications section, clock; bell count   |
+| Approval Queue      | 0.45% / 0.46%                   | Same as Dashboard                                               |
+| Settings            | 0.45% / 0.50%                   | Same as Dashboard                                               |
+| Accessibility panel | 0.44% / 0.45%                   | Same as Dashboard                                               |
+| Bell panel          | 1.90% / 2.06%                   | Same position; now lists the applications' messages (was empty) |
+
+No console errors. The page content itself matches the original.
+
+**Verified:** lint, test (shell: 66 tests, rewritten for the new portal; all projects pass), typecheck and build for all 8 projects; Prettier clean.
+
+**Decisions:**
+
+- The Employee role has no Shared Services pages; an employee starts in their first application.
+- The bell keeps his title "Admin notifications" (his design), although it now also shows the applications' messages.
+- "Remember me" is kept on the form; the central session is always shared by every tab (`docs/single-session.md`).
+- His pages for Branding, Notifications, Reminders, Employees and Audit Logs show an interim page until Steps 20–21.
+
+**Open issues:**
+
+- **Maker and Checker hint:** his login page names demo accounts (maker@npst.com, checker@npst.com) that do not exist in his seed data. The text is unchanged; those two accounts are not created (the 8 seeded users cover the roles). Decide whether to change the text or add the accounts.
+- **Old links in the bell:** the stand-in apps' messages still link to their old paths (`/sales/…`); Step 22 renames them.
+- **Stand-in look:** the stand-in MFEs are not yet restyled for his design (Step 22).
+- **Old shell screens:** Portal Home, My Tasks, the Notifications page, the old header, nav, login and their styles are no longer used. They are removed only with approval (Step 24).
+
+**Next step:** Step 20 – his UI Branding and Notifications pages in the portal.

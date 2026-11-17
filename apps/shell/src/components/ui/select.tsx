@@ -79,7 +79,16 @@ function Select({
       }}
     >
       {children}
-      {name && <input type="hidden" name={name} value={current} />}
+      {/* Like Base UI: a visually hidden input after the trigger holds the
+          form value (it also affects spacing in "space-y" containers). */}
+      <input
+        tabIndex={-1}
+        aria-hidden="true"
+        name={name}
+        value={current}
+        readOnly
+        className={positioning.hiddenInput}
+      />
     </SelectContext>
   );
 }

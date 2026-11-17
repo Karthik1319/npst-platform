@@ -1,0 +1,123 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* p-6 text-sm text-muted-foreground */
+.cardContent {
+  padding: calc(var(--spacing) * 6);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--muted-foreground);
+}
+.cardContent {
+  --tw-leading: initial;
+}
+
+/* space-y-6 */
+:where(.div > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 6) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* shadow-sm */
+.card {
+  --tw-shadow:
+    0 1px 3px 0 var(--tw-shadow-color, var(--fixed-black-a10)),
+    0 1px 2px -1px var(--tw-shadow-color, var(--fixed-black-a10));
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+/* p-0 */
+.cardContent2 {
+  padding: 0px;
+}
+
+/* text-right */
+.tableHead {
+  text-align: right;
+}
+
+/* bg-blue-50/50 */
+.tableRow {
+  background-color: color-mix(in oklab, var(--color-blue-50) 50%, transparent);
+}
+
+/* font-mono text-xs */
+.tableCell {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+}
+.tableCell {
+  --tw-leading: initial;
+}
+
+/* font-medium */
+.tableCell2 {
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+}
+
+/* whitespace-nowrap text-muted-foreground */
+.tableCell3 {
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+
+/* size-4 */
+.eye {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+}
+
+/* p-8 text-center text-sm text-muted-foreground */
+.p {
+  padding: calc(var(--spacing) * 8);
+  text-align: center;
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--muted-foreground);
+}
+.p {
+  --tw-leading: initial;
+}
+
+/* min-w-0 space-y-2 */
+.div2 {
+  min-width: 0px;
+}
+:where(.div2 > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 2) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* text-sm font-semibold */
+.p2 {
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+.p2 {
+  --tw-leading: initial;
+}
+
+/* mt-4 shrink-0 */
+.textarea {
+  margin-top: calc(var(--spacing) * 4);
+  flex-shrink: 0;
+}
+
+/* shrink-0 */
+.dialogFooter {
+  flex-shrink: 0;
+}

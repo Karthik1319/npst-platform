@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Navigate, useNavigate } from 'react-router';
-import { loginOptions } from '@/services/auth';
+import { DEMO_PASSWORD, mockUsers as loginOptions } from '@npst/platform-mocks';
 import { useSession } from '@/session/SessionContext';
 import styles from './LoginPage.module.css';
 
@@ -87,7 +87,9 @@ export function LoginPage() {
   }
 
   async function handleSignIn(userId: string) {
-    await signIn(userId);
+    const email =
+      loginOptions.find((option) => option.id === userId)?.email ?? '';
+    await signIn(email, DEMO_PASSWORD);
     navigate('/', { replace: true });
   }
 

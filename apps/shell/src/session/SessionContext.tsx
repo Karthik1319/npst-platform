@@ -13,7 +13,8 @@ import * as auth from '@/services/auth';
 interface SessionValue {
   /** The signed-in user, or `null` when nobody is signed in. */
   user: PlatformUser | null;
-  signIn(userId: string): Promise<void>;
+  /** Throws when the credentials are wrong (see `services/auth.ts`). */
+  signIn(email: string, password: string): Promise<PlatformUser>;
   signOut(): void;
 }
 
@@ -31,8 +32,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     [],
   );
 
-  const signIn = useCallback(async (userId: string) => {
-    setUser(await auth.signIn(userId));
+  const signIn = useCallback(async (email: string, password: string) => {
+    const signedIn = await auth.signIn(email, password);
+    setUser(signedIn);
+    return signedIn;
   }, []);
 
   const signOut = useCallback(() => {

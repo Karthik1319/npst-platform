@@ -1,0 +1,132 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* min-h-svh bg-background */
+.div {
+  min-height: 100svh;
+  background-color: var(--background);
+}
+
+/* fixed inset-y-0 left-0 z-40 hidden md:block transition-all duration-300 */
+.div2 {
+  position: fixed;
+  inset-block: 0px;
+  left: 0px;
+  z-index: 40;
+  display: none;
+  transition-property: all;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 300ms;
+  transition-duration: 300ms;
+}
+@media (width >= 48rem) {
+  .div2 {
+    display: block;
+  }
+}
+
+/* w-[76px] */
+.div3 {
+  width: 76px;
+}
+
+/* w-64 */
+.div4 {
+  width: calc(var(--spacing) * 64);
+}
+
+/* flex min-h-svh flex-col transition-all duration-300 */
+.div5 {
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  transition-property: all;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+  --tw-duration: 300ms;
+  transition-duration: 300ms;
+}
+
+/* md:pl-[76px] */
+@media (width >= 48rem) {
+  .div6 {
+    padding-left: 76px;
+  }
+}
+
+/* md:pl-64 */
+@media (width >= 48rem) {
+  .div7 {
+    padding-left: calc(var(--spacing) * 64);
+  }
+}
+
+/* mx-auto w-full max-w-[1440px] flex-1 p-4 sm:p-6 lg:p-8 */
+.main {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1440px;
+  flex: 1;
+  padding: calc(var(--spacing) * 4);
+}
+@media (width >= 40rem) {
+  .main {
+    padding: calc(var(--spacing) * 6);
+  }
+}
+@media (width >= 64rem) {
+  .main {
+    padding: calc(var(--spacing) * 8);
+  }
+}
+
+/* animate-in fade-in duration-200 */
+.div8 {
+  animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-duration: 200ms;
+  transition-duration: 200ms;
+  --tw-enter-opacity: 0;
+}
+
+/* border-t border-border px-6 py-4 text-xs text-muted-foreground */
+.footer {
+  border-top-style: var(--tw-border-style);
+  border-top-width: 1px;
+  border-color: var(--border);
+  padding-inline: calc(var(--spacing) * 6);
+  padding-block: calc(var(--spacing) * 4);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.footer {
+  --tw-leading: initial;
+}
+
+/* w-72 bg-sidebar p-0 */
+.sheetContent {
+  width: calc(var(--spacing) * 72);
+  background-color: var(--sidebar);
+  padding: 0px;
+}
+
+/* sr-only */
+.sheetTitle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border-width: 0;
+}

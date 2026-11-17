@@ -3,7 +3,7 @@ import type { PlatformUser } from '@npst/shared-contracts';
 
 /**
  * Sign-in for the portal (the only login; MFEs never log in themselves).
- * Mock for now: pick a predefined user, no password.
+ * Mock for now: the seeded users sign in with email and the one demo password.
  *
  * Real flow (docs/architecture.md, section 5): the backend authenticates the
  * user, creates a central session and sets a secure, browser-managed session
@@ -31,11 +31,15 @@ function sessionStore(): Storage | null {
   }
 }
 
-/** Users shown on the mock login page. */
-export const loginOptions: readonly PlatformUser[] = mockAuth.users;
-
-export async function signIn(userId: string): Promise<PlatformUser> {
-  const user = await mockAuth.signIn(userId);
+/**
+ * Checks the credentials and starts the central session. Throws `SignInError`
+ * (with the message to show) when they are wrong or the account is inactive.
+ */
+export async function signIn(
+  email: string,
+  password: string,
+): Promise<PlatformUser> {
+  const user = await mockAuth.signIn(email, password);
   try {
     sessionStore()?.setItem(SESSION_STORAGE_KEY, user.id);
   } catch {

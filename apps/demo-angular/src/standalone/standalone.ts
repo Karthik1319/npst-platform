@@ -3,7 +3,7 @@ import type { MfeProps, ShellPlatformApi } from '@npst/shared-contracts';
 import { APP_ID, APP_NAME } from '../config';
 
 /** Least privilege: standalone mode starts as a normal user who may open this app, never Admin. */
-export const DEFAULT_USER_ID = 'u-3';
+export const DEFAULT_USER_ID = 'user-7';
 
 const TOAST_DURATION_MS = 4000;
 

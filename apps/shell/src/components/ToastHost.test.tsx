@@ -9,7 +9,7 @@ afterEach(cleanup);
 describe('ToastHost', () => {
   it('shows a toast sent through platform.notify.toast()', async () => {
     vi.spyOn(console, 'info').mockImplementation(() => undefined);
-    const user = mockUsers.find((candidate) => candidate.name === 'User 1');
+    const user = mockUsers.find((candidate) => candidate.name === 'Priya Nair');
     if (!user) throw new Error('mock user missing');
     const platform = createMockPlatform({ user });
     render(

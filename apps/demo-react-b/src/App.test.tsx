@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
 
 /** Renders Projects & Delivery as the portal does: at `/projects/...` with the host props. */
-function renderAt(path: string, userId = 'u-2') {
+function renderAt(path: string, userId = 'user-3') {
   window.history.replaceState(null, '', `/projects${path === '/' ? '' : path}`);
   const user = mockAuth.findUser(userId);
   if (!user) throw new Error('mock user missing');
@@ -142,7 +142,7 @@ describe('Task board', () => {
   });
 
   it('is view only for Sales (no update:project-task)', async () => {
-    renderAt('/tasks', 'u-1');
+    renderAt('/tasks', 'user-2');
     await screen.findByRole('region', { name: 'To do' });
     expect(screen.getByText('View only')).toBeDefined();
     expect(screen.queryAllByRole('combobox', { name: /^Move / })).toHaveLength(

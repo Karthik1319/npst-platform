@@ -14,23 +14,23 @@ const currentUser = () =>
     .querySelector('[aria-current="true"]')?.textContent;
 
 describe('standalone mode (development only)', () => {
-  it('starts as User 1, not Admin (least privilege)', () => {
+  it('starts as Priya Nair, not Admin (least privilege)', () => {
     window.history.replaceState(null, '', '/');
     render(<Standalone search="" />);
     expect(
       screen.getByRole('heading', { level: 1, name: 'Dashboard' }),
     ).toBeDefined();
-    expect(currentUser()).toBe('User 1');
+    expect(currentUser()).toBe('Priya Nair');
   });
 
-  it('denies ?user=u-3 like the shell does', () => {
-    render(<Standalone search="?user=u-3" />);
+  it('denies ?user=user-7 like the shell does', () => {
+    render(<Standalone search="?user=user-7" />);
     expect(
       screen.getByRole('heading', { level: 1, name: 'Access denied' }),
     ).toBeDefined();
     expect(
       screen.getByText(
-        'User 3 (EMPLOYEE) does not have permission to open Projects & Delivery.',
+        'Neha Kapoor (Employee, EMPLOYEE) does not have permission to open Projects & Delivery.',
       ),
     ).toBeDefined();
     expect(
@@ -39,9 +39,9 @@ describe('standalone mode (development only)', () => {
   });
 
   it.each([
-    ['u-1', 'User 1'],
-    ['u-2', 'User 2'],
-    ['u-admin', 'Admin User'],
+    ['user-2', 'Priya Nair'],
+    ['user-3', 'Rohit Kulkarni'],
+    ['user-1', 'Aarav Mehta'],
   ])('opens Projects & Delivery for ?user=%s', (userId, who) => {
     render(<Standalone search={`?user=${userId}`} />);
     expect(

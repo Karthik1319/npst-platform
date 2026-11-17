@@ -62,8 +62,8 @@ describe('production build of Projects & Delivery', () => {
   it('contains no mock users and no standalone harness', () => {
     expect(allJs.length).toBeGreaterThan(0);
     for (const leaked of [
-      'Admin User',
-      'u-admin',
+      'Aarav Mehta',
+      'user-1',
       '@example.com',
       'Standalone mode',
     ]) {

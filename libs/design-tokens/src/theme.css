@@ -425,3 +425,50 @@
   --sidebar-border: #ffffff;
   --sidebar-ring: #ffff00;
 }
+
+/* Toast colours of the Admin Portal (the original's toast library, "rich colours"). */
+:root {
+  --toast-success-bg: hsl(143, 85%, 96%);
+  --toast-success-border: hsl(145, 92%, 87%);
+  --toast-success-text: hsl(140, 100%, 27%);
+  --toast-info-bg: hsl(208, 100%, 97%);
+  --toast-info-border: hsl(221, 91%, 93%);
+  --toast-info-text: hsl(210, 92%, 45%);
+  --toast-warning-bg: hsl(49, 100%, 97%);
+  --toast-warning-border: hsl(49, 91%, 84%);
+  --toast-warning-text: hsl(31, 92%, 45%);
+  --toast-error-bg: hsl(359, 100%, 97%);
+  --toast-error-border: hsl(359, 100%, 94%);
+  --toast-error-text: hsl(360, 100%, 45%);
+}
+.dark {
+  --toast-success-bg: hsl(150, 100%, 6%);
+  --toast-success-border: hsl(147, 100%, 12%);
+  --toast-success-text: hsl(150, 86%, 65%);
+  --toast-info-bg: hsl(215, 100%, 6%);
+  --toast-info-border: hsl(223, 43%, 17%);
+  --toast-info-text: hsl(216, 87%, 65%);
+  --toast-warning-bg: hsl(64, 100%, 6%);
+  --toast-warning-border: hsl(60, 100%, 9%);
+  --toast-warning-text: hsl(46, 87%, 65%);
+  --toast-error-bg: hsl(358, 76%, 10%);
+  --toast-error-border: hsl(357, 89%, 16%);
+  --toast-error-text: hsl(358, 100%, 81%);
+}
+
+/* Fixed values of Admin Portal pages (were inline styles in the original). */
+:root {
+  --login-brand-panel-bg: radial-gradient(
+    circle at top right,
+    #1e3a8a 0%,
+    #0b132b 60%,
+    #030712 100%
+  );
+}
+
+/* Branding preview: fixed colours of the simulated application. */
+:root {
+  --preview-muted: rgb(100 116 139 / 0.9);
+  --preview-muted-strong: rgb(100 116 139 / 0.95);
+  --preview-badge-dot: #ef4444;
+}

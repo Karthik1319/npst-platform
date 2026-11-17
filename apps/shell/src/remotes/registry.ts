@@ -17,15 +17,17 @@ export type RemoteDefinition =
     }
   | { kind: 'mount'; load: () => Promise<MountableMfe> };
 
-/** Where the Angular remote (People & HR) is served (its own server). */
+/** Where the Angular remote (Keka HR stand-in) is served (its own server). */
 const DEMO_ANGULAR_URL: string =
   import.meta.env['VITE_DEMO_ANGULAR_URL'] ?? 'http://localhost:4203/';
 
 /**
- * Which app id is served by which remote:
- * - Sales Hub → `demo-react-a` (React, Module Federation)
- * - Projects & Delivery → `demo-react-b` (React, Module Federation)
- * - People & HR → `demo-angular` (Angular CLI build, mount contract)
+ * Which app id (from the application registry) is served by which remote:
+ * - Deal Pulse (`app-dealpulse`) → `demo-react-a` (React, Module Federation;
+ *   the Sales Hub demo standing in for the real app)
+ * - Keka HR (`app-keka`) → `demo-angular` (Angular CLI build, mount contract;
+ *   the People & HR demo standing in for the real app)
+ * - Projects & Delivery (`projects`) → `demo-react-b` (earlier demo app)
  *
  * `import('demoReactA/App')` is
  * resolved by Module Federation at runtime: it downloads the remote's code
@@ -33,7 +35,7 @@ const DEMO_ANGULAR_URL: string =
  * Apps not listed here still show a placeholder page.
  */
 export const remotes: Readonly<Record<string, RemoteDefinition>> = {
-  'sales-hub': { kind: 'react', load: () => import('demoReactA/App') },
+  'app-dealpulse': { kind: 'react', load: () => import('demoReactA/App') },
+  'app-keka': { kind: 'mount', load: () => loadEsmRemote(DEMO_ANGULAR_URL) },
   projects: { kind: 'react', load: () => import('demoReactB/App') },
-  'people-hr': { kind: 'mount', load: () => loadEsmRemote(DEMO_ANGULAR_URL) },
 };

@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '@/App';
 
 /** Renders Sales Hub as the portal does: at `/sales/...` with the host props. */
-function renderAt(path: string, userId = 'u-1') {
+function renderAt(path: string, userId = 'user-2') {
   window.history.replaceState(null, '', `/sales${path === '/' ? '' : path}`);
   const user = mockAuth.findUser(userId);
   if (!user) throw new Error('mock user missing');
@@ -195,12 +195,12 @@ describe('Opportunities', () => {
   });
 
   it('shows change history only with view:audit (Admin)', async () => {
-    renderAt('/opportunities/OP-1043', 'u-1');
+    renderAt('/opportunities/OP-1043', 'user-7');
     await screen.findByRole('region', { name: 'Overview' });
     expect(screen.queryByRole('region', { name: 'Change history' })).toBeNull();
     cleanup();
 
-    renderAt('/opportunities/OP-1043', 'u-admin');
+    renderAt('/opportunities/OP-1043', 'user-1');
     const history = await screen.findByRole('region', {
       name: 'Change history',
     });

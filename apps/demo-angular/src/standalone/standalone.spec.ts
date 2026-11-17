@@ -20,20 +20,20 @@ describe('standalone mode (development only)', () => {
     vi.restoreAllMocks();
   });
 
-  it('starts as User 3, a non-admin user allowed to open People & HR (least privilege)', async () => {
+  it('starts as Neha Kapoor, a non-admin user allowed to open People & HR (least privilege)', async () => {
     await startStandalone(root, '', fakeMount);
-    expect(DEFAULT_USER_ID).toBe('u-3');
+    expect(DEFAULT_USER_ID).toBe('user-7');
     expect(
       mounted.map((props) => `${props.user.name} ${props.basePath}`),
-    ).toEqual(['User 3 /']);
+    ).toEqual(['Neha Kapoor /']);
     expect(root.textContent).toContain('Standalone mode (development only).');
   });
 
-  it('denies ?user=u-1 like the portal does', async () => {
-    await startStandalone(root, '?user=u-1', fakeMount);
+  it('denies ?user=user-5 like the portal does', async () => {
+    await startStandalone(root, '?user=user-5', fakeMount);
     expect(mounted).toEqual([]);
     expect(root.textContent).toContain(
-      'User 1 (SALES) does not have permission to open People & HR.',
+      'Vikram Desai (Application Admin, SALES) does not have permission to open People & HR.',
     );
   });
 
@@ -46,7 +46,7 @@ describe('standalone mode (development only)', () => {
   });
 
   it('shows toasts itself (no portal in standalone mode)', async () => {
-    await startStandalone(root, '?user=u-2', fakeMount);
+    await startStandalone(root, '?user=user-3', fakeMount);
     mounted[0]?.platform.notify.toast('Hello');
     expect(root.querySelector('[role="status"]')?.textContent).toBe('Hello');
   });

@@ -1,0 +1,45 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* grid shrink-0 place-items-center overflow-hidden rounded-xl border border-border/60 bg-white */
+.div {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  overflow: hidden;
+  border-radius: calc(var(--radius) * 1.4);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--border);
+  border-color: color-mix(in oklab, var(--border) 60%, transparent);
+  background-color: var(--color-white);
+}
+
+/* size-full object-contain p-1 */
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: var(--spacing);
+}
+
+/* grid shrink-0 place-items-center rounded-xl font-heading font-bold text-white shadow-sm */
+.div2 {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: calc(var(--radius) * 1.4);
+  font-family: var(--font-heading);
+  --tw-font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-white);
+  --tw-shadow:
+    0 1px 3px 0 var(--tw-shadow-color, var(--fixed-black-a10)),
+    0 1px 2px -1px var(--tw-shadow-color, var(--fixed-black-a10));
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+/* The application's brand colour (was an inline style). */
+.color {
+  background-color: var(--app-avatar-color);
+}

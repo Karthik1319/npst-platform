@@ -16,17 +16,17 @@ const currentUser = () =>
     .querySelector('[aria-current="true"]')?.textContent;
 
 describe('standalone mode (development only)', () => {
-  it('starts as User 1, not Admin (least privilege)', () => {
+  it('starts as Priya Nair, not Admin (least privilege)', () => {
     render(<Standalone search="" />);
     expect(
       screen.getByRole('heading', { level: 1, name: 'Dashboard' }),
     ).toBeDefined();
-    expect(currentUser()).toBe('User 1');
+    expect(currentUser()).toBe('Priya Nair');
   });
 
   it.each([
-    ['u-2', 'User 2 (SOLUTIONS)'],
-    ['u-3', 'User 3 (EMPLOYEE)'],
+    ['user-3', 'Rohit Kulkarni (Application Admin, SOLUTIONS)'],
+    ['user-7', 'Neha Kapoor (Employee, EMPLOYEE)'],
   ])('denies ?user=%s like the shell does', (userId, who) => {
     render(<Standalone search={`?user=${userId}`} />);
     expect(
@@ -39,8 +39,8 @@ describe('standalone mode (development only)', () => {
   });
 
   it.each([
-    ['u-1', 'User 1'],
-    ['u-admin', 'Admin User'],
+    ['user-2', 'Priya Nair'],
+    ['user-1', 'Aarav Mehta'],
   ])('opens Sales Hub for ?user=%s', (userId, who) => {
     render(<Standalone search={`?user=${userId}`} />);
     expect(screen.getByRole('navigation', { name: 'Sales Hub' })).toBeDefined();
@@ -50,7 +50,7 @@ describe('standalone mode (development only)', () => {
   it('shows toasts itself (no shell in standalone mode)', async () => {
     vi.spyOn(console, 'info').mockImplementation(() => undefined);
     window.history.replaceState(null, '', '/tasks');
-    render(<Standalone search="?user=u-1" />);
+    render(<Standalone search="?user=user-2" />);
     const [button] = await screen.findAllByRole('button', {
       name: 'Mark done',
     });

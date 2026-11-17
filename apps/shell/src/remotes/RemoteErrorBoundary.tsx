@@ -1,5 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
-import styles from './RemoteErrorBoundary.module.css';
+import { AlertTriangle } from '@/components/icons';
+import { EmptyState } from '@/components/common/EmptyState';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   appName: string;
@@ -35,18 +37,18 @@ export class RemoteErrorBoundary extends Component<Props, State> {
   override render() {
     if (this.state.failed) {
       return (
-        <section className={styles.fallback} role="alert">
-          <p className={styles.text}>
-            {this.props.appName} is not available right now.
-          </p>
-          <button
-            type="button"
-            className={styles.button}
-            onClick={this.props.onRetry}
-          >
-            Try again
-          </button>
-        </section>
+        <div role="alert">
+          <EmptyState
+            icon={AlertTriangle}
+            title={`${this.props.appName} is not available right now.`}
+            description="The rest of the portal keeps working. Try again in a moment."
+            action={
+              <Button variant="outline" onClick={this.props.onRetry}>
+                Try again
+              </Button>
+            }
+          />
+        </div>
       );
     }
     return this.props.children;

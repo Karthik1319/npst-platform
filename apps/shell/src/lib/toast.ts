@@ -1,21 +1,40 @@
-import type { PlatformApi, ToastKind } from '@npst/shared-contracts';
+import type { PlatformApi, Toast, ToastKind } from '@npst/shared-contracts';
 
 /**
  * Toasts for the Admin Portal pages (in-house replacement for `sonner`, same
- * call style: `toast.success('Saved')`). Every toast goes through the
- * platform's Notification Service (`platform.notify.toast()`), and the portal
- * shows it, exactly like toasts requested by MFEs.
+ * call style: `toast.success('Saved')`).
+ *
+ * - Signed in: every toast goes through the platform's Notification Service
+ *   (`platform.notify.toast()`), exactly like toasts requested by MFEs, and
+ *   the portal's toaster shows it.
+ * - Not signed in (login page, right after sign-out): there is no platform
+ *   object, so the toaster shows it directly.
  */
 let notify: PlatformApi['notify'] | null = null;
+const listeners = new Set<(toast: Toast) => void>();
+let nextId = 1;
 
-/** Called by the portal once the platform object for the signed-in user exists. */
+/** Called by the portal when the platform object for the signed-in user exists (null on sign-out). */
 export function connectToasts(target: PlatformApi['notify'] | null): void {
   notify = target;
 }
 
+/** The portal's toaster listens here (toasts from pages and, via the platform, from MFEs). */
+export function subscribeToasts(listener: (toast: Toast) => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+/** Shows a toast in the portal's toaster (used for toasts that came through the platform). */
+export function showToast(toast: Toast): void {
+  listeners.forEach((listener) => listener(toast));
+}
+
 function show(kind: ToastKind, message: string): void {
   if (notify) notify.toast(message, { kind });
-  else console.info(`[toast:${kind}]`, message);
+  else showToast({ id: `local-toast-${nextId++}`, message, kind });
 }
 
 type Options = { description?: string };

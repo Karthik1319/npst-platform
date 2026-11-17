@@ -1,0 +1,72 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* bg-emerald-50 text-emerald-700 ring-emerald-600/20 */
+.active {
+  background-color: var(--color-emerald-50);
+  color: var(--color-emerald-700);
+  --tw-ring-color: color-mix(
+    in oklab,
+    var(--color-emerald-600) 20%,
+    transparent
+  );
+}
+
+/* bg-blue-50 text-blue-700 ring-blue-600/20 */
+.pendingApproval {
+  background-color: var(--color-blue-50);
+  color: var(--color-blue-700);
+  --tw-ring-color: color-mix(in oklab, var(--color-blue-600) 20%, transparent);
+}
+
+/* bg-amber-50 text-amber-700 ring-amber-600/20 */
+.pending {
+  background-color: var(--color-amber-50);
+  color: var(--color-amber-700);
+  --tw-ring-color: color-mix(in oklab, var(--color-amber-600) 20%, transparent);
+}
+
+/* bg-red-50 text-red-700 ring-red-600/20 */
+.failed {
+  background-color: var(--color-red-50);
+  color: var(--color-red-700);
+  --tw-ring-color: color-mix(in oklab, var(--color-red-600) 20%, transparent);
+}
+
+/* bg-slate-100 text-slate-600 ring-slate-500/20 */
+.inactive {
+  background-color: var(--color-slate-100);
+  color: var(--color-slate-600);
+  --tw-ring-color: color-mix(in oklab, var(--color-slate-500) 20%, transparent);
+}
+
+/* inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset */
+.span {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 1.5);
+  border-radius: calc(infinity * 1px);
+  padding-inline: calc(var(--spacing) * 2.5);
+  padding-block: calc(var(--spacing) * 0.5);
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+    calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-inset: inset;
+}
+.span {
+  --tw-leading: initial;
+}
+
+/* size-1.5 rounded-full bg-current opacity-70 */
+.span2 {
+  width: calc(var(--spacing) * 1.5);
+  height: calc(var(--spacing) * 1.5);
+  border-radius: calc(infinity * 1px);
+  background-color: currentcolor;
+  opacity: 70%;
+}
