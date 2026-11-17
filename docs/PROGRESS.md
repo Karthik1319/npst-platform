@@ -27,8 +27,9 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 | 17    | Admin Portal integration: baseline              | Done   |
 | 18    | Admin Portal design system (no UI library)      | Done   |
 | 19    | Admin Portal frame on the architecture          | Done   |
-| 20    | Admin Portal: Branding and Notifications pages  | Next   |
-| 21–24 | Admin Portal integration (see plan)             |        |
+| 20    | Admin Portal: Branding and Notifications pages  | Done   |
+| 21    | Admin Portal: Reminders, Employees, Audit Logs  | Next   |
+| 22–24 | Admin Portal integration (see plan)             |        |
 
 ## Toolchain
 
@@ -1154,3 +1155,31 @@ No console errors. The page content itself matches the original.
 - **Old shell screens:** Portal Home, My Tasks, the Notifications page, the old header, nav, login and their styles are no longer used. They are removed only with approval (Step 24).
 
 **Next step:** Step 20 – his UI Branding and Notifications pages in the portal.
+
+## Step 20 – Admin Portal: Branding and Notifications pages
+
+**Done:**
+
+- **UI Branding:** Branding Dashboard (`/branding`), Configure Branding editor with live preview, presets, publish and approval workflow (`/branding/configure/:appId`), and Version History with preview and restore (`/branding/history`).
+- **Notification Management:** Notification Templates (`/notifications/templates`) and Notification Channels (`/notifications/channels`); `/notifications` opens the templates, as in the original.
+- **Access:** both modules are shown to Super Admin, Admin and Application Admin (`manage:branding`, `manage:notifications`); an Employee gets "Access denied".
+- **Inline styles:** the colour samples on these pages use a small `Swatch` component that passes the colour as a CSS variable; the preview's data prop is called `draft` (a prop named `style` is reserved for inline styles by our lint rule).
+- **Original code, minimal fixes:** one unused import removed; the editor now starts its draft during render instead of in an effect (the workspace's React lint rule; same behaviour).
+
+**Not moved:** his `NotificationDashboard`, `NotificationHistory` and `NotificationRules` pages are not routed in his app (no link or route reaches them), so they are not part of the portal. `NotificationDashboard` also needs a chart library.
+
+**Screenshot comparison** (production build, light / dark):
+
+| Page                      | Pixels different | What differs                                               |
+| ------------------------- | ---------------- | ---------------------------------------------------------- |
+| Branding Dashboard        | 0.34% / 0.34%    | Sidebar (no logo, Applications section, clock), bell count |
+| Configure Branding (Keka) | 0.31% / 0.31%    | Same                                                       |
+| Version History           | 0.74% / 0.65%    | Same, plus dates: sample data is relative to "now"         |
+| Notification Templates    | 0.34% / 0.36%    | Same as Branding Dashboard                                 |
+| Notification Channels     | 0.34% / 0.34%    | Same as Branding Dashboard                                 |
+
+Page heights are identical to the original; no console errors.
+
+**Verified:** lint, test (shell: 74 tests, 8 new for these pages and their access), typecheck and build; Prettier clean.
+
+**Next step:** Step 21 – Reminders, Employee Management and Audit Logs pages.

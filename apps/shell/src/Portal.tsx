@@ -10,6 +10,11 @@ import { MovingSoon } from '@/pages/MovingSoon';
 import Dashboard from '@/pages/Dashboard';
 import ApprovalQueue from '@/pages/applications/ApprovalQueue';
 import Settings from '@/pages/settings/Settings';
+import BrandingDashboard from '@/pages/branding/BrandingDashboard';
+import BrandingEditor from '@/pages/branding/BrandingEditor';
+import BrandingHistory from '@/pages/branding/BrandingHistory';
+import NotificationChannels from '@/pages/notifications/NotificationChannels';
+import Templates from '@/pages/notifications/Templates';
 import { connectToasts, showToast } from '@/lib/toast';
 import { usePlatform } from '@/platform/PlatformContext';
 import { RequireAppAccess } from '@/platform/RequireAppAccess';
@@ -66,10 +71,26 @@ export function Portal() {
           }
         />
         <Route
-          path="branding/*"
+          path="branding"
           element={
             <Guard permission={['manage', 'branding']}>
-              <MovingSoon page="UI Branding" step={20} />
+              <BrandingDashboard />
+            </Guard>
+          }
+        />
+        <Route
+          path="branding/configure/:appId"
+          element={
+            <Guard permission={['manage', 'branding']}>
+              <BrandingEditor />
+            </Guard>
+          }
+        />
+        <Route
+          path="branding/history"
+          element={
+            <Guard permission={['manage', 'branding']}>
+              <BrandingHistory />
             </Guard>
           }
         />
@@ -78,10 +99,18 @@ export function Portal() {
           element={<Navigate to="/notifications/templates" replace />}
         />
         <Route
-          path="notifications/*"
+          path="notifications/templates"
           element={
             <Guard permission={['manage', 'notifications']}>
-              <MovingSoon page="Notification Management" step={20} />
+              <Templates />
+            </Guard>
+          }
+        />
+        <Route
+          path="notifications/channels"
+          element={
+            <Guard permission={['manage', 'notifications']}>
+              <NotificationChannels />
             </Guard>
           }
         />

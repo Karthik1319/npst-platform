@@ -515,3 +515,45 @@ describe('one session for the portal, every app and every tab', () => {
     );
   });
 });
+
+describe('Shared Services pages (Step 20)', () => {
+  it.each([
+    ['/branding', 'UI Branding Management'],
+    ['/branding/history', 'Branding Version History'],
+    ['/notifications/templates', 'Notification Templates'],
+    ['/notifications/channels', 'Notification Channels'],
+  ])('an Application Admin opens %s', async (path, title) => {
+    renderSignedInAt('appAdmin', path);
+    expect(
+      await screen.findByRole('heading', { level: 1, name: title }),
+    ).toBeDefined();
+  });
+
+  it('opens the branding editor for an application', async () => {
+    renderSignedInAt('superAdmin', '/branding/configure/app-keka');
+    expect(
+      (await screen.findByTestId('branding-editor-title')).textContent,
+    ).toContain('Keka HR');
+    expect(
+      screen.getAllByTestId('branding-live-preview').length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('redirects /notifications to the templates', async () => {
+    renderSignedInAt('admin', '/notifications');
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Notification Templates',
+      }),
+    ).toBeDefined();
+  });
+
+  it.each(['/branding', '/notifications/templates'])(
+    'an Employee opening %s gets Access denied',
+    async (path) => {
+      renderSignedInAt('employee', path);
+      expect(await screen.findByText('Access denied')).toBeDefined();
+    },
+  );
+});
