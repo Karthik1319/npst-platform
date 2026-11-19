@@ -60,12 +60,13 @@ export default function ApprovalQueue() {
       <Card className="shadow-sm">
         <CardContent className="p-0">
           <Table data-testid="approval-queue-table">
-            <TableHeader><TableRow><TableHead>Request ID</TableHead><TableHead>Application</TableHead><TableHead>Request Type</TableHead><TableHead>Requested By</TableHead><TableHead>Submitted</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
+            <TableHeader><TableRow><TableHead>Request ID</TableHead><TableHead>Application</TableHead><TableHead>Scope</TableHead><TableHead>Request Type</TableHead><TableHead>Requested By</TableHead><TableHead>Submitted</TableHead><TableHead>Status</TableHead><TableHead className="text-right">Action</TableHead></TableRow></TableHeader>
             <TableBody>
               {pending.map((request) => (
                 <TableRow key={request.id} className={request.id === requestedId ? 'bg-blue-50/50' : undefined}>
                   <TableCell className="font-mono text-xs">{request.id.slice(0, 12)}</TableCell>
                   <TableCell className="font-medium">{appNames.get(request.appId) ?? request.appId}</TableCell>
+                  <TableCell>{request.scope === 'ALL_APPLICATIONS' ? `All applications (${request.targetApplicationIds?.length ?? apps.length})` : 'This application'}</TableCell>
                   <TableCell>UI Branding</TableCell>
                   <TableCell>{request.requestedBy}</TableCell>
                   <TableCell className="whitespace-nowrap text-muted-foreground">{formatDateTime(request.submittedAt)}</TableCell>
@@ -83,7 +84,7 @@ export default function ApprovalQueue() {
         <DialogContent className="branding-review-modal">
           <DialogHeader>
             <DialogTitle>Review branding request</DialogTitle>
-            <DialogDescription>{selected && `${appNames.get(selected.appId) ?? selected.appId} · requested by ${selected.requestedBy}`}</DialogDescription>
+            <DialogDescription>{selected && `${appNames.get(selected.appId) ?? selected.appId} · ${selected.scope === 'ALL_APPLICATIONS' ? `all applications (${selected.targetApplicationIds?.length ?? apps.length})` : 'this application'} · requested by ${selected.requestedBy}`}</DialogDescription>
           </DialogHeader>
           {selected && (
             <div className="branding-review-body">

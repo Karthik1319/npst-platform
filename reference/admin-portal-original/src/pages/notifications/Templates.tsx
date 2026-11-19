@@ -76,7 +76,7 @@ type TemplateFormValues = z.infer<typeof templateSchema>;
 
 const SAMPLE_VARS: Record<string, string> = {
   employeeName: 'Priya Sharma',
-  applicationName: 'Keka HR',
+  applicationName: 'PeopleOS',
   dueDate: format(addDays(new Date(), 7), 'dd MMM yyyy'),
   taskName: 'Q3 report submission',
   managerName: 'Rohit Kulkarni',
@@ -96,6 +96,7 @@ export default function Templates() {
   const { data: codeMasters = [] } = useQuery({ queryKey: ['notification-code-masters'], queryFn: () => masterDataService.listNotificationCodes() });
 
   const [search, setSearch] = useState('');
+  const [selectedAppId, setSelectedAppId] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<NotificationTemplate | null>(null);
   const [deleting, setDeleting] = useState<NotificationTemplate | null>(null);
@@ -114,11 +115,13 @@ export default function Templates() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return templates;
-    return templates.filter(
+    if (!selectedAppId) return [];
+    const scoped = templates.filter((template) => template.appId === selectedAppId);
+    if (!q) return scoped;
+    return scoped.filter(
       (t) => t.name.toLowerCase().includes(q) || t.code.toLowerCase().includes(q) || t.subject.toLowerCase().includes(q),
     );
-  }, [templates, search]);
+  }, [templates, search, selectedAppId]);
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
@@ -128,7 +131,7 @@ export default function Templates() {
 
   const openCreate = () => {
     setEditing(null);
-    form.reset({ name: '', code: '', appId: '', category: 'announcement', channel: 'inapp', channels: ['inapp'], subject: '', body: '', priority: 'medium', status: 'active' });
+    form.reset({ name: '', code: '', appId: selectedAppId, category: 'announcement', channel: 'inapp', channels: ['inapp'], subject: '', body: '', priority: 'medium', status: 'active' });
     setFormOpen(true);
   };
 
@@ -233,18 +236,29 @@ export default function Templates() {
         description="Reusable message templates with dynamic variables, routed to any channel for any application."
         testId="templates-title"
         actions={
-          <Button onClick={openCreate} data-testid="add-template-button">
+          <Button onClick={openCreate} disabled={!selectedAppId} data-testid="add-template-button">
             <Plus className="size-4" /> Create Template
           </Button>
         }
       />
 
-      <div className="relative w-full max-w-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="w-full max-w-sm">
+          <Label htmlFor="templates-application">Select Application</Label>
+          <Select value={selectedAppId} onValueChange={(value) => { setSelectedAppId(value); setSearch(''); }}>
+            <SelectTrigger id="templates-application" data-testid="templates-application-select"><SelectValue>{selectedAppId ? appName.get(selectedAppId) : 'Select an application'}</SelectValue></SelectTrigger>
+            <SelectContent>{apps.map((app) => <SelectItem key={app.id} value={app.id}>{app.name}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+        <div className="relative w-full max-w-sm">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search templates…" className="pl-9" data-testid="template-search-input" />
+        </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {!selectedAppId ? (
+        <EmptyState title="Select an application" description="Please select an application to view its notification templates." />
+      ) : filtered.length === 0 ? (
         <EmptyState title="No templates found" description="Create your first template or adjust the search." />
       ) : (
         <Card className="shadow-sm">
@@ -370,7 +384,7 @@ export default function Templates() {
             <div className="notification-form-grid">
               <div className="space-y-1.5">
                 <Label htmlFor="tpl-name">Template name</Label>
-                <Input id="tpl-name" placeholder="e.g. Keka — Leave Reminder" {...form.register('name')} data-testid="template-name-input" />
+                <Input id="tpl-name" placeholder="e.g. PeopleOS — Leave Reminder" {...form.register('name')} data-testid="template-name-input" />
                 {form.formState.errors.name && <p className="text-xs font-medium text-red-600">{form.formState.errors.name.message}</p>}
               </div>
               <div className="space-y-1.5">

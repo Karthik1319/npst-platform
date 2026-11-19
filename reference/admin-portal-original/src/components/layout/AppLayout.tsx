@@ -37,7 +37,7 @@ export default function AppLayout() {
           </div>
         </main>
         <footer className="border-t border-border px-6 py-4 text-xs text-muted-foreground">
-          © {new Date().getFullYear()} NPST Technologies · Shared Services Admin Portal
+          © {new Date().getFullYear()} NPST Technologies · Shared Services
         </footer>
       </div>
 

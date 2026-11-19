@@ -12,6 +12,7 @@ import {
   Settings,
   Users,
   LifeBuoy,
+  Sparkles,
   type LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -70,12 +71,13 @@ export const NAV_SECTIONS: { section: string; items: NavItem[] }[] = [
           { label: 'Escalations', path: '/reminders/escalations' },
         ],
       },
+      { label: 'AI Summary', icon: Sparkles, path: '/ai-summary' },
     ],
   },
   {
     section: 'Administration',
     items: [
-      { label: 'Employee Management', icon: Users, path: '/users' },
+      { label: 'User Management', icon: Users, path: '/users' },
       { label: 'Audit Logs', icon: ScrollText, path: '/audit-logs' },
       { label: 'Settings', icon: Settings, path: '/settings' },
     ],
@@ -105,6 +107,9 @@ export default function Sidebar({ collapsed = false, onToggle, onNavigate }: Sid
   const pathMatches = (path: string) =>
     path === '/' ? location.pathname === '/' : location.pathname === path || location.pathname.startsWith(`${path}/`);
   const childPathMatches = (path: string) => location.pathname === path;
+  const visibleSections = user?.role === 'Employee'
+    ? [{ section: 'Employee Services', items: [{ label: 'My Dashboard', icon: LayoutDashboard, path: '/employee' }] }]
+    : NAV_SECTIONS;
 
   const isItemActive = (item: NavItem) =>
     item.children
@@ -154,7 +159,7 @@ export default function Sidebar({ collapsed = false, onToggle, onNavigate }: Sid
       )}
 
       <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4" data-testid="sidebar-nav">
-        {NAV_SECTIONS.map((section) => (
+        {visibleSections.map((section) => (
           <div key={section.section}>
             {!collapsed && (
               <p className="px-2.5 pb-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-sidebar-foreground/50">
@@ -261,7 +266,7 @@ export default function Sidebar({ collapsed = false, onToggle, onNavigate }: Sid
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>How can we help you?</DialogTitle>
-            <DialogDescription>Contact the NPST support team for help with the Shared Services Admin Portal.</DialogDescription>
+            <DialogDescription>Contact the NPST support team for help with Shared Services.</DialogDescription>
           </DialogHeader>
           <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-4 text-sm">
             <a className="block font-medium text-primary hover:underline" href="mailto:support@npst.com">support@npst.com</a>

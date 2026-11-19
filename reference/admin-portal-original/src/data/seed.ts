@@ -25,7 +25,7 @@ export function seedApps(): NpstApplication[] {
   return [
     {
       id: 'app-keka',
-      name: 'Keka HR',
+      name: 'PeopleOS',
       code: 'KEKA-HR',
       url: 'https://keka.npst.com',
       description: 'Human capital management for 3,200+ NPST employees — payroll, attendance, leave and performance.',
@@ -186,8 +186,8 @@ export function seedTemplates(): NotificationTemplate[] {
   });
 
   return [
-    t('tpl-1', 'Keka — New Hire Welcome', 'KEKA-WELCOME', 'app-keka', 'welcome', 'email', 'Welcome to Keka HR, {{employeeName}}!', 'Hi {{employeeName}},\n\nYour Keka HR account is ready. Sign in at https://keka.npst.com to complete your profile and review the onboarding checklist.\n\nYour reporting manager is {{managerName}}.\n\n— NPST Shared Services', 'medium', 'active', 2),
-    t('tpl-2', 'Keka — Leave Balance Low', 'KEKA-LEAVE-LOW', 'app-keka', 'reminder', 'inapp', 'Low leave balance ahead of {{dueDate}}', 'Hi {{employeeName}}, your accrued leave balance resets on {{dueDate}}. Plan upcoming time off with {{managerName}}.', 'low', 'active', 8),
+    t('tpl-1', 'PeopleOS — New Hire Welcome', 'KEKA-WELCOME', 'app-keka', 'welcome', 'email', 'Welcome to PeopleOS, {{employeeName}}!', 'Hi {{employeeName}},\n\nYour PeopleOS account is ready. Sign in at https://keka.npst.com to complete your profile and review the onboarding checklist.\n\nYour reporting manager is {{managerName}}.\n\n— NPST Shared Services', 'medium', 'active', 2),
+    t('tpl-2', 'PeopleOS — Leave Balance Low', 'KEKA-LEAVE-LOW', 'app-keka', 'reminder', 'inapp', 'Low leave balance ahead of {{dueDate}}', 'Hi {{employeeName}}, your accrued leave balance resets on {{dueDate}}. Plan upcoming time off with {{managerName}}.', 'low', 'active', 8),
     t('tpl-3', 'Finance — Payslip Ready', 'FIN-PAYSLIP', 'app-finance', 'announcement', 'email', 'Payslip for {{dueDate}} is ready', 'Hi {{employeeName}}, your payslip has been published to NPST Finance. Download it from Payroll → Documents.', 'medium', 'active', 9),
     t('tpl-4', 'Finance — Approval Pending', 'FIN-APPROVAL', 'app-finance', 'approval', 'inapp', 'Approval pending: {{taskName}}', 'Hi {{employeeName}}, an approval for {{taskName}} of {{amount}} is awaiting your action since {{dueDate}}. Please review to avoid escalation.', 'high', 'active', 4),
     t('tpl-5', 'SkillUp — Course Due Soon', 'SKILL-COURSE-DUE', 'app-skillup', 'reminder', 'push', 'Course due on {{dueDate}}', '{{taskName}} is due on {{dueDate}}. Complete it to keep your certification track on schedule.', 'medium', 'active', 6),
@@ -219,34 +219,34 @@ export function seedChannels(): ChannelConfig[] {
 }
 
 const LOG_SEED: Array<[string, string, string, NotificationLog['channel'], NotificationLog['status'], NotificationLog['priority'], number, string]> = [
-  ['priya.sharma@npst.com', 'app-keka', 'Keka — New Hire Welcome', 'email', 'delivered', 'medium', 2, 'Welcome mail sent for onboarding Day 0'],
+  ['priya.sharma@npst.com', 'app-keka', 'PeopleOS — New Hire Welcome', 'email', 'delivered', 'medium', 2, 'Welcome mail sent for onboarding Day 0'],
   ['rohit.k@npst.com', 'app-finance', 'Finance — Approval Pending', 'inapp', 'delivered', 'high', 4, 'Approval for Vendor Payment #2231 is pending'],
   ['aisha.khan@npst.com', 'app-skillup', 'SkillUp — Course Due Soon', 'push', 'delivered', 'medium', 6, 'Nudge for React Advanced cohort'],
   ['finance-team@npst.com', 'app-finance', 'Finance — Payslip Ready', 'email', 'delivered', 'medium', 9, 'January payslips published to payroll'],
   ['vikram.d@npst.com', 'app-finance', 'Finance — Approval Pending', 'inapp', 'failed', 'high', 12, 'Recipient mailbox unreachable'],
-  ['arjun.rao@npst.com', 'app-keka', 'Keka — Leave Balance Low', 'inapp', 'delivered', 'low', 16, 'Leave balance below 4 days'],
+  ['arjun.rao@npst.com', 'app-keka', 'PeopleOS — Leave Balance Low', 'inapp', 'delivered', 'low', 16, 'Leave balance below 4 days'],
   ['sales-west@npst.com', 'app-dealpulse', 'Deal Pulse — Deal Stage Update', 'push', 'delivered', 'medium', 20, 'Deal stage moved to Negotiation'],
-  ['neha.k@npst.com', 'app-keka', 'Keka — New Hire Welcome', 'email', 'delivered', 'medium', 26, 'Welcome mail sent for onboarding Day 0'],
+  ['neha.k@npst.com', 'app-keka', 'PeopleOS — New Hire Welcome', 'email', 'delivered', 'medium', 26, 'Welcome mail sent for onboarding Day 0'],
   ['aisha.khan@npst.com', 'app-skillup', 'SkillUp — Live Session Invite', 'email', 'pending', 'low', 30, 'Queued for the next send window'],
   ['rohit.k@npst.com', 'app-finance', 'Finance — Tax Declaration Due', 'email', 'delivered', 'medium', 34, 'Tax declaration reminder'],
   ['manager-west@npst.com', 'app-dealpulse', 'Deal Pulse — Quote Expiry', 'sms', 'delivered', 'high', 40, 'Quote NP-1147 expires in 48h'],
   ['sneha.i@npst.com', 'app-skillup', 'SkillUp — Course Due Soon', 'push', 'failed', 'medium', 47, 'Device token expired'],
-  ['priya.sharma@npst.com', 'app-keka', 'Keka — Leave Balance Low', 'inapp', 'delivered', 'low', 54, 'Leave balance below 4 days'],
+  ['priya.sharma@npst.com', 'app-keka', 'PeopleOS — Leave Balance Low', 'inapp', 'delivered', 'low', 54, 'Leave balance below 4 days'],
   ['payroll@npst.com', 'app-finance', 'Finance — Approval Pending', 'email', 'delivered', 'high', 60, 'Escalation reminder for pending approvals'],
-  ['arjun.rao@npst.com', 'app-keka', 'Keka — New Hire Welcome', 'email', 'delivered', 'medium', 66, 'Welcome mail sent for onboarding Day 0'],
+  ['arjun.rao@npst.com', 'app-keka', 'PeopleOS — New Hire Welcome', 'email', 'delivered', 'medium', 66, 'Welcome mail sent for onboarding Day 0'],
   ['sales-west@npst.com', 'app-dealpulse', 'Deal Pulse — Quote Expiry', 'sms', 'pending', 'high', 72, 'Awaiting carrier acknowledgement'],
   ['neha.k@npst.com', 'app-skillup', 'SkillUp — Live Session Invite', 'email', 'delivered', 'low', 80, 'Live session invite for Advanced Excel'],
   ['finance-team@npst.com', 'app-finance', 'Finance — Payslip Ready', 'email', 'delivered', 'medium', 88, 'December payslips published to payroll'],
   ['rohit.k@npst.com', 'app-finance', 'Finance — Approval Pending', 'inapp', 'delivered', 'high', 96, 'Approval for Vendor Payment #2218 is pending'],
   ['aisha.khan@npst.com', 'app-skillup', 'SkillUp — Course Due Soon', 'push', 'delivered', 'medium', 104, 'Nudge for Data Analytics cohort'],
   ['vikram.d@npst.com', 'app-finance', 'Finance — Tax Declaration Due', 'email', 'failed', 'medium', 112, 'SMTP relay 550 mailbox error'],
-  ['priya.sharma@npst.com', 'app-keka', 'Keka — Leave Balance Low', 'inapp', 'delivered', 'low', 118, 'Leave balance below 4 days'],
+  ['priya.sharma@npst.com', 'app-keka', 'PeopleOS — Leave Balance Low', 'inapp', 'delivered', 'low', 118, 'Leave balance below 4 days'],
   ['manager-west@npst.com', 'app-dealpulse', 'Deal Pulse — Deal Stage Update', 'push', 'delivered', 'medium', 126, 'Deal stage moved to Proposal'],
   ['sneha.i@npst.com', 'app-skillup', 'SkillUp — Live Session Invite', 'email', 'delivered', 'low', 132, 'Live session invite for Leadership 101'],
-  ['arjun.rao@npst.com', 'app-keka', 'Keka — New Hire Welcome', 'email', 'delivered', 'medium', 140, 'Welcome mail sent for onboarding Day 0'],
+  ['arjun.rao@npst.com', 'app-keka', 'PeopleOS — New Hire Welcome', 'email', 'delivered', 'medium', 140, 'Welcome mail sent for onboarding Day 0'],
   ['payroll@npst.com', 'app-finance', 'Finance — Approval Pending', 'email', 'delivered', 'high', 148, 'Escalation reminder for pending approvals'],
   ['sales-west@npst.com', 'app-dealpulse', 'Deal Pulse — Quote Expiry', 'sms', 'failed', 'high', 156, 'Invalid recipient number'],
-  ['neha.k@npst.com', 'app-keka', 'Keka — Leave Balance Low', 'inapp', 'pending', 'low', 162, 'Queued for the next send window'],
+  ['neha.k@npst.com', 'app-keka', 'PeopleOS — Leave Balance Low', 'inapp', 'pending', 'low', 162, 'Queued for the next send window'],
 ];
 
 export function seedNotifLogs(): NotificationLog[] {
@@ -477,7 +477,7 @@ export function seedAuditLogs(): AuditEntry[] {
   ): AuditEntry => ({ id: `aud-${i}`, user, module, action, appId, timestamp: hoursAgo(hours), ip: '10.24.8.41', status });
 
   return [
-    entry(1, 'admin@npst.com', 'UI Branding', 'Published theme v3 for Keka HR', 'app-keka', 2),
+    entry(1, 'admin@npst.com', 'UI Branding', 'Published theme v3 for PeopleOS', 'app-keka', 2),
     entry(2, 'admin@npst.com', 'Notifications', 'Created template "Finance — Approval Pending"', 'app-finance', 4),
     entry(3, 'rohit.kulkarni@npst.com', 'Reminders', 'Updated escalation levels for Pending Approval Follow-up', 'app-finance', 6),
     entry(4, 'priya.nair@npst.com', 'Users', 'Assigned Application Admin role to Vikram Desai', 'app-finance', 9),
@@ -487,7 +487,7 @@ export function seedAuditLogs(): AuditEntry[] {
     entry(8, 'admin@npst.com', 'Reminders', 'Created reminder policy "Invoice Payment Due"', 'app-finance', 26),
     entry(9, 'rohit.kulkarni@npst.com', 'Notifications', 'Disabled rule "Expiring Document Alert"', 'app-keka', 34),
     entry(10, 'priya.nair@npst.com', 'Users', 'Deactivated user Karan Malhotra', 'app-dealpulse', 41),
-    entry(11, 'admin@npst.com', 'UI Branding', 'Restored version 2 for Keka HR', 'app-keka', 47),
+    entry(11, 'admin@npst.com', 'UI Branding', 'Restored version 2 for PeopleOS', 'app-keka', 47),
     entry(12, 'vikram.desai@npst.com', 'Notifications', 'Duplicated template "Finance — Payslip Ready"', 'app-finance', 54),
     entry(13, 'admin@npst.com', 'Applications', 'Added application Deal Pulse', 'app-dealpulse', 62),
     entry(14, 'sneha.iyer@npst.com', 'Reminders', 'Modified reminder intervals for Course Completion Nudge', 'app-skillup', 72),

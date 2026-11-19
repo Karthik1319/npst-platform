@@ -105,6 +105,7 @@ export default function ReminderConfiguration() {
   const { data: codeMasters = [] } = useQuery({ queryKey: ['reminder-code-masters'], queryFn: () => masterDataService.listReminderCodes() });
 
   const [search, setSearch] = useState('');
+  const [selectedAppId, setSelectedAppId] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<ReminderPolicy | null>(null);
   const [deleting, setDeleting] = useState<ReminderPolicy | null>(null);
@@ -151,11 +152,13 @@ export default function ReminderConfiguration() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return policies;
-    return policies.filter(
+    if (!selectedAppId) return [];
+    const scoped = policies.filter((policy) => policy.appId === selectedAppId);
+    if (!q) return scoped;
+    return scoped.filter(
       (p) => p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q) || FREQUENCY_LABELS[p.frequency].toLowerCase().includes(q),
     );
-  }, [policies, search]);
+  }, [policies, search, selectedAppId]);
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['reminder-policies'] });
@@ -168,7 +171,7 @@ export default function ReminderConfiguration() {
     form.reset({
       name: '',
       code: '',
-      appId: '',
+      appId: selectedAppId,
       description: '',
       triggerEvent: 'approval-pending',
       triggerDate: format(new Date(), 'yyyy-MM-dd'),
@@ -301,18 +304,29 @@ export default function ReminderConfiguration() {
         description="Configure centralized reminder policies — frequency, intervals, recipients, channels and escalation ladders."
         testId="reminder-config-title"
         actions={
-          <Button onClick={openCreate} data-testid="add-reminder-policy-button">
+          <Button onClick={openCreate} disabled={!selectedAppId} data-testid="add-reminder-policy-button">
             <Plus className="size-4" /> Create Reminder Policy
           </Button>
         }
       />
 
-      <div className="relative w-full max-w-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <div className="w-full max-w-sm">
+          <Label htmlFor="reminders-application">Select Application</Label>
+          <Select value={selectedAppId} onValueChange={(value) => { setSelectedAppId(value); setSearch(''); }}>
+            <SelectTrigger id="reminders-application" data-testid="reminders-application-select"><SelectValue>{selectedAppId ? appName.get(selectedAppId) : 'Select an application'}</SelectValue></SelectTrigger>
+            <SelectContent>{apps.map((app) => <SelectItem key={app.id} value={app.id}>{app.name}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
+        <div className="relative w-full max-w-sm">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search policies…" className="pl-9" data-testid="reminder-policy-search-input" />
+        </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {!selectedAppId ? (
+        <EmptyState title="Select an application" description="Please select an application to view its reminder policies." />
+      ) : filtered.length === 0 ? (
         <EmptyState title="No reminder policies found" description="Create a policy to start chasing approvals and deadlines automatically." />
       ) : (
         <Card className="shadow-sm">

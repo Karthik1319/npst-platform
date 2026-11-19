@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   Eye,
-  Globe2,
   History,
   Plus,
   RotateCcw,
@@ -17,6 +16,7 @@ import {
   Trash2,
 } from 'lucide-react';
 import { applicationService } from '@/services/adminService';
+import { useAuth } from '@/context/AuthContext';
 import { brandingService } from '@/services/brandingService';
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatusBadge } from '@/components/common/StatusBadge';
@@ -95,10 +95,12 @@ function styleOf(config: BrandingConfig): BrandingStyle {
   };
 }
 
-const STEPS = ['Draft', 'Preview', 'Validate', 'Approve', 'Publish'] as const;
+const STEPS = ['Draft', 'Preview', 'Validate', 'Approve'] as const;
 
 export default function BrandingEditor() {
   const { appId = '' } = useParams();
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: apps = [] } = useQuery({ queryKey: ['apps'], queryFn: () => applicationService.list() });
@@ -116,9 +118,10 @@ export default function BrandingEditor() {
   const [style, setStyle] = useState<BrandingStyle | null>(null);
   const [assets, setAssets] = useState<BrandingAssets>({});
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [publishOpen, setPublishOpen] = useState(false);
-  const [applyAllOpen, setApplyAllOpen] = useState(false);
+  const [submitScopeOpen, setSubmitScopeOpen] = useState(false);
+  const [submitScope, setSubmitScope] = useState<'SINGLE_APPLICATION' | 'ALL_APPLICATIONS'>('SINGLE_APPLICATION');
   const [resetOpen, setResetOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [presetName, setPresetName] = useState('');
 
   useEffect(() => {
@@ -152,26 +155,17 @@ export default function BrandingEditor() {
     },
   });
   const submitApproval = useMutation({
-    mutationFn: () => Promise.resolve(brandingService.submitForApproval(appId, style!, assets)),
+    mutationFn: () => Promise.resolve(brandingService.submitForApproval(
+      appId,
+      style!,
+      assets,
+      submitScope,
+      submitScope === 'ALL_APPLICATIONS' ? apps.map((application) => application.id) : [appId],
+    )),
     onSuccess: () => {
       invalidate();
       toast.success('Submitted for approval');
-    },
-  });
-  const publish = useMutation({
-    mutationFn: () => Promise.resolve(brandingService.publish(appId, style!, assets)),
-    onSuccess: (published) => {
-      invalidate();
-      toast.success(`Theme v${published.version} published to ${app?.name ?? 'application'}`);
-      setPublishOpen(false);
-    },
-  });
-  const applyToAll = useMutation({
-    mutationFn: () => Promise.resolve(brandingService.applyToAllApplications(style!, assets)),
-    onSuccess: (published) => {
-      invalidate();
-      toast.success(`Theme published to ${published.length} applications`);
-      setApplyAllOpen(false);
+      setSubmitScopeOpen(false);
     },
   });
   const reset = useMutation({
@@ -183,6 +177,24 @@ export default function BrandingEditor() {
       toast.success('Changes reset to the last published theme');
       setResetOpen(false);
     },
+  });
+  const deleteApplication = useMutation({
+    mutationFn: () => {
+      if (brandingService.listApprovalRequests().some((request) => request.appId === appId && request.status === 'pending')) {
+        throw new Error('This application has a pending branding approval request. Resolve it before deletion.');
+      }
+      return Promise.resolve(applicationService.deactivate(appId));
+    },
+    onSuccess: (deleted) => {
+      queryClient.invalidateQueries({ queryKey: ['apps'] });
+      queryClient.invalidateQueries({ queryKey: ['search-index'] });
+      queryClient.invalidateQueries({ queryKey: ['branding-configs'] });
+      queryClient.invalidateQueries({ queryKey: ['audit-logs'] });
+      toast.success(`${deleted.name} was deleted`);
+      setDeleteOpen(false);
+      navigate('/');
+    },
+    onError: (error: Error) => toast.error(error.message),
   });
 
   if (apps.length > 0 && !app) {
@@ -212,7 +224,7 @@ export default function BrandingEditor() {
   }
 
   const patch = (partial: Partial<BrandingStyle>) => setStyle({ ...style, ...partial });
-  const statusStepIndex = config.status === 'published' ? 4 : config.status === 'pending-approval' ? 3 : dirty ? 0 : 1;
+  const statusStepIndex = config.status === 'published' ? 3 : config.status === 'pending-approval' ? 3 : dirty ? 0 : 1;
 
   return (
     <div className="space-y-6">
@@ -264,6 +276,11 @@ export default function BrandingEditor() {
           <Button variant="outline" onClick={() => setResetOpen(true)} data-testid="branding-reset-button">
             <RotateCcw className="size-4" /> Reset Changes
           </Button>
+          {user?.role === 'Super Admin' && (
+            <Button variant="destructive" onClick={() => setDeleteOpen(true)} data-testid="branding-delete-application-button">
+              <Trash2 className="size-4" /> Delete Application
+            </Button>
+          )}
           <Button variant="outline" onClick={() => setPreviewOpen(true)} data-testid="branding-preview-button">
             <Eye className="size-4" /> Preview
           </Button>
@@ -271,21 +288,10 @@ export default function BrandingEditor() {
             <Save className="size-4" /> Save as Draft
           </Button>
           {config.status !== 'pending-approval' && (
-            <Button variant="outline" onClick={() => submitApproval.mutate()} disabled={submitApproval.isPending} data-testid="branding-submit-button">
+            <Button variant="outline" onClick={() => setSubmitScopeOpen(true)} disabled={submitApproval.isPending} data-testid="branding-submit-button">
               <Send className="size-4" /> Submit for Approval
             </Button>
           )}
-          <Button onClick={() => setPublishOpen(true)} data-testid="branding-publish-button">
-            <CheckCircle2 className="size-4" /> Publish Theme
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => setApplyAllOpen(true)}
-            disabled={applyToAll.isPending}
-            data-testid="branding-apply-all-button"
-          >
-            <Globe2 className="size-4" /> Apply to all applications
-          </Button>
         </div>
       </div>
 
@@ -650,6 +656,29 @@ export default function BrandingEditor() {
       </div>
 
       {/* Fullscreen preview */}
+      <Dialog open={submitScopeOpen} onOpenChange={setSubmitScopeOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <DialogTitle>Where would you like to apply this branding change?</DialogTitle>
+            <DialogDescription>Choose the application scope for this approval request. No branding changes are applied until a checker approves it.</DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <button type="button" onClick={() => setSubmitScope('SINGLE_APPLICATION')} className={cn('rounded-xl border p-4 text-left transition-colors', submitScope === 'SINGLE_APPLICATION' ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted')} data-testid="branding-scope-single">
+              <p className="font-semibold text-foreground">Apply to This Application</p>
+              <p className="mt-1 text-sm text-muted-foreground">Only {app.name} will receive the proposed branding.</p>
+            </button>
+            <button type="button" onClick={() => setSubmitScope('ALL_APPLICATIONS')} className={cn('rounded-xl border p-4 text-left transition-colors', submitScope === 'ALL_APPLICATIONS' ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted')} data-testid="branding-scope-all">
+              <p className="font-semibold text-foreground">Apply to All Applications</p>
+              <p className="mt-1 text-sm text-muted-foreground">All {apps.length} registered applications will receive this branding after approval.</p>
+            </button>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={() => setSubmitScopeOpen(false)}>Cancel</Button>
+            <Button onClick={() => submitApproval.mutate()} disabled={submitApproval.isPending}>Continue</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogContent className="max-w-5xl">
           <DialogHeader>
@@ -671,43 +700,16 @@ export default function BrandingEditor() {
         onConfirm={() => reset.mutate()}
       />
 
-      {/* Publish confirm */}
       <ConfirmDialog
-        open={publishOpen}
-        onOpenChange={setPublishOpen}
-        title={`Publish theme to ${app.name}?`}
-        description="Publishing makes this branding live for every user of the application and records a new version in history."
-        confirmLabel="Publish Theme"
-        onConfirm={() => publish.mutate()}
-      >
-        <div className="space-y-2 rounded-lg border border-border bg-muted/40 p-3" data-testid="branding-publish-summary">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Validation summary</p>
-          {checks.map((check) => (
-            <div key={check.message} className="flex items-start gap-2 text-xs">
-              {check.level === 'pass' ? (
-                <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-emerald-600" />
-              ) : (
-                <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-amber-600" />
-              )}
-              <span className="text-muted-foreground">{check.message}</span>
-            </div>
-          ))}
-        </div>
-      </ConfirmDialog>
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="Delete Application?"
+        description={`Are you sure you want to delete ${app.name}? This action will remove the application from the Shared Services platform and may affect its associated configurations.\n\nApplication code: ${app.code}\n\nHistorical configurations and audit records will be preserved.`}
+        confirmLabel="Delete Application"
+        destructive
+        onConfirm={() => deleteApplication.mutate()}
+      />
 
-      <ConfirmDialog
-        open={applyAllOpen}
-        onOpenChange={setApplyAllOpen}
-        title="Apply branding to all applications?"
-        description={`This will publish the current theme and assets to all ${apps.length} applications. Each application will receive a new branding version.`}
-        confirmLabel="Apply to all applications"
-        onConfirm={() => applyToAll.mutate()}
-      >
-        <div className="rounded-lg border border-border bg-muted/40 p-3" data-testid="branding-apply-all-summary">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Applications affected</p>
-          <p className="mt-1 text-sm text-foreground">{apps.map((application) => application.name).join(', ')}</p>
-        </div>
-      </ConfirmDialog>
     </div>
   );
 }

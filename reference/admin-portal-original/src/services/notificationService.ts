@@ -18,9 +18,17 @@ const templateCrud = createCrudService<NotificationTemplate>(STORAGE_KEYS.templa
 const ruleCrud = createCrudService<NotificationRule>(STORAGE_KEYS.rules, seedRules);
 const logCrud = createCrudService<NotificationLog>(STORAGE_KEYS.notifLogs, seedNotifLogs);
 const channelCrud = createCrudService<ChannelConfig>(STORAGE_KEYS.channels, seedChannels);
+const displayTemplate = (template: NotificationTemplate): NotificationTemplate => ({
+  ...template,
+  name: template.name.replace(/^Keka\b/, 'PeopleOS'),
+});
+const displayLog = (log: NotificationLog): NotificationLog => ({
+  ...log,
+  templateName: log.templateName.replace(/^Keka\b/, 'PeopleOS'),
+});
 
 export const notificationService = {
-  listTemplates: templateCrud.list,
+  listTemplates: () => templateCrud.list().map(displayTemplate),
   getTemplate: templateCrud.get,
   createTemplate: (input: Omit<NotificationTemplate, 'id' | 'variables' | 'createdAt' | 'updatedAt'>): NotificationTemplate => {
     const template = templateCrud.create({
@@ -100,7 +108,7 @@ export const notificationService = {
     return log;
   },
 
-  listLogs: logCrud.list,
+  listLogs: () => logCrud.list().map(displayLog),
   addLog: (input: {
     recipient: string;
     appId: string;

@@ -17,6 +17,8 @@ import ReminderHistory from '@/pages/reminders/ReminderHistory';
 import UserManagement from '@/pages/users/UserManagement';
 import AuditLogs from '@/pages/audit/AuditLogs';
 import Settings from '@/pages/settings/Settings';
+import AISummary from '@/pages/AISummary';
+import EmployeeDashboard from '@/pages/EmployeeDashboard';
 
 function RequireAuth({ children }: { children: ReactNode }) {
   const { user } = useAuth();
@@ -30,12 +32,18 @@ function GuestRoute({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+function RoleRoute({ roles, children }: { roles: string[]; children: ReactNode }) {
+  const { user } = useAuth();
+  if (!user || !roles.includes(user.role)) return <Navigate to={user?.role === 'Employee' ? '/employee' : '/'} replace />;
+  return <>{children}</>;
+}
+
 // One <Route> per page in src/pages; BrowserRouter already wraps this in main.tsx.
 export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<GuestRoute><Login /></GuestRoute>} />
-      <Route element={<RequireAuth><AppLayout /></RequireAuth>}>
+      <Route element={<RequireAuth><RoleRoute roles={['Super Admin', 'Admin', 'Maker', 'Checker', 'Application Admin']}><AppLayout /></RoleRoute></RequireAuth>}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="applications" element={<Navigate to="/" replace />} />
@@ -50,10 +58,14 @@ export default function App() {
         <Route path="reminders/configuration" element={<ReminderConfiguration />} />
         <Route path="reminders/escalations" element={<EscalationManagement />} />
         <Route path="reminders/history" element={<ReminderHistory />} />
+        <Route path="ai-summary" element={<AISummary />} />
         <Route path="users" element={<UserManagement />} />
         <Route path="audit-logs" element={<AuditLogs />} />
         <Route path="settings" element={<Settings />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+      <Route element={<RequireAuth><RoleRoute roles={['Employee']}><AppLayout /></RoleRoute></RequireAuth>}>
+        <Route path="employee" element={<EmployeeDashboard />} />
       </Route>
     </Routes>
   );

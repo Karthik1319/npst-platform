@@ -7,12 +7,17 @@ import type { Session } from '@/types';
  * The session lives in an httpOnly-cookie-shaped LocalStorage/sessionStorage record
  * so swapping to a real /api/auth backend later is a single-service change.
  */
-const SUPER_ADMIN = {
+const ACCOUNTS = [
+  {
   email: 'admin@npst.com',
   password: 'Admin@123',
   name: 'Aarav Mehta',
   role: 'Super Admin' as const,
-};
+  },
+  { email: 'maker@npst.com', password: 'Maker@123', name: 'Rajneesh Singh', role: 'Maker' as const },
+  { email: 'checker@npst.com', password: 'Checker@123', name: 'Priya Nair', role: 'Checker' as const },
+  { email: 'employee@npst.com', password: 'Employee@123', name: 'Arjun Rao', role: 'Employee' as const },
+] as const;
 
 export interface LoginResult {
   ok: boolean;
@@ -24,30 +29,31 @@ const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, 
 
 export const authService = {
   getSession: readSession,
-  superAdminEmail: SUPER_ADMIN.email,
+  superAdminEmail: ACCOUNTS[0].email,
 
   async login(email: string, password: string, remember: boolean): Promise<LoginResult> {
     // Simulated network latency for the loading animation.
     await wait(900);
     const normalized = email.trim().toLowerCase();
-    if (normalized !== SUPER_ADMIN.email || password !== SUPER_ADMIN.password) {
+    const account = ACCOUNTS.find((candidate) => candidate.email === normalized && candidate.password === password);
+    if (!account) {
       auditService.log('Settings', `Failed sign-in attempt for ${normalized || '(empty)'}`, 'Portal', 'failed');
       return { ok: false, error: 'Invalid email or password. Please try again.' };
     }
     const session: Session = {
-      email: SUPER_ADMIN.email,
-      name: SUPER_ADMIN.name,
-      role: SUPER_ADMIN.role,
+      email: account.email,
+      name: account.name,
+      role: account.role,
       loginAt: new Date().toISOString(),
       remember,
     };
     writeSession(session, remember);
-    auditService.log('Settings', 'Super Admin signed in to the portal', 'Portal');
+    auditService.log('Settings', `${account.role} signed in to the portal`, 'Portal');
     return { ok: true, session };
   },
 
   logout(): void {
-    auditService.log('Settings', 'Super Admin signed out of the portal', 'Portal');
+    auditService.log('Settings', 'User signed out of the portal', 'Portal');
     clearSession();
   },
 };

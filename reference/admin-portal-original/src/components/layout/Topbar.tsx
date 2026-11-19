@@ -107,7 +107,7 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
         }
       }
     }
-    return ['Admin Portal'];
+    return ['NPST Shared Services'];
   }, [location.pathname]);
 
   const results = useMemo<SearchResult[]>(() => {
