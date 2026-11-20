@@ -12,6 +12,9 @@ describe('mockAuth', () => {
       'arjun.rao@npst.com',
       'neha.kapoor@npst.com',
       'karan.malhotra@npst.com',
+      'maker@npst.com',
+      'checker@npst.com',
+      'employee@npst.com',
     ]);
   });
 
@@ -24,6 +27,21 @@ describe('mockAuth', () => {
     const user = await mockAuth.signIn(email, DEMO_PASSWORD);
     expect(user.roles[0]).toBe(role);
   });
+
+  it.each([
+    ['maker@npst.com', 'Maker@123', 'Maker'],
+    ['checker@npst.com', 'Checker@123', 'Checker'],
+    ['employee@npst.com', 'Employee@123', 'Employee'],
+  ])(
+    'signs in the demo account %s with its own password',
+    async (email, password, role) => {
+      const user = await mockAuth.signIn(email, password);
+      expect(user.roles[0]).toBe(role);
+      await expect(mockAuth.signIn(email, DEMO_PASSWORD)).rejects.toThrow(
+        'Invalid email or password',
+      );
+    },
+  );
 
   it('rejects a wrong password or an unknown email with the same message', async () => {
     await expect(mockAuth.signIn('admin@npst.com', 'wrong')).rejects.toThrow(

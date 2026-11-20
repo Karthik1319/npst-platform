@@ -4,6 +4,8 @@ import type { Session, UserRole } from '@/types';
 const PORTAL_ROLES: readonly UserRole[] = [
   'Super Admin',
   'Admin',
+  'Maker',
+  'Checker',
   'Application Admin',
   'Employee',
 ];

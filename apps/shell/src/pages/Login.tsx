@@ -7,13 +7,14 @@ import { toast } from '@/lib/toast';
 import {
   AlertTriangle,
   ArrowRight,
-  Bell,
-  Clock,
+  Boxes,
+  CircleUserRound,
   Eye,
   EyeOff,
+  GraduationCap,
   KeyRound,
   Loader2,
-  Palette,
+  Network,
   ShieldCheck,
 } from '@/components/icons';
 import { useAuth } from '@/context/AuthContext';
@@ -32,10 +33,7 @@ import {
 import styles from './Login.module.css';
 
 const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Enter a valid email address'),
+  email: z.string().min(1, 'Employee ID or corporate email is required'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   remember: z.boolean(),
 });
@@ -44,19 +42,24 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 const FEATURES = [
   {
-    icon: Palette,
-    title: 'Centralized UI Branding',
-    text: 'Theme every integrated app from one console',
+    icon: CircleUserRound,
+    title: 'People & Workplace',
+    text: 'Employee services and workplace resources.',
   },
   {
-    icon: Bell,
-    title: 'Unified Notifications',
-    text: 'Templates, rules and delivery for all channels',
+    icon: GraduationCap,
+    title: 'Collaboration & Learning',
+    text: 'Connect with teams, knowledge, and learning resources.',
   },
   {
-    icon: Clock,
-    title: 'Smart Reminders',
-    text: 'Schedules and escalations that chase themselves',
+    icon: Boxes,
+    title: 'Business Applications',
+    text: 'Access the internal tools and platforms used across NPST.',
+  },
+  {
+    icon: Network,
+    title: 'Shared Services',
+    text: 'One centralized experience for common organizational services.',
   },
 ];
 
@@ -78,7 +81,9 @@ export default function Login() {
     const result = await login(values.email, values.password, values.remember);
     if (result.ok) {
       toast.success(`Welcome back, ${result.session?.role ?? 'user'}`);
-      navigate('/', { replace: true });
+      navigate(result.session?.role === 'Employee' ? '/employee' : '/', {
+        replace: true,
+      });
     } else {
       form.setError('root', {
         message: result.error ?? 'Invalid email or password.',
@@ -90,27 +95,71 @@ export default function Login() {
     <div className={styles.div}>
       {/* Brand panel */}
       <div className={`${styles.div2} ${styles.brandPanel}`}>
-        {/* The original showed an "N" logo mark here; the portal shows no logo. */}
-        <div className={styles.div3}>
-          <div className={styles.div5}>
-            <p className={styles.p}>NPST Shared Services</p>
-            <p className={styles.p2}>Admin Portal</p>
-          </div>
+        <div className={styles.div3} aria-hidden="true">
+          <svg className={styles.svg} viewBox="0 0 620 480" fill="none">
+            <path
+              d="M30 390 180 250 290 310 420 150 590 70"
+              className={styles.networkLine1}
+              strokeOpacity=".35"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M90 80 220 170 370 90 540 240"
+              className={styles.networkLine2}
+              strokeOpacity=".4"
+              strokeWidth="1"
+            />
+            <path
+              d="M180 250 220 170 420 150 370 90"
+              className={styles.networkLine3}
+              strokeOpacity=".2"
+            />
+            {[
+              [30, 390],
+              [180, 250],
+              [290, 310],
+              [420, 150],
+              [590, 70],
+              [90, 80],
+              [220, 170],
+              [370, 90],
+              [540, 240],
+            ].map(([cx, cy]) => (
+              <circle
+                key={`${cx}-${cy}`}
+                cx={cx}
+                cy={cy}
+                r="4"
+                className={styles.networkDot}
+                fillOpacity=".8"
+              />
+            ))}
+          </svg>
+          <div className={`${styles.div4} npst-sized`} />
+          <div className={`${styles.div5} npst-sized`} />
         </div>
 
         <div className={styles.div6}>
+          <img src="/npst.png" alt="NPST" className={styles.img} />
+          <div className={styles.div7}>
+            <p className={styles.p}>NPST Shared Services</p>
+          </div>
+        </div>
+
+        <div className={styles.div8}>
+          <p className={styles.p2}>Your NPST digital workplace</p>
           <h1 className={styles.h1}>
-            One control plane for every NPST application
+            One Workplace. Every Team. One Connected Experience.
           </h1>
           <p className={styles.p3}>
-            Centrally administer UI branding, notifications and reminders for
-            Keka HR, SkillUp Lounge, NPST Finance, Deal Pulse and every internal
-            application that consumes NPST Shared Services.
+            Welcome to NPST Shared Services — your central digital workplace for
+            accessing the tools, services, and resources that keep our teams
+            connected and moving forward.
           </p>
-          <div className={styles.div7}>
+          <div className={styles.div9}>
             {FEATURES.map((feature) => (
-              <div key={feature.title} className={styles.div8}>
-                <div className={`${styles.div9} npst-sized`}>
+              <div key={feature.title} className={styles.div10}>
+                <div className={`${styles.div11} npst-sized`}>
                   <feature.icon
                     className={`${styles.featureicon} npst-sized`}
                   />
@@ -124,44 +173,33 @@ export default function Login() {
           </div>
         </div>
 
-        <div className={styles.div10}>
-          {[
-            { value: '4+', label: 'Apps integrated' },
-            { value: '5,410', label: 'Employees reached' },
-            { value: '99.9%', label: 'Delivery uptime' },
-          ].map((stat) => (
-            <div key={stat.label}>
-              <p className={styles.p6}>{stat.value}</p>
-              <p className={styles.p7}>{stat.label}</p>
-            </div>
-          ))}
+        <div className={styles.div12}>
+          <p className={styles.p6}>
+            Innovation in Every Byte. Collaboration in Every Step.
+          </p>
+          <p className={styles.p7}>Built for the people behind the progress.</p>
         </div>
       </div>
 
       {/* Auth card */}
-      <div className={styles.div11}>
-        <div className={styles.div12}>
-          <div className={styles.div13}>
-            <div className={`${styles.div14} npst-sized`}>
+      <div className={styles.div13}>
+        <div className={styles.div14}>
+          <div className={styles.div15}>
+            <div className={`${styles.div16} npst-sized`}>
               <ShieldCheck className={`${styles.shieldCheck} npst-sized`} />
             </div>
-            <h2 className={styles.h2}>Portal Sign In</h2>
+            <h2 className={styles.h2}>Welcome to NPST Shared Services</h2>
             <p className={styles.p8}>
-              Authenticate to administer branding, notifications and reminders
-              across NPST applications.
+              Sign in with your employee ID or corporate email to continue.
             </p>
           </div>
 
-          <div className={styles.div15}>
-            <span className={styles.span2}>
+          <div className={styles.div17}>
+            <span className={styles.span}>
               <KeyRound className={`${styles.keyRound} npst-sized`} />
               <span>
-                Demo: <span className={styles.span3}>admin@npst.com</span> /{' '}
-                <span className={styles.span3}>Admin@123</span>
-                <span className={styles.span4}>
-                  Maker: maker@npst.com / Maker@123 · Checker: checker@npst.com
-                  / Checker@123
-                </span>
+                Demo: <span className={styles.span2}>admin@npst.com</span> /{' '}
+                <span className={styles.span2}>Admin@123</span>
               </span>
             </span>
             <button
@@ -179,13 +217,13 @@ export default function Login() {
 
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className={styles.div7}
+            className={styles.form}
             noValidate
             data-testid="login-form"
           >
             {form.formState.errors.root && (
               <div
-                className={styles.div16}
+                className={styles.div18}
                 role="alert"
                 data-testid="login-error-alert"
               >
@@ -196,12 +234,12 @@ export default function Login() {
               </div>
             )}
 
-            <div className={styles.div17}>
-              <Label htmlFor="email">Email address</Label>
+            <div className={styles.div19}>
+              <Label htmlFor="email">Employee ID / Corporate Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@npst.com"
+                placeholder="employee@npst.com"
                 autoComplete="email"
                 {...form.register('email')}
                 data-testid="login-email-input"
@@ -213,8 +251,8 @@ export default function Login() {
               )}
             </div>
 
-            <div className={styles.div17}>
-              <div className={styles.div18}>
+            <div className={styles.div19}>
+              <div className={styles.div20}>
                 <Label htmlFor="password">Password</Label>
                 <button
                   type="button"
@@ -225,7 +263,7 @@ export default function Login() {
                   Forgot password?
                 </button>
               </div>
-              <div className={styles.div19}>
+              <div className={styles.div21}>
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -310,7 +348,7 @@ export default function Login() {
               reset link.
             </DialogDescription>
           </DialogHeader>
-          <div className={styles.div17}>
+          <div className={styles.div19}>
             <Label htmlFor="forgot-email">Email address</Label>
             <Input
               id="forgot-email"

@@ -1,0 +1,74 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* space-y-6 */
+:where(.div > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 6) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* shadow-sm */
+.card {
+  --tw-shadow:
+    0 1px 3px 0 var(--tw-shadow-color, var(--fixed-black-a10)),
+    0 1px 2px -1px var(--tw-shadow-color, var(--fixed-black-a10));
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+
+/* flex min-h-72 flex-col items-center justify-center gap-4 text-center */
+.cardContent {
+  display: flex;
+  min-height: calc(var(--spacing) * 72);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--spacing) * 4);
+  text-align: center;
+}
+
+/* grid size-14 place-items-center rounded-2xl bg-primary/10 text-primary */
+.div2 {
+  display: grid;
+  width: calc(var(--spacing) * 14);
+  height: calc(var(--spacing) * 14);
+  place-items: center;
+  border-radius: calc(var(--radius) * 1.8);
+  background-color: var(--primary);
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+/* size-7 */
+.sparkles {
+  width: calc(var(--spacing) * 7);
+  height: calc(var(--spacing) * 7);
+}
+
+/* font-heading text-lg font-semibold text-foreground */
+.h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  line-height: var(--tw-leading, var(--text-lg--line-height));
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
+}
+.h2 {
+  --tw-leading: initial;
+}
+
+/* mt-1 text-sm text-muted-foreground */
+.p {
+  margin-top: var(--spacing);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--muted-foreground);
+}
+.p {
+  --tw-leading: initial;
+}

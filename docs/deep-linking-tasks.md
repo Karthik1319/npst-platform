@@ -9,7 +9,7 @@ git pull
 pnpm install
 pnpm nx run-many -t lint test typecheck build   # must pass before any change
 pnpm nx run-many -t dev -p shell brand-server demo-react-a demo-angular --parallel=4
-# http://localhost:4200, admin@npst.com / Admin@123 → Applications → Deal Pulse / Keka HR open in-app
+# http://localhost:4200, admin@npst.com / Admin@123 → Applications → Deal Pulse / PeopleOS open in-app
 ```
 
 ## Prompt 0: project context (paste first in every new chat)
@@ -124,8 +124,8 @@ List the files first and wait for my go.
 - route A only: add the remote to `remotes` in apps/shell/vite.config.ts and a test alias to the
   remote stub, like demoReactA;
 - apps/shell/src/App.test.tsx: the app opens at /<app-path> with the host props, unmounts on
-  leave, shows the fallback when it is down (copy the Deal Pulse / Keka HR tests).
-If the app replaces a stand-in (Deal Pulse → DealPulse, Keka HR → PeopleOS), point the existing
+  leave, shows the fallback when it is down (copy the Deal Pulse / PeopleOS tests).
+If the app replaces a stand-in (Deal Pulse → the real DealPulse, the PeopleOS stand-in → the real PeopleOS), point the existing
 id to the new remote instead of adding a second entry. List the files first and wait for my go.
 ```
 

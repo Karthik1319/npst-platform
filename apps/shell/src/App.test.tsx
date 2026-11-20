@@ -117,13 +117,17 @@ function sessionChangedInAnotherTab(newUserId: string | null) {
 }
 
 const loginPage = () =>
-  screen.findByRole('heading', { name: 'Portal Sign In' }, SLOW);
+  screen.findByRole(
+    'heading',
+    { name: 'Welcome to NPST Shared Services' },
+    SLOW,
+  );
 const dashboard = () =>
   screen.findByRole('heading', { level: 1, name: 'Dashboard' }, SLOW);
 
 async function signInWithForm(email: string, password = 'Admin@123') {
   await loginPage();
-  fireEvent.change(screen.getByLabelText('Email address'), {
+  fireEvent.change(screen.getByLabelText('Employee ID / Corporate Email'), {
     target: { value: email },
   });
   fireEvent.change(screen.getByLabelText('Password'), {
@@ -167,15 +171,35 @@ afterEach(() => {
 });
 
 describe('login page (the only login, central session)', () => {
-  it('is shown first, without a logo', async () => {
+  it('is shown first, with the NPST logo', async () => {
     renderAt('/');
     expect(await loginPage()).toBeDefined();
     expect(screen.getAllByText('NPST Shared Services').length).toBeGreaterThan(
       0,
     );
-    // Intentional: no logo or other image on the login page.
-    expect(screen.queryAllByRole('img')).toHaveLength(0);
+    expect(screen.getByRole('img', { name: 'NPST' }).getAttribute('src')).toBe(
+      '/npst.png',
+    );
   });
+
+  it.each([
+    ['maker@npst.com', 'Maker@123', 'Rajneesh Singh', 'Maker'],
+    ['checker@npst.com', 'Checker@123', 'Priya Nair', 'Checker'],
+    ['employee@npst.com', 'Employee@123', 'Arjun Rao', 'Employee'],
+  ])(
+    'signs in the demo account %s with its own password',
+    async (email, password, name, role) => {
+      renderAt('/login');
+      await signInWithForm(email, password);
+      const profile = await screen.findByTestId(
+        'topbar-profile-button',
+        {},
+        SLOW,
+      );
+      expect(within(profile).getByText(name)).toBeDefined();
+      expect(within(profile).getByText(role)).toBeDefined();
+    },
+  );
 
   it.each(Object.keys(USERS) as Who[])(
     'signs in the %s with the one demo password',
@@ -221,7 +245,7 @@ describe('login page (the only login, central session)', () => {
 
 describe('navigation per role (RBAC, UI only)', () => {
   const allApps = [
-    'Keka HR',
+    'PeopleOS',
     'Deal Pulse',
     'SkillUp Lounge',
     'NPST Finance',
@@ -252,13 +276,13 @@ describe('navigation per role (RBAC, UI only)', () => {
     [
       'appAdmin',
       ['Shared Services', 'Applications'],
-      ['Keka HR', 'Projects & Delivery'],
+      ['PeopleOS', 'Projects & Delivery'],
     ],
-    ['employee', ['Applications'], ['Keka HR']],
+    ['employee', ['Employee Services'], []],
   ] as const)(
     '%s sees sections %j and applications %j',
     async (who, sections, apps) => {
-      renderSignedInAt(who, who === 'employee' ? '/keka' : '/');
+      renderSignedInAt(who, '/');
       await screen.findByTestId('sidebar-nav');
       await vi.waitFor(() => expect(applicationLinks()).toEqual(apps));
       expect(sidebarSections()).toEqual(sections);
@@ -272,15 +296,35 @@ describe('navigation per role (RBAC, UI only)', () => {
       within(sidebar()).queryByRole('link', { name: 'Settings' }),
     ).toBeNull();
     expect(
-      within(sidebar()).getByRole('link', { name: 'Employee Management' }),
+      within(sidebar()).getByRole('link', { name: 'User Management' }),
     ).toBeDefined();
   });
 
-  it('starts an employee in their first application', async () => {
+  it('starts an employee on their dashboard, the only page in their navigation', async () => {
     renderSignedInAt('employee', '/');
     expect(
-      await screen.findByRole('heading', { level: 1, name: 'Mount stub' }),
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'Welcome, Neha Kapoor',
+      }),
     ).toBeDefined();
+    expect(
+      within(sidebar()).getByRole('link', { name: 'My Dashboard' }),
+    ).toBeDefined();
+  });
+
+  it.each([
+    ['admin', '/ai-summary', true],
+    ['appAdmin', '/ai-summary', true],
+    ['employee', '/ai-summary', false],
+    ['admin', '/employee', false],
+  ] as const)('%s opening %s is allowed: %s', async (who, path, allowed) => {
+    renderSignedInAt(who, path);
+    if (allowed)
+      expect(
+        await screen.findByRole('heading', { level: 1, name: 'AI Summary' }),
+      ).toBeDefined();
+    else expect(await screen.findByText('Access denied')).toBeDefined();
   });
 
   it.each([
@@ -336,14 +380,14 @@ describe('applications (MFEs)', () => {
     ).toBeDefined();
   });
 
-  it('mounts Keka HR (Angular) through the mount contract and unmounts it on leave', async () => {
-    renderSignedInAt('superAdmin', '/keka');
+  it('mounts PeopleOS (Angular) through the mount contract and unmounts it on leave', async () => {
+    renderSignedInAt('superAdmin', '/peopleos');
     expect(
       await screen.findByRole('heading', { level: 1, name: 'Mount stub' }),
     ).toBeDefined();
     expect(
       screen.getByText(
-        'user=Aarav Mehta basePath=/keka platformUser=Aarav Mehta',
+        'user=Aarav Mehta basePath=/peopleos platformUser=Aarav Mehta',
       ),
     ).toBeDefined();
     expect(mountStub.live).toBe(1);
@@ -377,9 +421,9 @@ describe('applications (MFEs)', () => {
     esmRemote.down = true;
     esmRemote.loads = 0;
     try {
-      renderSignedInAt('employee', '/keka');
+      renderSignedInAt('employee', '/peopleos');
       expect(
-        await screen.findByText('Keka HR is not available right now.'),
+        await screen.findByText('PeopleOS is not available right now.'),
       ).toBeDefined();
       expect(esmRemote.loads).toBe(2); // first attempt + one automatic retry
       // The rest of the portal keeps working.
@@ -404,8 +448,10 @@ describe('applications (MFEs)', () => {
     const popstate = vi.fn();
     window.addEventListener('popstate', popstate);
 
-    await vi.waitFor(() => expect(applicationLinks()).toContain('Keka HR'));
-    act(() => within(sidebar()).getByRole('link', { name: 'Keka HR' }).click());
+    await vi.waitFor(() => expect(applicationLinks()).toContain('PeopleOS'));
+    act(() =>
+      within(sidebar()).getByRole('link', { name: 'PeopleOS' }).click(),
+    );
 
     await vi.waitFor(() => expect(popstate).toHaveBeenCalledTimes(1));
     window.removeEventListener('popstate', popstate);
@@ -488,7 +534,9 @@ describe('one session for the portal, every app and every tab', () => {
       ),
     ).toBeDefined();
     expect(
-      screen.queryByRole('heading', { name: 'Portal Sign In' }),
+      screen.queryByRole('heading', {
+        name: 'Welcome to NPST Shared Services',
+      }),
     ).toBeNull();
   });
 
@@ -534,7 +582,7 @@ describe('Shared Services pages (Step 20)', () => {
     renderSignedInAt('superAdmin', '/branding/configure/app-keka');
     expect(
       (await screen.findByTestId('branding-editor-title')).textContent,
-    ).toContain('Keka HR');
+    ).toContain('PeopleOS');
     expect(
       screen.getAllByTestId('branding-live-preview').length,
     ).toBeGreaterThan(0);
@@ -563,7 +611,7 @@ describe('Shared Services pages (Step 21)', () => {
   it.each([
     ['appAdmin', '/reminders', 'Reminder Management'],
     ['appAdmin', '/reminders/escalations', 'Escalation Management'],
-    ['admin', '/users', 'Employee Management'],
+    ['admin', '/users', 'User Management'],
     ['admin', '/audit-logs', 'Audit Logs'],
   ] as const)('%s opens %s', async (who, path, title) => {
     renderSignedInAt(who, path);
@@ -593,8 +641,8 @@ describe('Shared Services pages (Step 21)', () => {
   );
 });
 
-describe('Employee Management drives sign-in and access (mock RBAC and Provisioning)', () => {
-  it('a user deactivated in Employee Management cannot sign in', async () => {
+describe('User Management drives sign-in and access (mock RBAC and Provisioning)', () => {
+  it('a user deactivated in User Management cannot sign in', async () => {
     userService.update('user-6', { status: 'inactive' });
     renderAt('/login');
     await signInWithForm('arjun.rao@npst.com');
@@ -603,14 +651,18 @@ describe('Employee Management drives sign-in and access (mock RBAC and Provision
     );
   });
 
-  it('applications assigned in Employee Management appear after sign-in', async () => {
-    userService.update(USERS.employee.id, {
+  it('applications assigned in User Management appear after sign-in', async () => {
+    userService.update(USERS.appAdmin.id, {
       apps: ['app-keka', 'app-finance'],
     });
-    renderSignedInAt('employee', '/keka');
+    renderSignedInAt('appAdmin', '/');
     await screen.findByTestId('sidebar-nav');
     await vi.waitFor(() =>
-      expect(applicationLinks()).toEqual(['Keka HR', 'NPST Finance']),
+      expect(applicationLinks()).toEqual([
+        'PeopleOS',
+        'NPST Finance',
+        'Projects & Delivery',
+      ]),
     );
   });
 });
@@ -632,8 +684,8 @@ describe('application registry links', () => {
   it('opens a hosted application inside the portal from its Dashboard card', async () => {
     renderSignedInAt('superAdmin', '/');
     await dashboard();
-    const link = await screen.findByTitle('Open Keka HR in the portal');
-    expect(link.getAttribute('href')).toBe('/keka');
+    const link = await screen.findByTitle('Open PeopleOS in the portal');
+    expect(link.getAttribute('href')).toBe('/peopleos');
     expect(link.textContent).toContain('keka.npst.com');
     expect(link.getAttribute('target')).toBeNull();
   });

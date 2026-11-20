@@ -35,9 +35,19 @@ const channelCrud = createCrudService<ChannelConfig>(
   STORAGE_KEYS.channels,
   seedChannels,
 );
+const displayTemplate = (
+  template: NotificationTemplate,
+): NotificationTemplate => ({
+  ...template,
+  name: template.name.replace(/^Keka\b/, 'PeopleOS'),
+});
+const displayLog = (log: NotificationLog): NotificationLog => ({
+  ...log,
+  templateName: log.templateName.replace(/^Keka\b/, 'PeopleOS'),
+});
 
 export const notificationService = {
-  listTemplates: templateCrud.list,
+  listTemplates: () => templateCrud.list().map(displayTemplate),
   getTemplate: templateCrud.get,
   createTemplate: (
     input: Omit<
@@ -180,7 +190,7 @@ export const notificationService = {
     return log;
   },
 
-  listLogs: logCrud.list,
+  listLogs: () => logCrud.list().map(displayLog),
   addLog: (input: {
     recipient: string;
     appId: string;

@@ -76,7 +76,7 @@ export const searchApi = {
             kind: 'Employee',
             title: e.name,
             subtitle: `${e.id} · ${e.designation}, ${e.department}`,
-            link: `/keka/employees/${e.id}`,
+            link: `/peopleos/employees/${e.id}`,
           })),
       );
     }

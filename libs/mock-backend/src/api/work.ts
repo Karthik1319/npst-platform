@@ -28,7 +28,7 @@ export function taskLink(task: Task): string {
     case 'projects':
       return `/projects/tasks?task=${task.id}`;
     case 'app-keka':
-      return '/keka';
+      return '/peopleos';
   }
 }
 

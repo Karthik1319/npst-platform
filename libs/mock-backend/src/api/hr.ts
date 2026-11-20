@@ -74,7 +74,7 @@ export interface EmployeeQuery {
 const isOnLeave = (request: LeaveRequest, day: string) =>
   request.status === 'Approved' && request.from <= day && day <= request.to;
 
-/** Simulated Keka HR backend (read side). */
+/** Simulated PeopleOS backend (read side). */
 export const hrApi = {
   async summary(): Promise<HrSummary> {
     const { employees, leaveRequests } = readData();
@@ -186,13 +186,13 @@ export const hrApi = {
         description: `${request.type}, ${request.days} day${request.days === 1 ? '' : 's'} from ${request.from}. Waiting for your approval.`,
         kind: 'info',
         appId: 'app-keka',
-        link: '/keka/leave',
+        link: '/peopleos/leave',
       });
       recordActivity(data, {
         appId: 'app-keka',
         actor: actor.name,
         text: `Leave request submitted (${request.type}, ${request.days} day${request.days === 1 ? '' : 's'})`,
-        link: '/keka/leave',
+        link: '/peopleos/leave',
       });
       return clone(request);
     });
@@ -222,14 +222,14 @@ export const hrApi = {
           description: `${request.type} from ${request.from} to ${request.to} (${request.days} day${request.days === 1 ? '' : 's'}), ${decision.toLowerCase()} by ${actor.name}.`,
           kind: decision === 'Approved' ? 'success' : 'warning',
           appId: 'app-keka',
-          link: '/keka/leave',
+          link: '/peopleos/leave',
         });
       }
       recordActivity(data, {
         appId: 'app-keka',
         actor: actor.name,
         text: `Leave ${decision.toLowerCase()} for ${request.employeeName}`,
-        link: '/keka/leave',
+        link: '/peopleos/leave',
       });
       return clone(request);
     });

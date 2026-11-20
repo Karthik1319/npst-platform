@@ -1,7 +1,7 @@
 import { createCrudService } from './mockApi';
 import { auditService } from './auditService';
 import { seedApps, seedUsers } from '@/data/seed';
-import { STORAGE_KEYS } from './storage';
+import { readSession, STORAGE_KEYS } from './storage';
 import type {
   ConfigStatus,
   NotificationIntegration,
@@ -12,6 +12,8 @@ import type {
 
 const appCrud = createCrudService<NpstApplication>(STORAGE_KEYS.apps, seedApps);
 const userCrud = createCrudService<User>(STORAGE_KEYS.users, seedUsers);
+const displayApplication = (app: NpstApplication): NpstApplication =>
+  app.id === 'app-keka' ? { ...app, name: 'PeopleOS' } : app;
 
 const DEFAULT_SETTINGS: NpstSettings = {
   portalName: 'NPST Shared Services',
@@ -24,8 +26,15 @@ const DEFAULT_SETTINGS: NpstSettings = {
 };
 
 export const applicationService = {
-  list: appCrud.list,
-  get: appCrud.get,
+  list: () =>
+    appCrud
+      .list()
+      .filter((app) => !app.isDeleted)
+      .map(displayApplication),
+  get: (id: string) => {
+    const app = appCrud.get(id);
+    return app ? displayApplication(app) : undefined;
+  },
   create: (input: Omit<NpstApplication, 'id'>): NpstApplication => {
     const app = appCrud.create(input);
     auditService.log('Applications', `Added application ${app.name}`, app.id);
@@ -39,6 +48,30 @@ export const applicationService = {
     if (next)
       auditService.log('Applications', `Updated application ${next.name}`, id);
     return next;
+  },
+  deactivate: (id: string): NpstApplication => {
+    const session = readSession();
+    if (session?.role !== 'Super Admin')
+      throw new Error('Only Super Admins can delete applications');
+    const app = appCrud.get(id);
+    if (!app || app.isDeleted)
+      throw new Error('Application is no longer available');
+    const deletedAt = new Date().toISOString();
+    const deletedBy = session.email;
+    const updated = appCrud.update(id, {
+      isDeleted: true,
+      deletedAt,
+      deletedBy,
+      status: 'inactive',
+      lastUpdated: deletedAt,
+    });
+    if (!updated) throw new Error('Failed to delete application');
+    auditService.log(
+      'Applications',
+      `Soft-deleted application ${app.name} (${app.code})`,
+      id,
+    );
+    return updated;
   },
   remove: (id: string): void => {
     const app = appCrud.get(id);

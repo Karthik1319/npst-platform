@@ -13,7 +13,7 @@ interface AppPortalLinkProps {
 
 /**
  * Link from the application registry to the application itself. Users open
- * applications inside the portal (e.g. `/keka`), not at their deployed address,
+ * applications inside the portal (e.g. `/peopleos`), not at their deployed address,
  * so the link goes to the portal page. An application the portal does not
  * host shows its label as plain text.
  */

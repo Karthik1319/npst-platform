@@ -80,7 +80,7 @@ export function HomePage({ apps }: HomePageProps) {
       ? [
           {
             title: `Approve leave requests (${hr.pendingApprovals} pending)`,
-            link: '/keka/leave',
+            link: '/peopleos/leave',
           },
         ]
       : [];
@@ -181,7 +181,7 @@ function buildKpis({
       value: formatNumber(hr.totalEmployees),
       icon: 'people',
       tone: 3,
-      link: '/keka/employees',
+      link: '/peopleos/employees',
       trend:
         hr.joinedLast30Days > 0
           ? {
@@ -199,7 +199,7 @@ function buildKpis({
       value: String(hr.pendingApprovals),
       icon: 'clock',
       tone: 4,
-      link: '/keka/leave',
+      link: '/peopleos/leave',
       trend: { direction: 'flat', text: 'Leave requests', good: true },
     });
   }
@@ -241,7 +241,7 @@ function buildKpis({
       value: String(hr.onLeaveToday),
       icon: 'calendar',
       tone: 3,
-      link: '/keka/leave',
+      link: '/peopleos/leave',
     });
   }
   if (openTasks !== null) {

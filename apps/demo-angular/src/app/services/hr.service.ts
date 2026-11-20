@@ -32,7 +32,7 @@ const ROLE_DEPARTMENT: Record<string, string> = {
 };
 
 /**
- * Keka HR backend calls. All data access of this app goes through this
+ * PeopleOS backend calls. All data access of this app goes through this
  * service. In the POC it calls the simulated backend; in production it calls
  * the HRMS API over HTTP with the portal's session cookie (the app never
  * passes a user or token itself).

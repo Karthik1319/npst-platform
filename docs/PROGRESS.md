@@ -4,33 +4,35 @@ Step log for the proof of concept. The agreed architecture is in `docs/architect
 
 ## Current status
 
-| Step  | Title                                            | Status |
-| ----- | ------------------------------------------------ | ------ |
-| 0     | Check setup                                      | Done   |
-| 1     | Workspace                                        | Done   |
-| 2     | Shell app                                        | Done   |
-| 3     | Shared libs + platform contract                  | Done   |
-| 3b    | Mock login + RBAC (enhancement)                  | Done   |
-| 4     | First React remote                               | Done   |
-| 5     | Second React remote + Shell ↔ MFE communication  | Done   |
-| 6     | Angular remote                                   | Done   |
-| 7     | Failure handling                                 | Done   |
-| 8     | Bundling review                                  | Done   |
-| 9     | Runtime theme                                    | Done   |
-| 10    | Business portal: Portal Home dashboard           | Done   |
-| 11    | Sales Hub (React remote)                         | Done   |
-| 12    | Projects & Delivery (React remote)               | Done   |
-| 13    | People & HR (Angular remote)                     | Done   |
-| 14    | Cross-application workflow and demo polish       | Done   |
-| 15    | Integration guides                               | Done   |
-| 16    | Reverse proxy (NGINX) and one session            | Done   |
-| 17    | Admin Portal integration: baseline               | Done   |
-| 18    | Admin Portal design system (no UI library)       | Done   |
-| 19    | Admin Portal frame on the architecture           | Done   |
-| 20    | Admin Portal: Branding and Notifications pages   | Done   |
-| 21    | Admin Portal: Reminders, Employees, Audit Logs   | Done   |
-| 22    | Stand-ins: Keka HR (Angular), Deal Pulse (React) | Next   |
-| 23–24 | Admin Portal integration (see plan)              |        |
+| Step | Title                                            | Status |
+| ---- | ------------------------------------------------ | ------ |
+| 0    | Check setup                                      | Done   |
+| 1    | Workspace                                        | Done   |
+| 2    | Shell app                                        | Done   |
+| 3    | Shared libs + platform contract                  | Done   |
+| 3b   | Mock login + RBAC (enhancement)                  | Done   |
+| 4    | First React remote                               | Done   |
+| 5    | Second React remote + Shell ↔ MFE communication  | Done   |
+| 6    | Angular remote                                   | Done   |
+| 7    | Failure handling                                 | Done   |
+| 8    | Bundling review                                  | Done   |
+| 9    | Runtime theme                                    | Done   |
+| 10   | Business portal: Portal Home dashboard           | Done   |
+| 11   | Sales Hub (React remote)                         | Done   |
+| 12   | Projects & Delivery (React remote)               | Done   |
+| 13   | People & HR (Angular remote)                     | Done   |
+| 14   | Cross-application workflow and demo polish       | Done   |
+| 15   | Integration guides                               | Done   |
+| 16   | Reverse proxy (NGINX) and one session            | Done   |
+| 17   | Admin Portal integration: baseline               | Done   |
+| 18   | Admin Portal design system (no UI library)       | Done   |
+| 19   | Admin Portal frame on the architecture           | Done   |
+| 20   | Admin Portal: Branding and Notifications pages   | Done   |
+| 21   | Admin Portal: Reminders, Employees, Audit Logs   | Done   |
+| 22   | Stand-ins: Keka HR (Angular), Deal Pulse (React) | Done   |
+| 23   | Branding Publish → brand server, runtime theme   | Done   |
+| 24   | Sync with the teammate's latest frontend         | Done   |
+| 25   | Clean-up and documents (removals need approval)  | Next   |
 
 ## Toolchain
 
@@ -1352,3 +1354,64 @@ pnpm nx run-many -t dev -p shell brand-server demo-react-a demo-angular --parall
 - **Publish:** publishing Deal Pulse's branding still applies only inside Deal Pulse; the portal's primary colour is unchanged.
 
 **Try it:** Branding → Deal Pulse (or Keka HR) → Configure Branding → change Primary color → Publish Theme → open the application.
+
+## Step 24 – Sync with the teammate's latest frontend (`21e290f`)
+
+The teammate changed his Admin Portal after the manager's feedback (3 commits, 18 Nov 2026). His UI stays the design source of truth, so the portal follows his new version.
+
+**His changes, now in the portal:**
+
+| Area            | Change                                                                                                                                             |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Naming          | Keka HR → **PeopleOS**; "Admin Portal" removed (now "NPST Shared Services"); Employee Management → **User Management**                             |
+| Colours         | New NPST brand palette (`--idb-*` tokens): primary `#214c98`, sidebar `#0e123c`, page `#f7fafe`, new border colour                                 |
+| Logo            | **NPST logo** (`npst.png`) in the sidebar and on the login page; new favicon                                                                       |
+| Login           | Redesigned brand panel (headline, four feature tiles, network graphic); "Employee ID / Corporate Email" field                                      |
+| Roles, accounts | New roles **Maker** and **Checker**; demo accounts maker / checker / employee with their own passwords                                             |
+| Employee view   | Employees land on **My Dashboard** (`/employee`), the only item in their navigation                                                                |
+| New page        | **AI Summary** (placeholder) under Shared Services                                                                                                 |
+| Features        | Soft delete of applications (Super Admin), branding approvals for **all applications**, "apply basic theme", editor, template and reminder changes |
+
+**How:**
+
+- **Reference copy:** `reference/admin-portal-original/` updated to his commit `21e290f` (same exclusions), with 37 new baseline screenshots (separate commit).
+- **Converter:** his new code was converted again. Only the difference between the old and the new converted version was merged into the portal's pages (three-way merge), so the portal's own changes stay:
+  - central session, platform, permissions;
+  - no inline styles, scoped themes, registry links.
+- **By hand:** 5 merge conflicts (logo, navigation, breadcrumb, login, editor imports).
+- **Login page without inline styles:**
+  - the brand-panel gradient and the network graphic's colours now use his brand tokens;
+  - the converter names his new fixed colours (`--fixed-turquoise`, `--fixed-mist`, …).
+- **New icons:** 6 more icons drawn from Lucide's shapes for his new pages.
+
+**Your decisions (20 Nov):**
+
+| Topic         | Decision                                                                                                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Logo          | **Show his NPST logo** (sidebar, login, favicon); the earlier no-logo rule is dropped. Published app themes still carry no logo                                                                         |
+| Accounts      | **Both:** his demo accounts with their own passwords (`maker@npst.com` / `Maker@123`, `checker@npst.com` / `Checker@123`, `employee@npst.com` / `Employee@123`) and the 8 seeded users with `Admin@123` |
+| Employees     | **Only his dashboard:** My Dashboard is the only navigation item (no Applications section); applications can still be opened by address if their access allows                                          |
+| PeopleOS path | **`/peopleos`**; the id stays `app-keka` as in his code. The Angular stand-in, links, notifications and tests follow                                                                                    |
+
+**Access (RBAC, UI only):**
+
+- **Maker and Checker:** same pages as Admin.
+- **AI Summary:** every Shared Services role.
+- **My Dashboard:** the Employee role only.
+
+**Verified:**
+
+- **Tests:** lint, test (portal 62 + mocks, all projects), typecheck and build pass; Prettier clean.
+- **Screenshots** against his **new** version, 37 shots, production build, light and dark:
+  - login 0.00%;
+  - every other page 0.09–0.44%;
+  - bell panel 1.7–1.9% (it lists the applications' messages).
+
+  The remaining differences are the intended ones: the Applications section in the sidebar, the clock, the "500+" text on the PeopleOS card, and the bell count. No console errors.
+
+**Open issues:**
+
+- His employee dashboard buttons (View profile, View notifications, Get help) do nothing in his version either; they are unchanged.
+- Saved browser data from before this step still has the old application list. Settings → Reset demo data shows the new sample data.
+
+**Next step:** Step 25 – clean-up and documents; removals only with approval (Projects & Delivery, old shell screens, folder names, unused `mock-backend` parts).

@@ -201,7 +201,7 @@ describe('Deal Pulse write operations', () => {
   });
 });
 
-describe('leave workflow (Keka HR)', () => {
+describe('leave workflow (PeopleOS)', () => {
   const employee = {
     id: 'portal-user-3',
     name: 'Employee Tester',
@@ -233,7 +233,7 @@ describe('leave workflow (Keka HR)', () => {
     expect(managerInbox[0]).toMatchObject({
       title: 'Leave request from Employee Tester',
       read: false,
-      link: '/keka/leave',
+      link: '/peopleos/leave',
     });
 
     await hrApi.decideLeave(request.id, 'Approved', manager);

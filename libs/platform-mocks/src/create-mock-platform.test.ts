@@ -57,38 +57,31 @@ describe('createMockPlatform', () => {
     }
   });
 
+  // Users by email (the demo accounts reuse two seeded names).
+  const AARAV = 'admin@npst.com';
+  const PRIYA = 'priya.nair@npst.com';
+  const ROHIT = 'rohit.kulkarni@npst.com';
+  const SNEHA = 'sneha.iyer@npst.com';
+  const VIKRAM = 'vikram.desai@npst.com';
+  const ARJUN = 'arjun.rao@npst.com';
+  const NEHA = 'neha.kapoor@npst.com';
+  const KARAN = 'karan.malhotra@npst.com';
+  const MAKER = 'maker@npst.com';
+  const CHECKER = 'checker@npst.com';
+  const EMPLOYEE = 'employee@npst.com';
+  const ADMIN_PAGES = [AARAV, PRIYA, KARAN, MAKER, CHECKER];
   it.each([
-    ['manage:settings', ['Aarav Mehta']],
-    ['view:applications', ['Aarav Mehta', 'Priya Nair', 'Karan Malhotra']],
-    [
-      'manage:branding',
-      [
-        'Aarav Mehta',
-        'Priya Nair',
-        'Rohit Kulkarni',
-        'Sneha Iyer',
-        'Vikram Desai',
-        'Karan Malhotra',
-      ],
-    ],
-    ['export:app-dealpulse', ['Aarav Mehta']],
-    [
-      'create:lead',
-      ['Aarav Mehta', 'Priya Nair', 'Vikram Desai', 'Karan Malhotra'],
-    ],
-    ['update:project-task', ['Aarav Mehta', 'Rohit Kulkarni', 'Sneha Iyer']],
-    ['approve:leave', ['Aarav Mehta']],
-    [
-      'apply:leave',
-      [
-        'Aarav Mehta',
-        'Rohit Kulkarni',
-        'Sneha Iyer',
-        'Arjun Rao',
-        'Neha Kapoor',
-      ],
-    ],
-  ])('grants the in-app permission %s only to %j', (permission, names) => {
+    ['manage:settings', [AARAV]],
+    ['view:applications', ADMIN_PAGES],
+    ['manage:branding', [...ADMIN_PAGES, ROHIT, SNEHA, VIKRAM]],
+    ['view:ai-summary', [...ADMIN_PAGES, ROHIT, SNEHA, VIKRAM]],
+    ['view:employee-dashboard', [ARJUN, NEHA, EMPLOYEE]],
+    ['export:app-dealpulse', [AARAV]],
+    ['create:lead', [AARAV, PRIYA, VIKRAM, KARAN]],
+    ['update:project-task', [AARAV, ROHIT, SNEHA]],
+    ['approve:leave', [AARAV]],
+    ['apply:leave', [AARAV, ROHIT, SNEHA, ARJUN, NEHA, EMPLOYEE]],
+  ])('grants the permission %s only to %j', (permission, emails) => {
     const [action = '', resource = ''] = permission.split(':');
     for (const candidate of mockUsers) {
       expect(
@@ -96,8 +89,8 @@ describe('createMockPlatform', () => {
           action,
           resource,
         ),
-        candidate.name,
-      ).toBe(names.includes(candidate.name));
+        candidate.email,
+      ).toBe(emails.includes(candidate.email));
     }
   });
 

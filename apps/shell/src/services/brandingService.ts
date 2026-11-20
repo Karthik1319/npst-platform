@@ -104,6 +104,8 @@ export const brandingService = {
     appId: string,
     style: BrandingStyle,
     assets: BrandingAssets,
+    scope: BrandingApprovalRequest['scope'] = 'SINGLE_APPLICATION',
+    targetApplicationIds: string[] = [appId],
   ): BrandingConfig {
     const existing = this.getConfig(appId);
     if (!existing)
@@ -112,6 +114,9 @@ export const brandingService = {
       );
     const request = approvalCrud.create({
       appId,
+      scope,
+      targetApplicationIds:
+        scope === 'ALL_APPLICATIONS' ? targetApplicationIds : [appId],
       requestedBy: actor(),
       submittedAt: nowIso(),
       previousStyle: {
@@ -161,27 +166,34 @@ export const brandingService = {
     const session = readSession();
     if (!session || session.email === request.requestedBy)
       throw new Error('The maker cannot approve their own request');
-    const config = this.getConfig(request.appId);
-    const version = (config?.version ?? 0) + 1;
-    this.upsertConfig(
-      request.appId,
-      request.proposedStyle,
-      request.proposedAssets,
-      'published',
-      version,
-      nowIso(),
-    );
-    versionCrud.create({
-      appId: request.appId,
-      version,
-      modifiedBy: request.requestedBy,
-      modifiedDate: nowIso(),
-      publishedBy: session.email,
-      status: 'published',
-      style: request.proposedStyle,
-    });
-    applicationService.setIntegrationStatus(request.appId, {
-      brandingStatus: 'published',
+    const targetIds =
+      request.scope === 'ALL_APPLICATIONS'
+        ? request.targetApplicationIds
+        : [request.appId];
+    const publishedAt = nowIso();
+    targetIds.forEach((targetId) => {
+      const config = this.getConfig(targetId);
+      const version = (config?.version ?? 0) + 1;
+      this.upsertConfig(
+        targetId,
+        request.proposedStyle,
+        request.proposedAssets,
+        'published',
+        version,
+        publishedAt,
+      );
+      versionCrud.create({
+        appId: targetId,
+        version,
+        modifiedBy: request.requestedBy,
+        modifiedDate: publishedAt,
+        publishedBy: session.email,
+        status: 'published',
+        style: request.proposedStyle,
+      });
+      applicationService.setIntegrationStatus(targetId, {
+        brandingStatus: 'published',
+      });
     });
     const updated = approvalCrud.update(id, {
       status: 'approved',
@@ -198,10 +210,37 @@ export const brandingService = {
     });
     auditService.log(
       'UI Branding',
-      'Approved branding change request',
+      `Approved ${request.scope === 'ALL_APPLICATIONS' ? 'global' : 'single-application'} branding change for ${targetIds.join(', ')}`,
       request.appId,
     );
     return updated;
+  },
+  applyBasicTheme(appId: string): BrandingConfig {
+    const publishedAt = nowIso();
+    const current = this.getConfig(appId);
+    const version = (current?.version ?? 0) + 1;
+    const config = this.upsertConfig(
+      appId,
+      NPST_DEFAULT_STYLE,
+      {},
+      'published',
+      version,
+      publishedAt,
+    );
+    versionCrud.create({
+      appId,
+      version,
+      modifiedBy: actor(),
+      modifiedDate: publishedAt,
+      publishedBy: actor(),
+      status: 'published',
+      style: NPST_DEFAULT_STYLE,
+    });
+    applicationService.setIntegrationStatus(appId, {
+      brandingStatus: 'published',
+    });
+    auditService.log('UI Branding', `Applied basic theme v${version}`, appId);
+    return config;
   },
   rejectRequest(id: string, comments: string): BrandingApprovalRequest {
     const request = approvalCrud.get(id);

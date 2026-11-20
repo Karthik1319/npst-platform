@@ -1,0 +1,59 @@
+/* Generated from the original Tailwind classes (Step 18 converter); variables only. */
+/* space-y-6 */
+:where(.div > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 6) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 6) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+
+/* grid gap-4 md:grid-cols-3 */
+.div2 {
+  display: grid;
+  gap: calc(var(--spacing) * 4);
+}
+@media (width >= 48rem) {
+  .div2 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* space-y-3 p-5 */
+:where(.cardContent > :not(:last-child)) {
+  --tw-space-y-reverse: 0;
+  margin-block-start: calc(
+    calc(var(--spacing) * 3) * var(--tw-space-y-reverse)
+  );
+  margin-block-end: calc(
+    calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse))
+  );
+}
+.cardContent {
+  padding: calc(var(--spacing) * 5);
+}
+
+/* size-5 text-primary */
+.userRound {
+  width: calc(var(--spacing) * 5);
+  height: calc(var(--spacing) * 5);
+  color: var(--primary);
+}
+
+/* font-semibold */
+.p {
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* text-sm text-muted-foreground */
+.p2 {
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  color: var(--muted-foreground);
+}
+.p2 {
+  --tw-leading: initial;
+}

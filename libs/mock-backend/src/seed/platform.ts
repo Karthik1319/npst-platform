@@ -52,7 +52,7 @@ const NOTIFICATIONS: NotificationSeed[] = [
       'Seven leave requests are pending. The oldest was submitted four days ago.',
     kind: 'info',
     appId: 'app-keka',
-    link: '/keka/leave',
+    link: '/peopleos/leave',
     minutesAgo: 180,
   },
   {
@@ -62,7 +62,7 @@ const NOTIFICATIONS: NotificationSeed[] = [
       'Arjun Malhotra joins Engineering today. Laptop and access requests are complete.',
     kind: 'info',
     appId: 'app-keka',
-    link: '/keka/employees',
+    link: '/peopleos/employees',
     minutesAgo: 24 * 60,
     read: true,
   },
@@ -132,10 +132,10 @@ const NOTIFICATIONS: NotificationSeed[] = [
   {
     to: { team: 'EMPLOYEE' },
     title: 'Holiday calendar for 2027 published',
-    description: 'See Keka HR for the list of company holidays.',
+    description: 'See PeopleOS for the list of company holidays.',
     kind: 'info',
     appId: 'app-keka',
-    link: '/keka',
+    link: '/peopleos',
     minutesAgo: 4 * 60,
   },
   {
@@ -145,7 +145,7 @@ const NOTIFICATIONS: NotificationSeed[] = [
       'Complete the annual training before Friday to keep system access.',
     kind: 'warning',
     appId: 'app-keka',
-    link: '/keka',
+    link: '/peopleos',
     minutesAgo: 26 * 60,
   },
 ];
@@ -167,7 +167,7 @@ export function seedReminders(now: Date): StoredReminder[] {
       to: { team: 'ADMIN' },
       title: 'Review team leave requests',
       dueAt: dateTimeFrom(now, 1, 10),
-      link: '/keka/leave',
+      link: '/peopleos/leave',
     },
     {
       id: 'R-2',
@@ -225,7 +225,7 @@ const ACTIVITY: ActivitySeed[] = [
     appId: 'app-keka',
     actor: 'HR System',
     text: 'New employee “Arjun Malhotra” added to Engineering',
-    link: '/keka/employees',
+    link: '/peopleos/employees',
   },
   {
     minutesAgo: 130,
@@ -239,7 +239,7 @@ const ACTIVITY: ActivitySeed[] = [
     appId: 'app-keka',
     actor: 'Ritu Saxena',
     text: 'Approved 3 leave requests for Quality Assurance',
-    link: '/keka/leave',
+    link: '/peopleos/leave',
   },
   {
     minutesAgo: 300,

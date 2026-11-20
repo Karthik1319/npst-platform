@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -19,10 +19,12 @@ import {
   Trash2,
 } from '@/components/icons';
 import { applicationService } from '@/services/adminService';
+import { brandingService } from '@/services/brandingService';
 import {
   adminNotificationService,
   adminRoles,
 } from '@/services/adminNotificationService';
+import { useAuth } from '@/context/AuthContext';
 import { PageHeader } from '@/components/common/PageHeader';
 import { StatusBadge } from '@/components/common/StatusBadge';
 import { AppAvatar } from '@/components/common/AppAvatar';
@@ -34,6 +36,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent } from '@/components/ui/card';
 import {
   Dialog,
@@ -83,16 +86,24 @@ const appSchema = z.object({
     .min(10, 'Provide a short description (10+ characters)'),
   color: z.string().min(4, 'Pick a brand color'),
   status: z.enum(['active', 'inactive', 'pending']),
+  applyBasicTheme: z.boolean(),
 });
 
 type AppFormValues = z.infer<typeof appSchema>;
 
 export default function ApplicationManagement() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   const { data: apps = [] } = useQuery({
     queryKey: ['apps'],
     queryFn: () => applicationService.list(),
   });
+  const { data: approvalRequests = [] } = useQuery({
+    queryKey: ['branding-approvals'],
+    queryFn: () => brandingService.listApprovalRequests(),
+  });
+  const canDelete = user?.role === 'Super Admin';
 
   const [view, setView] = useState<'grid' | 'table'>('grid');
   const [search, setSearch] = useState('');
@@ -113,6 +124,7 @@ export default function ApplicationManagement() {
       description: '',
       color: '#2563EB',
       status: 'active',
+      applyBasicTheme: true,
     },
   });
 
@@ -138,6 +150,7 @@ export default function ApplicationManagement() {
       description: '',
       color: '#2563EB',
       status: 'active',
+      applyBasicTheme: true,
     });
     setFormOpen(true);
   };
@@ -151,14 +164,16 @@ export default function ApplicationManagement() {
       description: app.description,
       color: app.color,
       status: app.status,
+      applyBasicTheme: false,
     });
     setFormOpen(true);
   };
 
   const saveMutation = useMutation({
-    mutationFn: (values: AppFormValues) => {
+    mutationFn: async (values: AppFormValues) => {
+      const { applyBasicTheme, ...applicationValues } = values;
       const payload = {
-        ...values,
+        ...applicationValues,
         registrationDate: editing?.registrationDate ?? new Date().toISOString(),
         lastUpdated: new Date().toISOString(),
       };
@@ -170,9 +185,13 @@ export default function ApplicationManagement() {
               brandingStatus: 'not-configured',
               notificationStatus: 'not-integrated',
             }),
-          );
+          ).then(async (created) => {
+            if (applyBasicTheme && created)
+              brandingService.applyBasicTheme(created.id);
+            return created;
+          });
     },
-    onSuccess: () => {
+    onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ['apps'] });
       queryClient.invalidateQueries({ queryKey: ['search-index'] });
       adminNotificationService.create({
@@ -181,7 +200,7 @@ export default function ApplicationManagement() {
           : 'New application registered',
         description: editing
           ? 'An application configuration was updated.'
-          : 'A new application was registered in the admin portal.',
+          : 'A new application was registered.',
         roles: adminRoles,
       });
       queryClient.invalidateQueries({ queryKey: ['admin-notifications'] });
@@ -189,6 +208,13 @@ export default function ApplicationManagement() {
         editing ? 'Application updated' : 'Application added successfully',
       );
       setFormOpen(false);
+      if (!editing && created) {
+        if (form.getValues('applyBasicTheme')) {
+          toast.success('Application created with the basic theme');
+        } else {
+          navigate(`/branding/configure/${created.id}`);
+        }
+      }
     },
   });
 
@@ -209,14 +235,26 @@ export default function ApplicationManagement() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (app: NpstApplication) =>
-      Promise.resolve(applicationService.remove(app.id)),
-    onSuccess: () => {
+    mutationFn: (app: NpstApplication) => {
+      if (
+        approvalRequests.some(
+          (request) => request.appId === app.id && request.status === 'pending',
+        )
+      ) {
+        throw new Error(
+          'This application has a pending branding approval request. Resolve it before deletion.',
+        );
+      }
+      return Promise.resolve(applicationService.deactivate(app.id));
+    },
+    onSuccess: (deleted) => {
       queryClient.invalidateQueries({ queryKey: ['apps'] });
       queryClient.invalidateQueries({ queryKey: ['search-index'] });
-      toast.success('Application removed');
+      queryClient.invalidateQueries({ queryKey: ['branding-configs'] });
+      toast.success(`${deleted.name} was deleted`);
       setDeleting(null);
     },
+    onError: (error: Error) => toast.error(error.message),
   });
 
   return (
@@ -311,7 +349,7 @@ export default function ApplicationManagement() {
                     onView={() => setViewing(app)}
                     onEdit={() => openEdit(app)}
                     onToggle={() => toggleMutation.mutate(app)}
-                    onDelete={() => setDeleting(app)}
+                    onDelete={canDelete ? () => setDeleting(app) : undefined}
                   />
                 </div>
                 <p className={styles.p3}>{app.description}</p>
@@ -418,7 +456,9 @@ export default function ApplicationManagement() {
                         onView={() => setViewing(app)}
                         onEdit={() => openEdit(app)}
                         onToggle={() => toggleMutation.mutate(app)}
-                        onDelete={() => setDeleting(app)}
+                        onDelete={
+                          canDelete ? () => setDeleting(app) : undefined
+                        }
                       />
                     </TableCell>
                   </TableRow>
@@ -539,6 +579,28 @@ export default function ApplicationManagement() {
                   )}
                 />
               </div>
+              {!editing && (
+                <Controller
+                  control={form.control}
+                  name="applyBasicTheme"
+                  render={({ field }) => (
+                    <label className={styles.label}>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        data-testid="application-basic-theme-checkbox"
+                      />
+                      <span>
+                        <span className={styles.span}>Apply Basic Theme</span>
+                        <span className={styles.span2}>
+                          Automatically apply the default NPST basic theme to
+                          this application.
+                        </span>
+                      </span>
+                    </label>
+                  )}
+                />
+              )}
             </div>
             <DialogFooter className={styles.dialogFooter}>
               <Button
@@ -676,7 +738,7 @@ export default function ApplicationManagement() {
         open={deleting !== null}
         onOpenChange={(open) => !open && setDeleting(null)}
         title={`Delete ${deleting?.name ?? 'application'}?`}
-        description="This removes the application from the shared services registry. Mock data only — nothing outside this browser is affected."
+        description={`Are you sure you want to delete ${deleting?.name ?? 'this application'}? This action will remove the application from the Shared Services platform and may affect its associated configurations.\n\nApplication code: ${deleting?.code ?? '—'}\n\nHistorical configurations and audit records will be preserved.`}
         confirmLabel="Delete application"
         destructive
         onConfirm={() => deleting && deleteMutation.mutate(deleting)}
@@ -705,7 +767,7 @@ function AppActionsMenu({
   onView: () => void;
   onEdit: () => void;
   onToggle: () => void;
-  onDelete: () => void;
+  onDelete?: () => void;
 }) {
   return (
     <DropdownMenu>
@@ -754,13 +816,16 @@ function AppActionsMenu({
             ? 'Disable integration'
             : 'Enable integration'}
         </DropdownMenuItem>
-        <DropdownMenuItem
-          variant="destructive"
-          onClick={onDelete}
-          data-testid={`application-delete-${app.id}`}
-        >
-          <Trash2 className={`${styles.plus} npst-sized`} /> Delete
-        </DropdownMenuItem>
+        {onDelete && (
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={onDelete}
+            data-testid={`application-delete-${app.id}`}
+          >
+            <Trash2 className={`${styles.plus} npst-sized`} /> Delete
+            Application
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

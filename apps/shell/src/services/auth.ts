@@ -51,7 +51,8 @@ export async function signIn(
 ): Promise<PlatformUser> {
   const normalized = email.trim().toLowerCase();
   const user = directory().find((candidate) => candidate.email === normalized);
-  if (!user || password !== DEMO_PASSWORD) throw new SignInError();
+  if (!user || password !== (user.password ?? DEMO_PASSWORD))
+    throw new SignInError();
   if (user.status !== 'active') {
     throw new SignInError(
       'This account is inactive. Contact your administrator.',
@@ -103,12 +104,12 @@ export function onSessionChange(listener: () => void): () => void {
 }
 
 /**
- * Mock RBAC and Provisioning: the users of Employee Management, as platform
- * users. The first role is the portal role; seeded users keep their team in
+ * Mock RBAC and Provisioning: the users of User Management (and the Admin
+ * Portal's demo accounts), as platform users. The first role is the portal role; seeded users keep their team in
  * the stand-in business apps as a second role (see `@npst/platform-mocks`).
  */
 function directory(): MockUser[] {
-  return userService.list().map((user) => {
+  const provisioned: MockUser[] = userService.list().map((user) => {
     const seeded = mockUsers.find((candidate) => candidate.id === user.id);
     const teams = seeded
       ? seeded.roles.slice(1)
@@ -124,6 +125,14 @@ function directory(): MockUser[] {
       status: user.status,
     };
   });
+  // The Admin Portal's demo accounts (maker, checker, employee) are not in
+  // Employee Management; they sign in with their own passwords.
+  const accounts = mockUsers.filter(
+    (account) =>
+      account.password !== undefined &&
+      !provisioned.some((user) => user.email === account.email),
+  );
+  return [...provisioned, ...accounts];
 }
 
 // The Admin Portal's services read the signed-in user from the central session.

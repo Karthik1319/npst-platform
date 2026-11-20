@@ -8,7 +8,7 @@
 | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | Portal (host) with sidebar, top bar, login, central session | `apps/shell`                                                                                |
 | React application loaded in-app (Module Federation)         | Deal Pulse stand-in: `apps/demo-react-a`                                                    |
-| Non-React application loaded in-app (mount contract)        | Keka HR stand-in, Angular: `apps/demo-angular`                                              |
+| Non-React application loaded in-app (mount contract)        | PeopleOS stand-in, Angular: `apps/demo-angular`                                             |
 | Two-way communication                                       | Props `{ user, basePath, platform }` down; calls on `platform` up (`libs/shared-contracts`) |
 | Failure handling (timeout, retry, fallback)                 | `apps/shell/src/remotes/`                                                                   |
 | One session, one theme, role-based access to each app       | `services/auth.ts`, brand server, `permissions.can('access', appId)`                        |
@@ -104,7 +104,7 @@ Details and code: `docs/adding-a-remote.md` sections 3–7. Task-by-task prompts
 1. Agree the app list, ids and portal paths (section 1).
 2. Integrate **one** application end to end (the most ready one), following section 3.
 3. Point the bell, search and Dashboard links of that app to its portal paths and check they open in-app.
-4. Repeat for the next application; replace the stand-ins (Deal Pulse → DealPulse, Keka HR → PeopleOS) when the real app arrives.
+4. Repeat for the next application; replace the stand-ins (Deal Pulse → the real DealPulse, the PeopleOS stand-in → the real PeopleOS) when the real app arrives.
 
 ## 6. Done criteria per application
 

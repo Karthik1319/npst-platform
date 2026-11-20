@@ -16,8 +16,27 @@
   height: calc(var(--spacing) * 4);
 }
 
-/* relative w-full max-w-sm */
+/* flex flex-col gap-3 sm:flex-row sm:items-center */
 .div2 {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--spacing) * 3);
+}
+@media (width >= 40rem) {
+  .div2 {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* w-full max-w-sm */
+.div3 {
+  width: 100%;
+  max-width: var(--container-sm);
+}
+
+/* relative w-full max-w-sm */
+.div4 {
   position: relative;
   width: 100%;
   max-width: var(--container-sm);
@@ -159,13 +178,13 @@
 }
 
 /* flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between */
-.div3 {
+.div5 {
   display: flex;
   flex-direction: column;
   gap: calc(var(--spacing) * 3);
 }
 @media (width >= 40rem) {
-  .div3 {
+  .div5 {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -195,7 +214,7 @@
 }
 
 /* flex items-center gap-2 */
-.div4 {
+.div6 {
   display: flex;
   align-items: center;
   gap: calc(var(--spacing) * 2);
@@ -207,7 +226,7 @@
 }
 
 /* flex flex-col gap-4 overflow-x-auto pb-2 md:flex-row md:items-stretch */
-.div5 {
+.div7 {
   display: flex;
   flex-direction: column;
   gap: calc(var(--spacing) * 4);
@@ -215,25 +234,25 @@
   padding-bottom: calc(var(--spacing) * 2);
 }
 @media (width >= 48rem) {
-  .div5 {
+  .div7 {
     flex-direction: row;
     align-items: stretch;
   }
 }
 
 /* flex items-stretch gap-0 */
-.div6 {
+.div8 {
   display: flex;
   align-items: stretch;
   gap: 0px;
 }
 
 /* w-60 shrink-0 space-y-3 rounded-xl border border-border bg-card p-3.5 shadow-sm */
-.div7 {
+.div9 {
   width: calc(var(--spacing) * 60);
   flex-shrink: 0;
 }
-:where(.div7 > :not(:last-child)) {
+:where(.div9 > :not(:last-child)) {
   --tw-space-y-reverse: 0;
   margin-block-start: calc(
     calc(var(--spacing) * 3) * var(--tw-space-y-reverse)
@@ -242,7 +261,7 @@
     calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse))
   );
 }
-.div7 {
+.div9 {
   border-radius: calc(var(--radius) * 1.4);
   border-style: var(--tw-border-style);
   border-width: 1px;
@@ -258,7 +277,7 @@
 }
 
 /* flex items-center justify-between gap-2 */
-.div8 {
+.div10 {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -392,19 +411,19 @@
 }
 
 /* hidden w-10 self-center md:block */
-.div9 {
+.div11 {
   display: none;
   width: calc(var(--spacing) * 10);
   align-self: center;
 }
 @media (width >= 48rem) {
-  .div9 {
+  .div11 {
     display: block;
   }
 }
 
 /* h-px w-full bg-border */
-.div10 {
+.div12 {
   height: 1px;
   width: 100%;
   background-color: var(--border);
@@ -466,7 +485,7 @@
 }
 
 /* space-y-4 */
-:where(.div11 > :not(:last-child)) {
+:where(.div13 > :not(:last-child)) {
   --tw-space-y-reverse: 0;
   margin-block-start: calc(
     calc(var(--spacing) * 4) * var(--tw-space-y-reverse)
@@ -477,7 +496,7 @@
 }
 
 /* space-y-1.5 */
-:where(.div12 > :not(:last-child)) {
+:where(.div14 > :not(:last-child)) {
   --tw-space-y-reverse: 0;
   margin-block-start: calc(
     calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse)
@@ -517,7 +536,7 @@
 }
 
 /* flex items-end pb-1 */
-.div13 {
+.div15 {
   display: flex;
   align-items: flex-end;
   padding-bottom: var(--spacing);
@@ -537,7 +556,7 @@
 }
 
 /* flex flex-wrap gap-x-5 gap-y-2 */
-.div14 {
+.div16 {
   display: flex;
   flex-wrap: wrap;
   column-gap: calc(var(--spacing) * 5);
@@ -560,18 +579,18 @@
 }
 
 /* grid gap-4 sm:grid-cols-2 */
-.div15 {
+.div17 {
   display: grid;
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 40rem) {
-  .div15 {
+  .div17 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 /* space-y-1.5 sm:col-span-2 */
-:where(.div16 > :not(:last-child)) {
+:where(.div18 > :not(:last-child)) {
   --tw-space-y-reverse: 0;
   margin-block-start: calc(
     calc(var(--spacing) * 1.5) * var(--tw-space-y-reverse)
@@ -581,7 +600,7 @@
   );
 }
 @media (width >= 40rem) {
-  .div16 {
+  .div18 {
     grid-column: span 2 / span 2;
   }
 }
@@ -592,7 +611,7 @@
 }
 
 /* grid gap-4 */
-.div17 {
+.div19 {
   display: grid;
   gap: calc(var(--spacing) * 4);
 }

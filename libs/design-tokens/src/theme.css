@@ -228,7 +228,8 @@
 }
 
 /*
- * 4. Admin Portal design (Step 18, from the Admin Portal UI).
+ * 4. Admin Portal design (Step 18, updated in Step 24 to the Admin Portal's
+ *    new NPST brand colours, `--idb-*`).
  *    Same names and values as the original, so its screens look identical:
  *    - scale values (spacing, text sizes, radii, palette) used by its styles;
  *    - fixed colours it used directly (`--fixed-*`);
@@ -260,6 +261,12 @@
   --color-blue-700: oklch(48.8% 0.243 264.376);
   --color-blue-800: oklch(42.4% 0.199 265.638);
   --color-blue-950: oklch(28.2% 0.091 267.935);
+  --color-indigo-50: oklch(96.2% 0.018 272.314);
+  --color-indigo-600: oklch(51.1% 0.262 276.966);
+  --color-indigo-700: oklch(45.7% 0.24 277.023);
+  --color-violet-50: oklch(96.9% 0.016 293.756);
+  --color-violet-600: oklch(54.1% 0.281 293.009);
+  --color-violet-700: oklch(49.1% 0.27 292.581);
   --color-slate-100: oklch(96.8% 0.007 247.896);
   --color-slate-300: oklch(86.9% 0.022 252.894);
   --color-slate-400: oklch(70.4% 0.04 256.788);
@@ -285,17 +292,16 @@
   --text-base--line-height: calc(1.5 / 1);
   --text-lg: 1.125rem;
   --text-lg--line-height: calc(1.75 / 1.125);
-  --text-xl: 1.25rem;
-  --text-xl--line-height: calc(1.75 / 1.25);
   --text-2xl: 1.5rem;
   --text-2xl--line-height: calc(2 / 1.5);
   --text-4xl: 2.25rem;
   --text-4xl--line-height: calc(2.5 / 2.25);
+  --text-5xl: 3rem;
+  --text-5xl--line-height: 1;
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
   --tracking-tight: -0.025em;
   --tracking-wide: 0.025em;
   --tracking-wider: 0.05em;
@@ -308,6 +314,8 @@
   --animate-spin: spin 1s linear infinite;
   --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --blur-xs: 4px;
+  --blur-sm: 8px;
+  --blur-3xl: 64px;
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --font-heading: 'Plus Jakarta Sans Variable', sans-serif;
@@ -325,19 +333,40 @@
   --fixed-slate-500: #64748b;
   --fixed-black-a10: rgb(0 0 0 / 0.1);
   --fixed-transparent: #0000;
+  --fixed-turquoise: #29b6c4;
+  --fixed-electric: #4972ff;
+  --fixed-turquoise-light: #7de3e8;
+  --fixed-mist: #e2f4fe;
   --fixed-blue-600: #2563eb;
   --fixed-white: #ffffff;
   --fixed-slate-400: #94a3b8;
 }
 
 :root {
-  --background: #f8fafc;
+  --idb-black: #010000;
+  --idb-indigo: #01105f;
+  --idb-core: #214c98;
+  --idb-deep: #0e123c;
+  --idb-bright: #284fbc;
+  --idb-electric: #4972ff;
+  --idb-mist: #e2f4fe;
+  --idb-turquoise: #29b6c4;
+  --idb-gold: #fcda00;
+  --idb-white: #ffffff;
+  --idb-page: #f7fafe;
+  --idb-line: #e0e9f4;
+  --idb-muted: #64748b;
+  --idb-success: #168a70;
+  --idb-core-hover: #1a3d7a;
+  --idb-font-primary: Aptos, 'Aptos Display', Arial, sans-serif;
+  --idb-font-secondary: 'Manrope', Aptos, Arial, sans-serif;
+  --background: var(--idb-page);
   --foreground: #0f172a;
   --card: #ffffff;
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --primary: #1e40af;
+  --primary: var(--idb-core);
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #0f172a;
@@ -346,7 +375,7 @@
   --accent: #eff6ff;
   --accent-foreground: #1d4ed8;
   --destructive: #dc2626;
-  --border: #e2e8f0;
+  --border: var(--idb-line);
   --input: #cbd5e1;
   --ring: #2563eb;
   --chart-1: #2563eb;
@@ -355,9 +384,9 @@
   --chart-4: #d97706;
   --chart-5: #dc2626;
   --radius: 0.75rem;
-  --sidebar: #0b132b;
+  --sidebar: var(--idb-deep);
   --sidebar-foreground: #cbd5e1;
-  --sidebar-primary: #2563eb;
+  --sidebar-primary: var(--idb-core);
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #1e293b;
   --sidebar-accent-foreground: #38bdf8;
@@ -459,10 +488,10 @@
 /* Fixed values of Admin Portal pages (were inline styles in the original). */
 :root {
   --login-brand-panel-bg: radial-gradient(
-    circle at top right,
-    #1e3a8a 0%,
-    #0b132b 60%,
-    #030712 100%
+    circle at 85% 12%,
+    var(--idb-bright) 0%,
+    var(--idb-deep) 45%,
+    var(--idb-indigo) 100%
   );
 }
 

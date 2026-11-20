@@ -12,7 +12,12 @@ export type ReminderStatus = 'pending' | 'completed' | 'overdue';
 export type ReminderFrequency =
   'one-time' | 'daily' | 'weekly' | 'monthly' | 'custom';
 export type UserRole =
-  'Super Admin' | 'Admin' | 'Application Admin' | 'Employee';
+  | 'Super Admin'
+  | 'Admin'
+  | 'Maker'
+  | 'Checker'
+  | 'Application Admin'
+  | 'Employee';
 export type ComponentStyle = 'modern' | 'minimal' | 'classic' | 'rounded';
 export type ShadowDepth = 'none' | 'sm' | 'md' | 'lg';
 export type BrandingWorkflowStatus = 'draft' | 'pending-approval' | 'published';
@@ -82,6 +87,9 @@ export interface NpstApplication {
   employees?: number;
   lastUpdated: string;
   registrationDate?: string;
+  isDeleted?: boolean;
+  deletedAt?: string;
+  deletedBy?: string;
 }
 
 export interface BrandingStyle {
@@ -139,6 +147,8 @@ export interface BrandingVersion {
 export interface BrandingApprovalRequest {
   id: string;
   appId: string;
+  scope: 'SINGLE_APPLICATION' | 'ALL_APPLICATIONS';
+  targetApplicationIds: string[];
   requestedBy: string;
   submittedAt: string;
   previousStyle: BrandingStyle;

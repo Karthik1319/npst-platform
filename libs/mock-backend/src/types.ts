@@ -225,7 +225,7 @@ export interface Task {
   completedAt?: string;
 }
 
-// ---------- Keka HR ----------
+// ---------- PeopleOS ----------
 
 export type EmploymentStatus = 'Active' | 'Probation' | 'Notice period';
 export type EmploymentType = 'Full-time' | 'Contract' | 'Intern';

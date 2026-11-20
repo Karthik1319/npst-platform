@@ -1,4 +1,4 @@
-/* Keka HR frame, panels and KPIs. Scoped below .hr-app (see app.ts). */
+/* PeopleOS frame, panels and KPIs. Scoped below .hr-app (see app.ts). */
 .hr-app {
   display: block;
   color: var(--npst-color-text-default);

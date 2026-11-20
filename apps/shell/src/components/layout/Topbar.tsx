@@ -176,7 +176,7 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
         }
       }
     }
-    return ['Admin Portal'];
+    return ['NPST Shared Services'];
   })();
 
   const results = useMemo<SearchResult[]>(() => {

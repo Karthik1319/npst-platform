@@ -761,49 +761,70 @@
   color: var(--color-emerald-600);
 }
 
-/* max-w-5xl */
+/* max-w-xl */
 .dialogContent {
-  max-width: var(--container-5xl);
+  max-width: var(--container-xl);
 }
 
-/* space-y-2 rounded-lg border border-border bg-muted/40 p-3 */
-:where(.div28 > :not(:last-child)) {
-  --tw-space-y-reverse: 0;
-  margin-block-start: calc(
-    calc(var(--spacing) * 2) * var(--tw-space-y-reverse)
-  );
-  margin-block-end: calc(
-    calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse))
-  );
-}
+/* grid gap-3 */
 .div28 {
-  border-radius: var(--radius);
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  border-color: var(--border);
-  background-color: var(--muted);
-  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
-  padding: calc(var(--spacing) * 3);
+  display: grid;
+  gap: calc(var(--spacing) * 3);
 }
 
-/* rounded-lg border border-border bg-muted/40 p-3 */
-.div29 {
-  border-radius: var(--radius);
+/* rounded-xl border p-4 text-left transition-colors */
+.button5 {
+  border-radius: calc(var(--radius) * 1.4);
   border-style: var(--tw-border-style);
   border-width: 1px;
-  border-color: var(--border);
-  background-color: var(--muted);
-  background-color: color-mix(in oklab, var(--muted) 40%, transparent);
-  padding: calc(var(--spacing) * 3);
+  padding: calc(var(--spacing) * 4);
+  text-align: left;
+  transition-property:
+    color, background-color, border-color, outline-color, text-decoration-color,
+    fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(
+    --tw-ease,
+    var(--default-transition-timing-function)
+  );
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 
-/* mt-1 text-sm text-foreground */
+/* border-primary bg-primary/10 */
+.button6 {
+  border-color: var(--primary);
+  background-color: var(--primary);
+  background-color: color-mix(in oklab, var(--primary) 10%, transparent);
+}
+
+/* border-border hover:bg-muted */
+.button7 {
+  border-color: var(--border);
+}
+@media (hover: hover) {
+  .button7:hover {
+    background-color: var(--muted);
+  }
+}
+
+/* mt-1 text-sm text-muted-foreground */
 .p8 {
   margin-top: var(--spacing);
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
-  color: var(--foreground);
+  color: var(--muted-foreground);
 }
 .p8 {
   --tw-leading: initial;
+}
+
+/* flex justify-end gap-2 */
+.div29 {
+  display: flex;
+  justify-content: flex-end;
+  gap: calc(var(--spacing) * 2);
+}
+
+/* max-w-5xl */
+.dialogContent2 {
+  max-width: var(--container-5xl);
 }

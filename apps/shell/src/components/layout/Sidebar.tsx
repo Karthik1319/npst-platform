@@ -13,6 +13,7 @@ import {
   Users,
   LifeBuoy,
   LayoutGrid,
+  Sparkles,
   type LucideIcon,
 } from '@/components/icons';
 import { useQuery } from '@tanstack/react-query';
@@ -95,13 +96,19 @@ export const NAV_SECTIONS: { section: string; items: NavItem[] }[] = [
           { label: 'Escalations', path: '/reminders/escalations' },
         ],
       },
+      {
+        label: 'AI Summary',
+        icon: Sparkles,
+        path: '/ai-summary',
+        permission: ['view', 'ai-summary'],
+      },
     ],
   },
   {
     section: 'Administration',
     items: [
       {
-        label: 'Employee Management',
+        label: 'User Management',
         icon: Users,
         path: '/users',
         permission: ['manage', 'employees'],
@@ -124,6 +131,16 @@ export const NAV_SECTIONS: { section: string; items: NavItem[] }[] = [
 
 const testIdOf = (label: string) => label.toLowerCase().replace(/\s+/g, '-');
 
+/** The Employee role's navigation (the Admin Portal's employee view). */
+const EMPLOYEE_SECTIONS: { section: string; items: NavItem[] }[] = [
+  {
+    section: 'Employee Services',
+    items: [
+      { label: 'My Dashboard', icon: LayoutDashboard, path: '/employee' },
+    ],
+  },
+];
+
 /** Title of the navigation section that lists the user's applications (MFEs). */
 export const APPLICATIONS_SECTION = 'Applications';
 
@@ -138,6 +155,9 @@ export function useNavSections(): { section: string; items: NavItem[] }[] {
     queryKey: ['portal-apps', platform.user.id],
     queryFn: () => platform.apps.allowed(),
   });
+  // Employees only see their dashboard (the Admin Portal's employee view).
+  if (platform.permissions.can('view', 'employee-dashboard'))
+    return EMPLOYEE_SECTIONS;
   const sections = NAV_SECTIONS.map((section) => ({
     ...section,
     items: section.items.filter(
@@ -372,8 +392,7 @@ export default function Sidebar({
           <DialogHeader>
             <DialogTitle>How can we help you?</DialogTitle>
             <DialogDescription>
-              Contact the NPST support team for help with the Shared Services
-              Admin Portal.
+              Contact the NPST support team for help with Shared Services.
             </DialogDescription>
           </DialogHeader>
           <div className={styles.div12}>

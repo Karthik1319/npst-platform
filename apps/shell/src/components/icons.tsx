@@ -572,3 +572,63 @@ export const ZoomOut = icon('lucide-zoom-out', [
   ['line', { x1: '21', x2: '16.65', y1: '21', y2: '16.65' }],
   ['line', { x1: '8', x2: '14', y1: '11', y2: '11' }],
 ]);
+export const Boxes = icon('lucide-boxes', [
+  [
+    'path',
+    {
+      d: 'M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z',
+    },
+  ],
+  ['path', { d: 'm7 16.5-4.74-2.85' }],
+  ['path', { d: 'm7 16.5 5-3' }],
+  ['path', { d: 'M7 16.5v5.17' }],
+  [
+    'path',
+    {
+      d: 'M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z',
+    },
+  ],
+  ['path', { d: 'm17 16.5-5-3' }],
+  ['path', { d: 'm17 16.5 4.74-2.85' }],
+  ['path', { d: 'M17 16.5v5.17' }],
+  [
+    'path',
+    {
+      d: 'M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z',
+    },
+  ],
+  ['path', { d: 'M12 8 7.26 5.15' }],
+  ['path', { d: 'm12 8 4.74-2.85' }],
+  ['path', { d: 'M12 13.5V8' }],
+]);
+export const CircleHelp = icon('lucide-circle-question-mark', [
+  ['circle', { cx: '12', cy: '12', r: '10' }],
+  ['path', { d: 'M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3' }],
+  ['path', { d: 'M12 17h.01' }],
+]);
+export const CircleUserRound = icon('lucide-circle-user-round', [
+  ['path', { d: 'M17.925 20.056a6 6 0 0 0-11.851.001' }],
+  ['circle', { cx: '12', cy: '11', r: '4' }],
+  ['circle', { cx: '12', cy: '12', r: '10' }],
+]);
+export const GraduationCap = icon('lucide-graduation-cap', [
+  [
+    'path',
+    {
+      d: 'M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z',
+    },
+  ],
+  ['path', { d: 'M22 10v6' }],
+  ['path', { d: 'M6 12.5V16a6 3 0 0 0 12 0v-3.5' }],
+]);
+export const Network = icon('lucide-network', [
+  ['rect', { x: '16', y: '16', width: '6', height: '6', rx: '1' }],
+  ['rect', { x: '2', y: '16', width: '6', height: '6', rx: '1' }],
+  ['rect', { x: '9', y: '2', width: '6', height: '6', rx: '1' }],
+  ['path', { d: 'M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3' }],
+  ['path', { d: 'M12 12V8' }],
+]);
+export const UserRound = icon('lucide-user-round', [
+  ['circle', { cx: '12', cy: '8', r: '5' }],
+  ['path', { d: 'M20 21a8 8 0 0 0-16 0' }],
+]);

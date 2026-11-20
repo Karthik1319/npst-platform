@@ -224,6 +224,10 @@ const FIXED_NAMES = {
   '#ffffff': 'white',
   '#fff': 'white',
   '#94a3b8': 'slate-400',
+  '#29b6c4': 'turquoise',
+  '#4972ff': 'electric',
+  '#7de3e8': 'turquoise-light',
+  '#e2f4fe': 'mist',
 };
 function tokenFor(literal) {
   if (!literalTokens.has(literal)) {

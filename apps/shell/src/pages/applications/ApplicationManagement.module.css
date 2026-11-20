@@ -379,6 +379,45 @@
   }
 }
 
+/* flex cursor-pointer items-start gap-2 rounded-lg border border-border bg-muted/30 p-3 */
+.label {
+  display: flex;
+  cursor: pointer;
+  align-items: flex-start;
+  gap: calc(var(--spacing) * 2);
+  border-radius: var(--radius);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-color: var(--border);
+  background-color: var(--muted);
+  background-color: color-mix(in oklab, var(--muted) 30%, transparent);
+  padding: calc(var(--spacing) * 3);
+}
+
+/* block text-sm font-medium text-foreground */
+.span {
+  display: block;
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  --tw-font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-medium);
+  color: var(--foreground);
+}
+.span {
+  --tw-leading: initial;
+}
+
+/* block text-xs text-muted-foreground */
+.span2 {
+  display: block;
+  font-size: var(--text-xs);
+  line-height: var(--tw-leading, var(--text-xs--line-height));
+  color: var(--muted-foreground);
+}
+.span2 {
+  --tw-leading: initial;
+}
+
 /* gap-2 */
 .dialogFooter {
   gap: calc(var(--spacing) * 2);

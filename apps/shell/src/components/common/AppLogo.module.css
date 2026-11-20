@@ -6,8 +6,17 @@
   gap: calc(var(--spacing) * 2.5);
 }
 
+/* h-9 w-auto max-w-36 shrink-0 object-contain */
+.img {
+  height: calc(var(--spacing) * 9);
+  width: auto;
+  max-width: calc(var(--spacing) * 36);
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
 /* leading-tight */
-.div3 {
+.div2 {
   --tw-leading: var(--leading-tight);
   line-height: var(--leading-tight);
 }
@@ -25,24 +34,4 @@
 }
 .p {
   --tw-leading: initial;
-}
-
-/* text-[10px] font-medium uppercase tracking-[0.14em] text-sky-300/80 */
-.p2 {
-  font-size: 10px;
-  --tw-font-weight: var(--font-weight-medium);
-  font-weight: var(--font-weight-medium);
-  --tw-tracking: 0.14em;
-  letter-spacing: 0.14em;
-  color: color-mix(in oklab, var(--color-sky-300) 80%, transparent);
-  text-transform: uppercase;
-}
-.p2 {
-  --tw-leading: initial;
-}
-
-/* Keeps the height of the original row (its 36px logo mark was removed), so
-   the rest of the sidebar stays exactly where it was. */
-.div {
-  min-height: calc(var(--spacing) * 9);
 }

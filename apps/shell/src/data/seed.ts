@@ -25,7 +25,7 @@ export function seedApps(): NpstApplication[] {
   return [
     {
       id: 'app-keka',
-      name: 'Keka HR',
+      name: 'PeopleOS',
       code: 'KEKA-HR',
       url: 'https://keka.npst.com',
       description:
@@ -257,20 +257,20 @@ export function seedTemplates(): NotificationTemplate[] {
   return [
     t(
       'tpl-1',
-      'Keka — New Hire Welcome',
+      'PeopleOS — New Hire Welcome',
       'KEKA-WELCOME',
       'app-keka',
       'welcome',
       'email',
-      'Welcome to Keka HR, {{employeeName}}!',
-      'Hi {{employeeName}},\n\nYour Keka HR account is ready. Sign in at https://keka.npst.com to complete your profile and review the onboarding checklist.\n\nYour reporting manager is {{managerName}}.\n\n— NPST Shared Services',
+      'Welcome to PeopleOS, {{employeeName}}!',
+      'Hi {{employeeName}},\n\nYour PeopleOS account is ready. Sign in at https://keka.npst.com to complete your profile and review the onboarding checklist.\n\nYour reporting manager is {{managerName}}.\n\n— NPST Shared Services',
       'medium',
       'active',
       2,
     ),
     t(
       'tpl-2',
-      'Keka — Leave Balance Low',
+      'PeopleOS — Leave Balance Low',
       'KEKA-LEAVE-LOW',
       'app-keka',
       'reminder',
@@ -535,7 +535,7 @@ const LOG_SEED: Array<
   [
     'priya.sharma@npst.com',
     'app-keka',
-    'Keka — New Hire Welcome',
+    'PeopleOS — New Hire Welcome',
     'email',
     'delivered',
     'medium',
@@ -585,7 +585,7 @@ const LOG_SEED: Array<
   [
     'arjun.rao@npst.com',
     'app-keka',
-    'Keka — Leave Balance Low',
+    'PeopleOS — Leave Balance Low',
     'inapp',
     'delivered',
     'low',
@@ -605,7 +605,7 @@ const LOG_SEED: Array<
   [
     'neha.k@npst.com',
     'app-keka',
-    'Keka — New Hire Welcome',
+    'PeopleOS — New Hire Welcome',
     'email',
     'delivered',
     'medium',
@@ -655,7 +655,7 @@ const LOG_SEED: Array<
   [
     'priya.sharma@npst.com',
     'app-keka',
-    'Keka — Leave Balance Low',
+    'PeopleOS — Leave Balance Low',
     'inapp',
     'delivered',
     'low',
@@ -675,7 +675,7 @@ const LOG_SEED: Array<
   [
     'arjun.rao@npst.com',
     'app-keka',
-    'Keka — New Hire Welcome',
+    'PeopleOS — New Hire Welcome',
     'email',
     'delivered',
     'medium',
@@ -745,7 +745,7 @@ const LOG_SEED: Array<
   [
     'priya.sharma@npst.com',
     'app-keka',
-    'Keka — Leave Balance Low',
+    'PeopleOS — Leave Balance Low',
     'inapp',
     'delivered',
     'low',
@@ -775,7 +775,7 @@ const LOG_SEED: Array<
   [
     'arjun.rao@npst.com',
     'app-keka',
-    'Keka — New Hire Welcome',
+    'PeopleOS — New Hire Welcome',
     'email',
     'delivered',
     'medium',
@@ -805,7 +805,7 @@ const LOG_SEED: Array<
   [
     'neha.k@npst.com',
     'app-keka',
-    'Keka — Leave Balance Low',
+    'PeopleOS — Leave Balance Low',
     'inapp',
     'pending',
     'low',
@@ -1512,7 +1512,7 @@ export function seedAuditLogs(): AuditEntry[] {
       1,
       'admin@npst.com',
       'UI Branding',
-      'Published theme v3 for Keka HR',
+      'Published theme v3 for PeopleOS',
       'app-keka',
       2,
     ),
@@ -1592,7 +1592,7 @@ export function seedAuditLogs(): AuditEntry[] {
       11,
       'admin@npst.com',
       'UI Branding',
-      'Restored version 2 for Keka HR',
+      'Restored version 2 for PeopleOS',
       'app-keka',
       47,
     ),

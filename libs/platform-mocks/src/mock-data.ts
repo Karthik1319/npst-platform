@@ -10,6 +10,11 @@ export interface MockUser extends PlatformUser {
   readonly apps: readonly string[];
   /** Inactive users cannot sign in. */
   readonly status: 'active' | 'inactive';
+  /**
+   * Mock only: the Admin Portal's demo accounts have their own password; all
+   * other seeded users use the one demo password (DEMO_PASSWORD).
+   */
+  readonly password?: string;
 }
 
 /**
@@ -84,6 +89,34 @@ export const mockUsers: readonly MockUser[] = [
     apps: ['app-dealpulse'],
     status: 'inactive',
   },
+  // The Admin Portal's demo accounts (shown on its login page), with their own passwords.
+  {
+    id: 'user-maker',
+    name: 'Rajneesh Singh',
+    email: 'maker@npst.com',
+    roles: ['Maker'],
+    apps: ['app-keka', 'app-skillup', 'app-finance', 'app-dealpulse'],
+    status: 'active',
+    password: 'Maker@123',
+  },
+  {
+    id: 'user-checker',
+    name: 'Priya Nair',
+    email: 'checker@npst.com',
+    roles: ['Checker'],
+    apps: ['app-keka', 'app-skillup', 'app-finance', 'app-dealpulse'],
+    status: 'active',
+    password: 'Checker@123',
+  },
+  {
+    id: 'user-employee',
+    name: 'Arjun Rao',
+    email: 'employee@npst.com',
+    roles: ['Employee', 'EMPLOYEE'],
+    apps: ['app-keka', 'app-skillup'],
+    status: 'active',
+    password: 'Employee@123',
+  },
 ];
 
 /**
@@ -104,6 +137,7 @@ export const mockRolePermissions: Readonly<Record<string, readonly string[]>> =
       'view:audit-logs',
       'manage:settings',
       'view:audit',
+      'view:ai-summary',
     ],
     Admin: [
       'view:applications',
@@ -113,13 +147,36 @@ export const mockRolePermissions: Readonly<Record<string, readonly string[]>> =
       'manage:employees',
       'view:audit-logs',
       'view:audit',
+      'view:ai-summary',
+    ],
+    // Maker submits changes for approval, Checker approves them (Admin Portal roles).
+    Maker: [
+      'view:applications',
+      'manage:branding',
+      'manage:notifications',
+      'manage:reminders',
+      'manage:employees',
+      'view:audit-logs',
+      'view:audit',
+      'view:ai-summary',
+    ],
+    Checker: [
+      'view:applications',
+      'manage:branding',
+      'manage:notifications',
+      'manage:reminders',
+      'manage:employees',
+      'view:audit-logs',
+      'view:audit',
+      'view:ai-summary',
     ],
     'Application Admin': [
       'manage:branding',
       'manage:notifications',
       'manage:reminders',
+      'view:ai-summary',
     ],
-    Employee: [],
+    Employee: ['view:employee-dashboard'],
     // Teams in the stand-in business apps.
     ADMIN: [
       'access:projects',
@@ -143,10 +200,10 @@ export const mockRolePermissions: Readonly<Record<string, readonly string[]>> =
 export const mockApps: readonly PortalApp[] = [
   {
     id: 'app-keka',
-    name: 'Keka HR',
+    name: 'PeopleOS',
     description:
       'Human capital management for 500+ NPST employees — payroll, attendance, leave and performance.',
-    path: '/keka',
+    path: '/peopleos',
   },
   {
     id: 'app-dealpulse',

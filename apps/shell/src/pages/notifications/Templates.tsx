@@ -93,7 +93,7 @@ type TemplateFormValues = z.infer<typeof templateSchema>;
 
 const SAMPLE_VARS: Record<string, string> = {
   employeeName: 'Priya Sharma',
-  applicationName: 'Keka HR',
+  applicationName: 'PeopleOS',
   dueDate: format(addDays(new Date(), 7), 'dd MMM yyyy'),
   taskName: 'Q3 report submission',
   managerName: 'Rohit Kulkarni',
@@ -122,6 +122,7 @@ export default function Templates() {
   });
 
   const [search, setSearch] = useState('');
+  const [selectedAppId, setSelectedAppId] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<NotificationTemplate | null>(null);
   const [deleting, setDeleting] = useState<NotificationTemplate | null>(null);
@@ -162,14 +163,18 @@ export default function Templates() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return templates;
-    return templates.filter(
+    if (!selectedAppId) return [];
+    const scoped = templates.filter(
+      (template) => template.appId === selectedAppId,
+    );
+    if (!q) return scoped;
+    return scoped.filter(
       (t) =>
         t.name.toLowerCase().includes(q) ||
         t.code.toLowerCase().includes(q) ||
         t.subject.toLowerCase().includes(q),
     );
-  }, [templates, search]);
+  }, [templates, search, selectedAppId]);
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['notification-templates'] });
@@ -182,7 +187,7 @@ export default function Templates() {
     form.reset({
       name: '',
       code: '',
-      appId: '',
+      appId: selectedAppId,
       category: 'announcement',
       channel: 'inapp',
       channels: ['inapp'],
@@ -326,24 +331,63 @@ export default function Templates() {
         description="Reusable message templates with dynamic variables, routed to any channel for any application."
         testId="templates-title"
         actions={
-          <Button onClick={openCreate} data-testid="add-template-button">
+          <Button
+            onClick={openCreate}
+            disabled={!selectedAppId}
+            data-testid="add-template-button"
+          >
             <Plus className={`${styles.plus} npst-sized`} /> Create Template
           </Button>
         }
       />
 
       <div className={styles.div2}>
-        <Search className={`${styles.search} npst-sized`} />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search templates…"
-          className={styles.input}
-          data-testid="template-search-input"
-        />
+        <div className={styles.div3}>
+          <Label htmlFor="templates-application">Select Application</Label>
+          <Select
+            value={selectedAppId}
+            onValueChange={(value) => {
+              setSelectedAppId(value);
+              setSearch('');
+            }}
+          >
+            <SelectTrigger
+              id="templates-application"
+              data-testid="templates-application-select"
+            >
+              <SelectValue>
+                {selectedAppId
+                  ? appName.get(selectedAppId)
+                  : 'Select an application'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {apps.map((app) => (
+                <SelectItem key={app.id} value={app.id}>
+                  {app.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className={styles.div4}>
+          <Search className={`${styles.search} npst-sized`} />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search templates…"
+            className={styles.input}
+            data-testid="template-search-input"
+          />
+        </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {!selectedAppId ? (
+        <EmptyState
+          title="Select an application"
+          description="Please select an application to view its notification templates."
+        />
+      ) : filtered.length === 0 ? (
         <EmptyState
           title="No templates found"
           description="Create your first template or adjust the search."
@@ -497,14 +541,14 @@ export default function Templates() {
             className="notification-template-form"
             data-testid="template-form"
           >
-            <div className={`${styles.div3} notification-template-body`}>
+            <div className={`${styles.div5} notification-template-body`}>
               <h3 className={styles.h3}>Template Identification</h3>
               <div className="notification-form-grid">
                 <Controller
                   control={form.control}
                   name="appId"
                   render={({ field }) => (
-                    <div className={styles.div4}>
+                    <div className={styles.div6}>
                       <Label>Application</Label>
                       <Select
                         value={field.value}
@@ -539,7 +583,7 @@ export default function Templates() {
                   control={form.control}
                   name="category"
                   render={({ field }) => (
-                    <div className={styles.div4}>
+                    <div className={styles.div6}>
                       <Label>Category</Label>
                       <Select
                         value={field.value}
@@ -567,11 +611,11 @@ export default function Templates() {
                 />
               </div>
               <div className="notification-form-grid">
-                <div className={styles.div4}>
+                <div className={styles.div6}>
                   <Label htmlFor="tpl-name">Template name</Label>
                   <Input
                     id="tpl-name"
-                    placeholder="e.g. Keka — Leave Reminder"
+                    placeholder="e.g. PeopleOS — Leave Reminder"
                     {...form.register('name')}
                     data-testid="template-name-input"
                   />
@@ -581,9 +625,9 @@ export default function Templates() {
                     </p>
                   )}
                 </div>
-                <div className={styles.div4}>
+                <div className={styles.div6}>
                   <Label>Template code</Label>
-                  <div className={styles.div5}>
+                  <div className={styles.div7}>
                     <Controller
                       control={form.control}
                       name="code"
@@ -672,9 +716,9 @@ export default function Templates() {
                   control={form.control}
                   name="channels"
                   render={({ field }) => (
-                    <div className={styles.div4}>
+                    <div className={styles.div6}>
                       <Label>Delivery channels</Label>
-                      <div className={styles.div6}>
+                      <div className={styles.div8}>
                         {(
                           Object.keys(
                             CHANNEL_LABELS,
@@ -709,7 +753,7 @@ export default function Templates() {
                   control={form.control}
                   name="priority"
                   render={({ field }) => (
-                    <div className={styles.div4}>
+                    <div className={styles.div6}>
                       <Label>Priority</Label>
                       <Select
                         value={field.value}
@@ -736,7 +780,7 @@ export default function Templates() {
                   )}
                 />
               </div>
-              <div className={styles.div4}>
+              <div className={styles.div6}>
                 <Label htmlFor="tpl-subject">Subject</Label>
                 <Input
                   id="tpl-subject"
@@ -750,9 +794,9 @@ export default function Templates() {
                   </p>
                 )}
               </div>
-              <div className={styles.div4}>
+              <div className={styles.div6}>
                 <Label htmlFor="tpl-body">Message body</Label>
-                <div className={styles.div7}>
+                <div className={styles.div9}>
                   {TEMPLATE_VARIABLES.map((variable) => (
                     <button
                       key={variable}
@@ -841,8 +885,8 @@ export default function Templates() {
             </DialogDescription>
           </DialogHeader>
           {previewing && (
-            <div className={styles.div8}>
-              <div className={styles.div9}>
+            <div className={styles.div10}>
+              <div className={styles.div11}>
                 <span className={styles.span3}>
                   {(() => {
                     const Icon = CHANNEL_ICONS[previewing.channel];
@@ -856,7 +900,7 @@ export default function Templates() {
                 />
                 <StatusBadge value={previewing.status} />
               </div>
-              <div className={styles.div10}>
+              <div className={styles.div12}>
                 <p className={styles.p4}>
                   {renderWithVars(previewing.subject)}
                 </p>
@@ -882,8 +926,8 @@ export default function Templates() {
               definition.
             </DialogDescription>
           </DialogHeader>
-          <div className={styles.div11}>
-            <div className={styles.div4}>
+          <div className={styles.div13}>
+            <div className={styles.div6}>
               <Label>Application</Label>
               <Select
                 value={newCode.appId}
@@ -906,8 +950,8 @@ export default function Templates() {
                 </SelectContent>
               </Select>
             </div>
-            <div className={styles.div12}>
-              <div className={styles.div4}>
+            <div className={styles.div14}>
+              <div className={styles.div6}>
                 <Label>Template code</Label>
                 <Input
                   inputMode="numeric"
@@ -928,7 +972,7 @@ export default function Templates() {
                 />
                 {newCodeError && <p className={styles.p3}>{newCodeError}</p>}
               </div>
-              <div className={styles.div4}>
+              <div className={styles.div6}>
                 <Label>Template name</Label>
                 <Input
                   value={newCode.name}
@@ -941,7 +985,7 @@ export default function Templates() {
                 />
               </div>
             </div>
-            <div className={styles.div4}>
+            <div className={styles.div6}>
               <Label>Description</Label>
               <Textarea
                 value={newCode.description}

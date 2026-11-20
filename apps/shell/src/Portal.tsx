@@ -9,6 +9,8 @@ import { AppPlaceholder } from '@/pages/AppPlaceholder';
 import Dashboard from '@/pages/Dashboard';
 import ApprovalQueue from '@/pages/applications/ApprovalQueue';
 import Settings from '@/pages/settings/Settings';
+import AISummary from '@/pages/AISummary';
+import EmployeeDashboard from '@/pages/EmployeeDashboard';
 import AuditLogs from '@/pages/audit/AuditLogs';
 import EscalationManagement from '@/pages/reminders/EscalationManagement';
 import ReminderConfiguration from '@/pages/reminders/ReminderConfiguration';
@@ -173,6 +175,22 @@ export function Portal() {
           element={
             <Guard permission={['manage', 'settings']}>
               <Settings />
+            </Guard>
+          }
+        />
+        <Route
+          path="ai-summary"
+          element={
+            <Guard permission={['view', 'ai-summary']}>
+              <AISummary />
+            </Guard>
+          }
+        />
+        <Route
+          path="employee"
+          element={
+            <Guard permission={['view', 'employee-dashboard']}>
+              <EmployeeDashboard />
             </Guard>
           }
         />

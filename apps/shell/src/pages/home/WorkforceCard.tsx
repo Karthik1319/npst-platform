@@ -18,7 +18,10 @@ export function WorkforceCard({
   const largest = summary.departments.slice(0, 4);
   const max = Math.max(...largest.map((d) => d.count), 1);
   return (
-    <Card title="Workforce today" link={{ to: '/keka', label: 'Open Keka HR' }}>
+    <Card
+      title="Workforce today"
+      link={{ to: '/peopleos', label: 'Open PeopleOS' }}
+    >
       <div className={styles.workforceTotals}>
         <div>
           <span className={styles.bigNumber}>

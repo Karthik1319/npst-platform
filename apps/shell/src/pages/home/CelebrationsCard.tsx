@@ -7,7 +7,7 @@ import styles from './Home.module.css';
 /** Upcoming birthdays and work anniversaries. */
 export function CelebrationsCard({ summary }: { summary: HrSummary }) {
   return (
-    <Card title="Celebrations" link={{ to: '/keka', label: 'Keka HR' }}>
+    <Card title="Celebrations" link={{ to: '/peopleos', label: 'PeopleOS' }}>
       <ul className={styles.tasks}>
         {summary.celebrations.slice(0, 4).map((c) => (
           <li key={`${c.kind}-${c.employeeId}`}>

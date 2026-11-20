@@ -35,8 +35,7 @@ export default function AppLayout() {
           </div>
         </main>
         <footer className={styles.footer}>
-          © {new Date().getFullYear()} NPST Technologies · Shared Services Admin
-          Portal
+          © {new Date().getFullYear()} NPST Technologies · Shared Services
         </footer>
       </div>
 

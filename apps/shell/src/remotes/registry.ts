@@ -17,7 +17,7 @@ export type RemoteDefinition =
     }
   | { kind: 'mount'; load: () => Promise<MountableMfe> };
 
-/** Where the Angular remote (Keka HR stand-in) is served (its own server). */
+/** Where the Angular remote (PeopleOS stand-in) is served (its own server). */
 const DEMO_ANGULAR_URL: string =
   import.meta.env['VITE_DEMO_ANGULAR_URL'] ?? 'http://localhost:4203/';
 
@@ -25,8 +25,8 @@ const DEMO_ANGULAR_URL: string =
  * Which app id (from the application registry) is served by which remote:
  * - Deal Pulse (`app-dealpulse`) → `demo-react-a` (React, Module Federation;
  *   the Deal Pulse demo standing in for the real app)
- * - Keka HR (`app-keka`) → `demo-angular` (Angular CLI build, mount contract;
- *   the Keka HR demo standing in for the real app)
+ * - PeopleOS (`app-keka`) → `demo-angular` (Angular CLI build, mount contract;
+ *   the PeopleOS demo standing in for the real app)
  * - Projects & Delivery (`projects`) → `demo-react-b` (earlier demo app)
  *
  * `import('demoReactA/App')` is

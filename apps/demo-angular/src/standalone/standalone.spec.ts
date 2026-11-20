@@ -20,7 +20,7 @@ describe('standalone mode (development only)', () => {
     vi.restoreAllMocks();
   });
 
-  it('starts as Neha Kapoor, a non-admin user allowed to open Keka HR (least privilege)', async () => {
+  it('starts as Neha Kapoor, a non-admin user allowed to open PeopleOS (least privilege)', async () => {
     await startStandalone(root, '', fakeMount);
     expect(DEFAULT_USER_ID).toBe('user-7');
     expect(
@@ -33,7 +33,7 @@ describe('standalone mode (development only)', () => {
     await startStandalone(root, '?user=user-5', fakeMount);
     expect(mounted).toEqual([]);
     expect(root.textContent).toContain(
-      'Vikram Desai (Application Admin, SALES) does not have permission to open Keka HR.',
+      'Vikram Desai (Application Admin, SALES) does not have permission to open PeopleOS.',
     );
   });
 

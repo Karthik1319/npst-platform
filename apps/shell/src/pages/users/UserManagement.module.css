@@ -17,6 +17,28 @@
   );
 }
 
+/* bg-indigo-50 text-indigo-700 ring-indigo-600/20 */
+.Maker {
+  background-color: var(--color-indigo-50);
+  color: var(--color-indigo-700);
+  --tw-ring-color: color-mix(
+    in oklab,
+    var(--color-indigo-600) 20%,
+    transparent
+  );
+}
+
+/* bg-violet-50 text-violet-700 ring-violet-600/20 */
+.Checker {
+  background-color: var(--color-violet-50);
+  color: var(--color-violet-700);
+  --tw-ring-color: color-mix(
+    in oklab,
+    var(--color-violet-600) 20%,
+    transparent
+  );
+}
+
 /* bg-amber-50 text-amber-700 ring-amber-600/20 */
 .ApplicationAdmin {
   background-color: var(--color-amber-50);

@@ -112,6 +112,7 @@ export default function ApprovalQueue() {
               <TableRow>
                 <TableHead>Request ID</TableHead>
                 <TableHead>Application</TableHead>
+                <TableHead>Scope</TableHead>
                 <TableHead>Request Type</TableHead>
                 <TableHead>Requested By</TableHead>
                 <TableHead>Submitted</TableHead>
@@ -132,6 +133,11 @@ export default function ApprovalQueue() {
                   </TableCell>
                   <TableCell className={styles.tableCell2}>
                     {appNames.get(request.appId) ?? request.appId}
+                  </TableCell>
+                  <TableCell>
+                    {request.scope === 'ALL_APPLICATIONS'
+                      ? `All applications (${request.targetApplicationIds?.length ?? apps.length})`
+                      : 'This application'}
                   </TableCell>
                   <TableCell>UI Branding</TableCell>
                   <TableCell>{request.requestedBy}</TableCell>
@@ -169,7 +175,7 @@ export default function ApprovalQueue() {
             <DialogTitle>Review branding request</DialogTitle>
             <DialogDescription>
               {selected &&
-                `${appNames.get(selected.appId) ?? selected.appId} · requested by ${selected.requestedBy}`}
+                `${appNames.get(selected.appId) ?? selected.appId} · ${selected.scope === 'ALL_APPLICATIONS' ? `all applications (${selected.targetApplicationIds?.length ?? apps.length})` : 'this application'} · requested by ${selected.requestedBy}`}
             </DialogDescription>
           </DialogHeader>
           {selected && (

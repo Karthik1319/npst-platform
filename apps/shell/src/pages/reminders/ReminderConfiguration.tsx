@@ -181,6 +181,7 @@ export default function ReminderConfiguration() {
   });
 
   const [search, setSearch] = useState('');
+  const [selectedAppId, setSelectedAppId] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<ReminderPolicy | null>(null);
   const [deleting, setDeleting] = useState<ReminderPolicy | null>(null);
@@ -240,14 +241,16 @@ export default function ReminderConfiguration() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return policies;
-    return policies.filter(
+    if (!selectedAppId) return [];
+    const scoped = policies.filter((policy) => policy.appId === selectedAppId);
+    if (!q) return scoped;
+    return scoped.filter(
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.code.toLowerCase().includes(q) ||
         FREQUENCY_LABELS[p.frequency].toLowerCase().includes(q),
     );
-  }, [policies, search]);
+  }, [policies, search, selectedAppId]);
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['reminder-policies'] });
@@ -260,7 +263,7 @@ export default function ReminderConfiguration() {
     form.reset({
       name: '',
       code: '',
-      appId: '',
+      appId: selectedAppId,
       description: '',
       triggerEvent: 'approval-pending',
       triggerDate: format(new Date(), 'yyyy-MM-dd'),
@@ -427,7 +430,11 @@ export default function ReminderConfiguration() {
         description="Configure centralized reminder policies — frequency, intervals, recipients, channels and escalation ladders."
         testId="reminder-config-title"
         actions={
-          <Button onClick={openCreate} data-testid="add-reminder-policy-button">
+          <Button
+            onClick={openCreate}
+            disabled={!selectedAppId}
+            data-testid="add-reminder-policy-button"
+          >
             <Plus className={`${styles.plus} npst-sized`} /> Create Reminder
             Policy
           </Button>
@@ -435,17 +442,52 @@ export default function ReminderConfiguration() {
       />
 
       <div className={styles.div2}>
-        <Search className={`${styles.search} npst-sized`} />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search policies…"
-          className={styles.input}
-          data-testid="reminder-policy-search-input"
-        />
+        <div className={styles.div3}>
+          <Label htmlFor="reminders-application">Select Application</Label>
+          <Select
+            value={selectedAppId}
+            onValueChange={(value) => {
+              setSelectedAppId(value);
+              setSearch('');
+            }}
+          >
+            <SelectTrigger
+              id="reminders-application"
+              data-testid="reminders-application-select"
+            >
+              <SelectValue>
+                {selectedAppId
+                  ? appName.get(selectedAppId)
+                  : 'Select an application'}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {apps.map((app) => (
+                <SelectItem key={app.id} value={app.id}>
+                  {app.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className={styles.div4}>
+          <Search className={`${styles.search} npst-sized`} />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search policies…"
+            className={styles.input}
+            data-testid="reminder-policy-search-input"
+          />
+        </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {!selectedAppId ? (
+        <EmptyState
+          title="Select an application"
+          description="Please select an application to view its reminder policies."
+        />
+      ) : filtered.length === 0 ? (
         <EmptyState
           title="No reminder policies found"
           description="Create a policy to start chasing approvals and deadlines automatically."
@@ -564,7 +606,7 @@ export default function ReminderConfiguration() {
       {/* Visual scheduling editor */}
       <Card className={styles.card} id="reminder-schedule-section">
         <CardContent className={styles.cardContent2}>
-          <div className={styles.div3}>
+          <div className={styles.div5}>
             <div>
               <p className={styles.p3} data-testid="reminder-schedule-title">
                 Visual Reminder Scheduling
@@ -574,7 +616,7 @@ export default function ReminderConfiguration() {
                 the chase sequence.
               </p>
             </div>
-            <div className={styles.div4}>
+            <div className={styles.div6}>
               <Select
                 value={selectedPolicy?.id ?? ''}
                 onValueChange={setSelectedPolicyId}
@@ -612,13 +654,13 @@ export default function ReminderConfiguration() {
             </div>
           </div>
 
-          <div className={styles.div5} data-testid="reminder-schedule-timeline">
+          <div className={styles.div7} data-testid="reminder-schedule-timeline">
             {sortedSteps.map((step, index) => {
               const Icon = STEP_ICONS[step.type];
               return (
-                <div key={step.id} className={styles.div6}>
-                  <div className={styles.div7}>
-                    <div className={styles.div8}>
+                <div key={step.id} className={styles.div8}>
+                  <div className={styles.div9}>
+                    <div className={styles.div10}>
                       <span
                         className={
                           step.type === 'escalation'
@@ -652,7 +694,7 @@ export default function ReminderConfiguration() {
                         </Button>
                       )}
                     </div>
-                    <div className={styles.div4}>
+                    <div className={styles.div6}>
                       <span className={styles.span5}>Day</span>
                       <Input
                         type="number"
@@ -715,8 +757,8 @@ export default function ReminderConfiguration() {
                     </Select>
                   </div>
                   {index < sortedSteps.length - 1 && (
-                    <div className={styles.div9} aria-hidden="true">
-                      <div className={styles.div10} />
+                    <div className={styles.div11} aria-hidden="true">
+                      <div className={styles.div12} />
                     </div>
                   )}
                 </div>
@@ -775,9 +817,9 @@ export default function ReminderConfiguration() {
             className="reminder-policy-form"
             data-testid="reminder-policy-form"
           >
-            <div className={`${styles.div11} reminder-modal-body`}>
+            <div className={`${styles.div13} reminder-modal-body`}>
               <div className="reminder-form-grid">
-                <div className={styles.div12}>
+                <div className={styles.div14}>
                   <Label htmlFor="rem-name">Reminder name</Label>
                   <Input
                     id="rem-name"
@@ -791,7 +833,7 @@ export default function ReminderConfiguration() {
                     </p>
                   )}
                 </div>
-                <div className={styles.div12}>
+                <div className={styles.div14}>
                   <Label>Reminder code</Label>
                   <Controller
                     control={form.control}
@@ -852,7 +894,7 @@ export default function ReminderConfiguration() {
                   )}
                 </div>
               </div>
-              <div className={styles.div12}>
+              <div className={styles.div14}>
                 <Label htmlFor="rem-description">Description</Label>
                 <Textarea
                   id="rem-description"
@@ -872,7 +914,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="appId"
                   render={({ field }) => (
-                    <div className={styles.div12}>
+                    <div className={styles.div14}>
                       <Label>Application</Label>
                       <Select
                         value={field.value}
@@ -907,7 +949,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="triggerEvent"
                   render={({ field }) => (
-                    <div className={styles.div12}>
+                    <div className={styles.div14}>
                       <Label>Trigger event</Label>
                       <Select
                         value={field.value}
@@ -942,7 +984,7 @@ export default function ReminderConfiguration() {
                     </div>
                   )}
                 />
-                <div className={styles.div12}>
+                <div className={styles.div14}>
                   <Label htmlFor="rem-trigger-date">Trigger date</Label>
                   <Input
                     id="rem-trigger-date"
@@ -962,7 +1004,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="frequency"
                   render={({ field }) => (
-                    <div className={styles.div12}>
+                    <div className={styles.div14}>
                       <Label>Frequency</Label>
                       <Select
                         value={field.value}
@@ -991,7 +1033,7 @@ export default function ReminderConfiguration() {
                     control={form.control}
                     name="customDays"
                     render={({ field }) => (
-                      <div className={styles.div12}>
+                      <div className={styles.div14}>
                         <Label htmlFor="rem-custom">Every (days)</Label>
                         <Input
                           id="rem-custom"
@@ -1016,7 +1058,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="firstReminderAfter"
                   render={({ field }) => (
-                    <div className={styles.div12}>
+                    <div className={styles.div14}>
                       <Label htmlFor="rem-first">
                         First reminder after (days)
                       </Label>
@@ -1042,7 +1084,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="repeatInterval"
                   render={({ field }) => (
-                    <div className={styles.div12}>
+                    <div className={styles.div14}>
                       <Label htmlFor="rem-repeat">Repeat interval (days)</Label>
                       <Input
                         id="rem-repeat"
@@ -1066,7 +1108,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="maxCount"
                   render={({ field }) => (
-                    <div className={styles.div12}>
+                    <div className={styles.div14}>
                       <Label htmlFor="rem-max">Max reminders</Label>
                       <Input
                         id="rem-max"
@@ -1092,7 +1134,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="recipient"
                   render={({ field }) => (
-                    <div className={styles.div12}>
+                    <div className={styles.div14}>
                       <Label>Recipient</Label>
                       <Select
                         value={field.value}
@@ -1126,7 +1168,7 @@ export default function ReminderConfiguration() {
                       (item) => item.code === form.getValues('code'),
                     );
                     return (
-                      <div className={styles.div12}>
+                      <div className={styles.div14}>
                         <Label>Reason</Label>
                         <Select
                           value={field.value}
@@ -1172,7 +1214,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="priority"
                   render={({ field }) => (
-                    <div className={styles.div12}>
+                    <div className={styles.div14}>
                       <Label>Priority</Label>
                       <Select
                         value={field.value}
@@ -1202,7 +1244,7 @@ export default function ReminderConfiguration() {
                   control={form.control}
                   name="status"
                   render={({ field }) => (
-                    <div className={styles.div13}>
+                    <div className={styles.div15}>
                       <label className={styles.label}>
                         <Checkbox
                           checked={field.value === 'active'}
@@ -1221,9 +1263,9 @@ export default function ReminderConfiguration() {
                 control={form.control}
                 name="channels"
                 render={({ field }) => (
-                  <div className={styles.div12}>
+                  <div className={styles.div14}>
                     <Label>Notification channels</Label>
-                    <div className={styles.div14}>
+                    <div className={styles.div16}>
                       {CHANNEL_KEYS.map((key) => (
                         <label key={key} className={styles.label}>
                           <Checkbox
@@ -1281,8 +1323,8 @@ export default function ReminderConfiguration() {
                 'Select an application first'}
             </DialogDescription>
           </DialogHeader>
-          <div className={styles.div15}>
-            <div className={styles.div12}>
+          <div className={styles.div17}>
+            <div className={styles.div14}>
               <Label>Reminder code</Label>
               <Input
                 inputMode="numeric"
@@ -1296,7 +1338,7 @@ export default function ReminderConfiguration() {
                 placeholder="2001"
               />
             </div>
-            <div className={styles.div12}>
+            <div className={styles.div14}>
               <Label>Reminder name</Label>
               <Input
                 value={newCode.name}
@@ -1305,7 +1347,7 @@ export default function ReminderConfiguration() {
                 }
               />
             </div>
-            <div className={styles.div12}>
+            <div className={styles.div14}>
               <Label>Category</Label>
               <Input
                 value={newCode.category}
@@ -1314,7 +1356,7 @@ export default function ReminderConfiguration() {
                 }
               />
             </div>
-            <div className={styles.div16}>
+            <div className={styles.div18}>
               <Label>Description</Label>
               <Textarea
                 value={newCode.description}
@@ -1354,8 +1396,8 @@ export default function ReminderConfiguration() {
               {form.getValues('code') || 'the selected reminder code'}.
             </DialogDescription>
           </DialogHeader>
-          <div className={styles.div17}>
-            <div className={styles.div12}>
+          <div className={styles.div19}>
+            <div className={styles.div14}>
               <Label>Reason name</Label>
               <Input
                 value={newReason.name}
@@ -1364,7 +1406,7 @@ export default function ReminderConfiguration() {
                 }
               />
             </div>
-            <div className={styles.div12}>
+            <div className={styles.div14}>
               <Label>Reason code</Label>
               <Input
                 value={newReason.code}
@@ -1377,7 +1419,7 @@ export default function ReminderConfiguration() {
                 placeholder="DOCUMENT_NOT_SUBMITTED"
               />
             </div>
-            <div className={styles.div12}>
+            <div className={styles.div14}>
               <Label>Description</Label>
               <Textarea
                 value={newReason.description}

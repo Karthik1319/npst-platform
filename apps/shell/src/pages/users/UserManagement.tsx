@@ -59,6 +59,8 @@ import styles from './UserManagement.module.css';
 const ROLES: UserRole[] = [
   'Super Admin',
   'Admin',
+  'Maker',
+  'Checker',
   'Application Admin',
   'Employee',
 ];
@@ -66,6 +68,8 @@ const ROLES: UserRole[] = [
 const ROLE_TONES: Record<UserRole, string> = {
   'Super Admin': styles.SuperAdmin,
   Admin: styles.Admin,
+  Maker: styles.Maker,
+  Checker: styles.Checker,
   'Application Admin': styles.ApplicationAdmin,
   Employee: styles.Employee,
 };
@@ -77,7 +81,14 @@ const userSchema = z.object({
     .string()
     .regex(/^\+?[0-9\s-]{10,15}$/, 'Enter a valid phone number')
     .or(z.literal('')),
-  role: z.enum(['Super Admin', 'Admin', 'Application Admin', 'Employee']),
+  role: z.enum([
+    'Super Admin',
+    'Admin',
+    'Maker',
+    'Checker',
+    'Application Admin',
+    'Employee',
+  ]),
   apps: z.array(z.string()).min(1, 'Assign at least one application'),
   status: z.enum(['active', 'inactive']),
 });
@@ -207,8 +218,8 @@ export default function UserManagement() {
   return (
     <div className={styles.div}>
       <PageHeader
-        title="Employee Management"
-        description="Manage employee access and editable employee information across connected applications."
+        title="User Management"
+        description="Manage user access and editable user information across connected applications."
         testId="employees-title"
         actions={
           <Button onClick={openCreate} data-testid="add-user-button">
