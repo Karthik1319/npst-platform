@@ -18,6 +18,7 @@ import {
   useControllable,
   useDismiss,
   usePopupPosition,
+  useScrollLock,
   type Align,
   type Side,
 } from './primitives';
@@ -110,6 +111,8 @@ function DropdownMenuContent({
     triggerRef.current?.focus();
   }, [setOpen, triggerRef]);
   useDismiss(open, [positionerRef, triggerRef], close);
+  // Like Base UI (modal menu): the page does not scroll while the menu is open.
+  useScrollLock(open);
   const usedSide = usePopupPosition(open, triggerRef, positionerRef, {
     side,
     align,

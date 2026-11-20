@@ -12,10 +12,11 @@ import type { AdminNotification } from '@/types';
  * every MFE. It is a mock for now. When the real platform modules are ready,
  * only this file changes.
  *
- * The bell's inbox shows two mock sources of the Notification Service:
- * messages from the business applications (`@npst/mock-backend`) and the
- * Admin Portal's administrative notifications (approval requests and
- * results, filtered by the user's portal role).
+ * The bell's inbox (Notification Service, in-app messages) shows the Admin
+ * Portal's administrative notifications (approval requests and results,
+ * filtered by the user's portal role), exactly as in the Admin Portal. The
+ * stand-in applications' sample messages are not shown; the real Notification
+ * Service will deliver the applications' messages here.
  */
 export function createPlatform(user: PlatformUser): ShellPlatformApi {
   const platform = createMockPlatform({ user });
@@ -40,21 +41,20 @@ function withAdminNotifications(
 ): ShellPlatformApi['inbox'] {
   return {
     async list() {
-      const items = [
-        ...adminNotificationService.list().map(toInboxItem),
-        ...(await inbox.list()),
-      ];
-      return items.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+      return adminNotificationService
+        .list()
+        .map(toInboxItem)
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     },
     async markRead(id) {
       if (id.startsWith(ADMIN_PREFIX))
         adminNotificationService.markRead(id.slice(ADMIN_PREFIX.length));
-      else await inbox.markRead(id);
     },
     async markAllRead() {
       adminNotificationService.markAllRead();
-      await inbox.markAllRead();
     },
+    // Messages from the applications arrive through the Notification Service
+    // (real module later); the bell reloads when it signals a change.
     subscribe: (listener) => inbox.subscribe(listener),
   };
 }

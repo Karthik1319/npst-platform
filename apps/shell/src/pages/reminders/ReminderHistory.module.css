@@ -41,7 +41,7 @@
   gap: calc(var(--spacing) * 3);
 }
 @media (width >= 40rem) {
-  .div2 {
+  .div2.div2.div2 {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -91,7 +91,7 @@
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 @media (hover: hover) {
-  .button2:hover {
+  .button2.button2.button2:hover {
     background-color: var(--muted);
   }
 }
@@ -116,7 +116,7 @@
   width: 100%;
 }
 @media (width >= 40rem) {
-  .div4 {
+  .div4.div4.div4 {
     max-width: var(--container-xs);
   }
 }
@@ -143,7 +143,7 @@
   display: none;
 }
 @media (width >= 48rem) {
-  .tableHead {
+  .tableHead.tableHead.tableHead {
     display: table-cell;
   }
 }
@@ -153,7 +153,7 @@
   display: none;
 }
 @media (width >= 64rem) {
-  .tableHead2 {
+  .tableHead2.tableHead2.tableHead2 {
     display: table-cell;
   }
 }
@@ -163,7 +163,7 @@
   display: none;
 }
 @media (width >= 40rem) {
-  .tableHead3 {
+  .tableHead3.tableHead3.tableHead3 {
     display: table-cell;
   }
 }
@@ -202,7 +202,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 64rem) {
-  .tableCell4 {
+  .tableCell4.tableCell4.tableCell4 {
     display: table-cell;
   }
 }
@@ -241,7 +241,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 64rem) {
-  .tableCell6 {
+  .tableCell6.tableCell6.tableCell6 {
     display: table-cell;
   }
 }

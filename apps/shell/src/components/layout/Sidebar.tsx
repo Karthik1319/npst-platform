@@ -12,11 +12,9 @@ import {
   Settings,
   Users,
   LifeBuoy,
-  LayoutGrid,
   Sparkles,
   type LucideIcon,
 } from '@/components/icons';
-import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/context/AuthContext';
 import { usePlatform } from '@/platform/PlatformContext';
 import { AppLogo } from '@/components/common/AppLogo';
@@ -141,42 +139,27 @@ const EMPLOYEE_SECTIONS: { section: string; items: NavItem[] }[] = [
   },
 ];
 
-/** Title of the navigation section that lists the user's applications (MFEs). */
+/** Breadcrumb section for an application (MFE) opened inside the portal. */
 export const APPLICATIONS_SECTION = 'Applications';
 
 /**
  * The navigation for the signed-in user: the Admin Portal sections their role
- * may use, then their applications (`platform.apps.allowed()`). Hiding is UI
- * only; every page and API checks permissions again.
+ * may use (exactly the Admin Portal's navigation). Applications open inside the
+ * portal from the Dashboard's application cards. Hiding is UI only; every page
+ * and API checks permissions again.
  */
 export function useNavSections(): { section: string; items: NavItem[] }[] {
   const platform = usePlatform();
-  const { data: apps = [] } = useQuery({
-    queryKey: ['portal-apps', platform.user.id],
-    queryFn: () => platform.apps.allowed(),
-  });
   // Employees only see their dashboard (the Admin Portal's employee view).
   if (platform.permissions.can('view', 'employee-dashboard'))
     return EMPLOYEE_SECTIONS;
-  const sections = NAV_SECTIONS.map((section) => ({
+  return NAV_SECTIONS.map((section) => ({
     ...section,
     items: section.items.filter(
       (item) =>
         !item.permission || platform.permissions.can(...item.permission),
     ),
   })).filter((section) => section.items.length > 0);
-  if (apps.length === 0) return sections;
-  return [
-    ...sections,
-    {
-      section: APPLICATIONS_SECTION,
-      items: apps.map((app) => ({
-        label: app.name,
-        icon: LayoutGrid,
-        path: app.path,
-      })),
-    },
-  ];
 }
 
 interface SidebarProps {

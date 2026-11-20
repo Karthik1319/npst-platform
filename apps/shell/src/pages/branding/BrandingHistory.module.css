@@ -40,7 +40,7 @@
   display: none;
 }
 @media (width >= 48rem) {
-  .tableHead {
+  .tableHead.tableHead.tableHead {
     display: table-cell;
   }
 }
@@ -50,7 +50,7 @@
   display: none;
 }
 @media (width >= 64rem) {
-  .tableHead2 {
+  .tableHead2.tableHead2.tableHead2 {
     display: table-cell;
   }
 }
@@ -88,7 +88,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 48rem) {
-  .tableCell2 {
+  .tableCell2.tableCell2.tableCell2 {
     display: table-cell;
   }
 }
@@ -105,7 +105,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 64rem) {
-  .tableCell4 {
+  .tableCell4.tableCell4.tableCell4 {
     display: table-cell;
   }
 }

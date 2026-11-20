@@ -42,46 +42,6 @@
     --tw-duration: 100ms;
     transition-duration: 100ms;
   }
-  .popoverPrimitivePopup[data-side='bottom'] {
-    --tw-enter-translate-y: calc(2 * var(--spacing) * -1);
-  }
-  .popoverPrimitivePopup[data-side='inline-end'] {
-    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
-  }
-  .popoverPrimitivePopup[data-side='inline-start'] {
-    --tw-enter-translate-x: calc(2 * var(--spacing));
-  }
-  .popoverPrimitivePopup[data-side='left'] {
-    --tw-enter-translate-x: calc(2 * var(--spacing));
-  }
-  .popoverPrimitivePopup[data-side='right'] {
-    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
-  }
-  .popoverPrimitivePopup[data-side='top'] {
-    --tw-enter-translate-y: calc(2 * var(--spacing));
-  }
-  .popoverPrimitivePopup:where([data-state='open']),
-  .popoverPrimitivePopup:where([data-open]:not([data-open='false'])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
-      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
-      var(--tw-animation-iteration-count, 1)
-      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: calc(0/100);
-    --tw-enter-opacity: 0;
-    --tw-enter-scale: calc(95 * 1%);
-    --tw-enter-scale: 0.95;
-  }
-  .popoverPrimitivePopup:where([data-state='closed']),
-  .popoverPrimitivePopup:where([data-closed]:not([data-closed='false'])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
-      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
-      var(--tw-animation-iteration-count, 1)
-      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: calc(0/100);
-    --tw-exit-opacity: 0;
-    --tw-exit-scale: calc(95 * 1%);
-    --tw-exit-scale: 0.95;
-  }
 
   /* flex flex-col gap-0.5 text-sm */
   .div {
@@ -102,4 +62,51 @@
   .popoverPrimitiveDescription {
     color: var(--muted-foreground);
   }
+}
+
+/* Variant styles (sm:, dark:, hover:, data-*: …) come after page styles, as in the original. */
+/* z-50 flex w-72 origin-(--transform-origin) flex-col gap-2.5 rounded-lg bg-popover p-2.5 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 (variants) */
+.popoverPrimitivePopup.popoverPrimitivePopup[data-side='bottom'] {
+  --tw-enter-translate-y: calc(2 * var(--spacing) * -1);
+}
+.popoverPrimitivePopup.popoverPrimitivePopup[data-side='inline-end'] {
+  --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+}
+.popoverPrimitivePopup.popoverPrimitivePopup[data-side='inline-start'] {
+  --tw-enter-translate-x: calc(2 * var(--spacing));
+}
+.popoverPrimitivePopup.popoverPrimitivePopup[data-side='left'] {
+  --tw-enter-translate-x: calc(2 * var(--spacing));
+}
+.popoverPrimitivePopup.popoverPrimitivePopup[data-side='right'] {
+  --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+}
+.popoverPrimitivePopup.popoverPrimitivePopup[data-side='top'] {
+  --tw-enter-translate-y: calc(2 * var(--spacing));
+}
+.popoverPrimitivePopup.popoverPrimitivePopup:where([data-state='open']),
+.popoverPrimitivePopup.popoverPrimitivePopup:where(
+    [data-open]:not([data-open='false'])
+  ) {
+  animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-enter-opacity: calc(0/100);
+  --tw-enter-opacity: 0;
+  --tw-enter-scale: calc(95 * 1%);
+  --tw-enter-scale: 0.95;
+}
+.popoverPrimitivePopup.popoverPrimitivePopup:where([data-state='closed']),
+.popoverPrimitivePopup.popoverPrimitivePopup:where(
+    [data-closed]:not([data-closed='false'])
+  ) {
+  animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-exit-opacity: calc(0/100);
+  --tw-exit-opacity: 0;
+  --tw-exit-scale: calc(95 * 1%);
+  --tw-exit-scale: 0.95;
 }

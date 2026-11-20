@@ -35,7 +35,6 @@ import { useAuth } from '@/context/AuthContext';
 import {
   APPLICATIONS_SECTION,
   NAV_SECTIONS,
-  useNavSections,
 } from '@/components/layout/Sidebar';
 import { usePlatform } from '@/platform/PlatformContext';
 import {
@@ -97,7 +96,10 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
 
   const queryClient = useQueryClient();
   const platform = usePlatform();
-  const navSections = useNavSections();
+  const { data: catalogue = [] } = useQuery({
+    queryKey: ['portal-catalogue'],
+    queryFn: () => platform.apps.catalogue(),
+  });
   // The bell shows the platform's inbox (Notification Service): administrative
   // notifications and messages from the applications.
   const { data: adminNotifications = [] } = useQuery({
@@ -159,17 +161,15 @@ export default function Topbar({ onMenuClick }: { onMenuClick: () => void }) {
     const path = location.pathname;
     if (path.startsWith('/branding/configure/'))
       return ['Shared Services', 'UI Branding', 'Configure Branding'];
-    for (const section of [
-      ...NAV_SECTIONS,
-      ...navSections.filter((s) => s.section === APPLICATIONS_SECTION),
-    ]) {
+    // An application opened inside the portal: "Applications > <name>".
+    const app = catalogue.find(
+      (candidate) =>
+        path === candidate.path || path.startsWith(`${candidate.path}/`),
+    );
+    if (app) return [APPLICATIONS_SECTION, app.name];
+    for (const section of NAV_SECTIONS) {
       for (const item of section.items) {
-        if (
-          path === item.path ||
-          (section.section === APPLICATIONS_SECTION &&
-            path.startsWith(`${item.path}/`))
-        )
-          return [section.section, item.label];
+        if (path === item.path) return [section.section, item.label];
         for (const child of item.children ?? []) {
           if (path === child.path || path.startsWith(`${child.path}/`))
             return [section.section, item.label, child.label];

@@ -23,7 +23,7 @@
   gap: calc(var(--spacing) * 3);
 }
 @media (width >= 40rem) {
-  .div2 {
+  .div2.div2.div2 {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -59,7 +59,7 @@
   width: 100%;
 }
 @media (width >= 40rem) {
-  .selectTrigger {
+  .selectTrigger.selectTrigger.selectTrigger {
     width: calc(var(--spacing) * 40);
   }
 }
@@ -84,12 +84,12 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 48rem) {
-  .div5 {
+  .div5.div5.div5 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (width >= 80rem) {
-  .div5 {
+  .div5.div5.div5 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
@@ -112,7 +112,7 @@
   transition-duration: 200ms;
 }
 @media (hover: hover) {
-  .card:hover {
+  .card.card.card:hover {
     --tw-translate-y: calc(var(--spacing) * -0.5);
     translate: var(--tw-translate-x) var(--tw-translate-y);
     --tw-shadow:
@@ -227,7 +227,7 @@
   color: var(--color-blue-600);
 }
 @media (hover: hover) {
-  .a:hover {
+  .a.a.a:hover {
     text-decoration-line: underline;
   }
 }
@@ -258,7 +258,7 @@
   display: none;
 }
 @media (width >= 48rem) {
-  .tableHead {
+  .tableHead.tableHead.tableHead {
     display: table-cell;
   }
 }
@@ -268,7 +268,7 @@
   display: none;
 }
 @media (width >= 64rem) {
-  .tableHead2 {
+  .tableHead2.tableHead2.tableHead2 {
     display: table-cell;
   }
 }
@@ -278,7 +278,7 @@
   display: none;
 }
 @media (width >= 40rem) {
-  .tableHead3 {
+  .tableHead3.tableHead3.tableHead3 {
     display: table-cell;
   }
 }
@@ -306,7 +306,7 @@
   color: var(--color-blue-600);
 }
 @media (hover: hover) {
-  .a2:hover {
+  .a2.a2.a2:hover {
     text-decoration-line: underline;
   }
 }
@@ -318,7 +318,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 40rem) {
-  .tableCell {
+  .tableCell.tableCell.tableCell {
     display: table-cell;
   }
 }
@@ -340,7 +340,7 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 40rem) {
-  .div10 {
+  .div10.div10.div10 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -374,7 +374,7 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 40rem) {
-  .div12 {
+  .div12.div12.div12 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

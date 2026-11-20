@@ -10,39 +10,6 @@
     --tw-duration: 100ms;
     transition-duration: 100ms;
   }
-  @supports (backdrop-filter: var(--tw)) {
-    .dialogPrimitiveBackdrop {
-      --tw-backdrop-blur: blur(var(--blur-xs));
-      -webkit-backdrop-filter: var(--tw-backdrop-blur,)
-        var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
-        var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
-        var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
-        var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
-      backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
-        var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
-        var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
-        var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
-        var(--tw-backdrop-sepia,);
-    }
-  }
-  .dialogPrimitiveBackdrop:where([data-state='open']),
-  .dialogPrimitiveBackdrop:where([data-open]:not([data-open='false'])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
-      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
-      var(--tw-animation-iteration-count, 1)
-      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: calc(0/100);
-    --tw-enter-opacity: 0;
-  }
-  .dialogPrimitiveBackdrop:where([data-state='closed']),
-  .dialogPrimitiveBackdrop:where([data-closed]:not([data-closed='false'])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
-      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
-      var(--tw-animation-iteration-count, 1)
-      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: calc(0/100);
-    --tw-exit-opacity: 0;
-  }
 
   /* fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 */
   .dialogPrimitivePopup {
@@ -75,33 +42,6 @@
     transition-duration: 100ms;
     --tw-outline-style: none;
     outline-style: none;
-  }
-  @media (width >= 40rem) {
-    .dialogPrimitivePopup {
-      max-width: var(--container-sm);
-    }
-  }
-  .dialogPrimitivePopup:where([data-state='open']),
-  .dialogPrimitivePopup:where([data-open]:not([data-open='false'])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
-      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
-      var(--tw-animation-iteration-count, 1)
-      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: calc(0/100);
-    --tw-enter-opacity: 0;
-    --tw-enter-scale: calc(95 * 1%);
-    --tw-enter-scale: 0.95;
-  }
-  .dialogPrimitivePopup:where([data-state='closed']),
-  .dialogPrimitivePopup:where([data-closed]:not([data-closed='false'])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
-      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
-      var(--tw-animation-iteration-count, 1)
-      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: calc(0/100);
-    --tw-exit-opacity: 0;
-    --tw-exit-scale: calc(95 * 1%);
-    --tw-exit-scale: 0.95;
   }
 
   /* absolute top-2 right-2 */
@@ -146,12 +86,6 @@
     background-color: color-mix(in oklab, var(--muted) 50%, transparent);
     padding: calc(var(--spacing) * 4);
   }
-  @media (width >= 40rem) {
-    .div2 {
-      flex-direction: row;
-      justify-content: flex-end;
-    }
-  }
 
   /* font-heading text-base leading-none font-medium */
   .dialogPrimitiveTitle {
@@ -170,13 +104,96 @@
     line-height: var(--tw-leading, var(--text-sm--line-height));
     color: var(--muted-foreground);
   }
-  :is(.dialogPrimitiveDescription > *):is(a) {
-    text-decoration-line: underline;
-    text-underline-offset: 3px;
+}
+
+/* Variant styles (sm:, dark:, hover:, data-*: …) come after page styles, as in the original. */
+/* fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0 (variants) */
+@supports (backdrop-filter: var(--tw)) {
+  .dialogPrimitiveBackdrop.dialogPrimitiveBackdrop {
+    --tw-backdrop-blur: blur(var(--blur-xs));
+    -webkit-backdrop-filter: var(--tw-backdrop-blur,)
+      var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
+      var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
+      var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
+      var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+    backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
+      var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
+      var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
+      var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
+      var(--tw-backdrop-sepia,);
   }
-  @media (hover: hover) {
-    :is(.dialogPrimitiveDescription > *):is(a):hover {
-      color: var(--foreground);
-    }
+}
+.dialogPrimitiveBackdrop.dialogPrimitiveBackdrop:where([data-state='open']),
+.dialogPrimitiveBackdrop.dialogPrimitiveBackdrop:where(
+    [data-open]:not([data-open='false'])
+  ) {
+  animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-enter-opacity: calc(0/100);
+  --tw-enter-opacity: 0;
+}
+.dialogPrimitiveBackdrop.dialogPrimitiveBackdrop:where([data-state='closed']),
+.dialogPrimitiveBackdrop.dialogPrimitiveBackdrop:where(
+    [data-closed]:not([data-closed='false'])
+  ) {
+  animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-exit-opacity: calc(0/100);
+  --tw-exit-opacity: 0;
+}
+
+/* fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 (variants) */
+@media (width >= 40rem) {
+  .dialogPrimitivePopup.dialogPrimitivePopup {
+    max-width: var(--container-sm);
+  }
+}
+.dialogPrimitivePopup.dialogPrimitivePopup:where([data-state='open']),
+.dialogPrimitivePopup.dialogPrimitivePopup:where(
+    [data-open]:not([data-open='false'])
+  ) {
+  animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-enter-opacity: calc(0/100);
+  --tw-enter-opacity: 0;
+  --tw-enter-scale: calc(95 * 1%);
+  --tw-enter-scale: 0.95;
+}
+.dialogPrimitivePopup.dialogPrimitivePopup:where([data-state='closed']),
+.dialogPrimitivePopup.dialogPrimitivePopup:where(
+    [data-closed]:not([data-closed='false'])
+  ) {
+  animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-exit-opacity: calc(0/100);
+  --tw-exit-opacity: 0;
+  --tw-exit-scale: calc(95 * 1%);
+  --tw-exit-scale: 0.95;
+}
+
+/* -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end (variants) */
+@media (width >= 40rem) {
+  .div2.div2 {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+/* text-sm text-muted-foreground *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground (variants) */
+:is(.dialogPrimitiveDescription.dialogPrimitiveDescription > *):is(a) {
+  text-decoration-line: underline;
+  text-underline-offset: 3px;
+}
+@media (hover: hover) {
+  :is(.dialogPrimitiveDescription.dialogPrimitiveDescription > *):is(a):hover {
+    color: var(--foreground);
   }
 }

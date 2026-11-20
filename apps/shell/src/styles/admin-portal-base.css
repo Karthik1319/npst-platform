@@ -829,8 +829,20 @@
     }
   }
 }
-/* Modal open: the page behind it does not scroll (components/ui/modal.tsx). */
-.npst-scroll-lock {
+/* A modal popup is open (dialog, sheet, select, menu): the page does not scroll,
+   and the scrollbar's space is kept so the layout does not move (as Base UI). */
+html.npst-scroll-lock {
+  scrollbar-gutter: stable;
+  overflow: hidden scroll;
+}
+html.npst-scroll-lock-plain {
+  overflow: hidden;
+}
+html.npst-scroll-lock body {
+  position: relative;
+  box-sizing: border-box;
+  width: calc(100vw - var(--npst-scrollbar-width, 0px));
+  height: 100dvh;
   overflow: hidden;
 }
 

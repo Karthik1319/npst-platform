@@ -29,7 +29,7 @@
     var(--tw-backdrop-sepia,);
 }
 @media (width >= 40rem) {
-  .header {
+  .header.header.header {
     padding-inline: calc(var(--spacing) * 6);
   }
 }
@@ -44,7 +44,7 @@
 
 /* md:hidden */
 @media (width >= 48rem) {
-  .button {
+  .button.button.button {
     display: none;
   }
 }
@@ -111,7 +111,7 @@
   gap: calc(var(--spacing) * 1.5);
 }
 @media (width >= 40rem) {
-  .div2 {
+  .div2.div2.div2 {
     gap: calc(var(--spacing) * 2);
   }
 }
@@ -143,17 +143,17 @@
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 @media (hover: hover) {
-  .button2:hover {
+  .button2.button2.button2:hover {
     background-color: var(--muted);
   }
 }
 @media (width >= 48rem) {
-  .button2 {
+  .button2.button2.button2 {
     display: flex;
   }
 }
 @media (width >= 64rem) {
-  .button2 {
+  .button2.button2.button2 {
     width: calc(var(--spacing) * 72);
   }
 }
@@ -227,7 +227,7 @@
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 @media (hover: hover) {
-  .button3:hover {
+  .button3.button3.button3:hover {
     background-color: var(--muted);
   }
 }
@@ -293,7 +293,7 @@
   display: none;
 }
 @media (width >= 64rem) {
-  .span9 {
+  .span9.span9.span9 {
     display: inline;
   }
 }
@@ -356,7 +356,7 @@
   color: var(--color-blue-600);
 }
 @media (hover: hover) {
-  .button5:hover {
+  .button5.button5.button5:hover {
     text-decoration-line: underline;
   }
 }
@@ -394,12 +394,12 @@
   padding-block: calc(var(--spacing) * 3);
   color: var(--foreground);
 }
-.link:last-child {
+.link.link.link:last-child {
   border-style: var(--tw-border-style);
   border-width: 0px;
 }
 @media (hover: hover) {
-  .link:hover {
+  .link.link.link:hover {
     background-color: var(--muted);
   }
 }
@@ -506,7 +506,7 @@
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 @media (hover: hover) {
-  .button6:hover {
+  .button6.button6.button6:hover {
     background-color: var(--muted);
   }
 }
@@ -580,7 +580,7 @@
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 @media (hover: hover) {
-  .button7:hover {
+  .button7.button7.button7:hover {
     background-color: var(--muted);
   }
 }
@@ -611,7 +611,7 @@
   line-height: var(--leading-tight);
 }
 @media (width >= 64rem) {
-  .span13 {
+  .span13.span13.span13 {
     display: block;
   }
 }
@@ -648,7 +648,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 64rem) {
-  .chevronRight3 {
+  .chevronRight3.chevronRight3.chevronRight3 {
     display: block;
   }
 }

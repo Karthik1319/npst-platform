@@ -22,7 +22,7 @@
   transition-duration: 300ms;
 }
 @media (width >= 48rem) {
-  .div2 {
+  .div2.div2.div2 {
     display: block;
   }
 }
@@ -54,14 +54,14 @@
 
 /* md:pl-[76px] */
 @media (width >= 48rem) {
-  .div6 {
+  .div6.div6.div6 {
     padding-left: 76px;
   }
 }
 
 /* md:pl-64 */
 @media (width >= 48rem) {
-  .div7 {
+  .div7.div7.div7 {
     padding-left: calc(var(--spacing) * 64);
   }
 }
@@ -75,12 +75,12 @@
   padding: calc(var(--spacing) * 4);
 }
 @media (width >= 40rem) {
-  .main {
+  .main.main.main {
     padding: calc(var(--spacing) * 6);
   }
 }
 @media (width >= 64rem) {
-  .main {
+  .main.main.main {
     padding: calc(var(--spacing) * 8);
   }
 }

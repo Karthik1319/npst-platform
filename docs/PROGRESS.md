@@ -1415,3 +1415,37 @@ The teammate changed his Admin Portal after the manager's feedback (3 commits, 1
 - Saved browser data from before this step still has the old application list. Settings → Reset demo data shows the new sample data.
 
 **Next step:** Step 25 – clean-up and documents; removals only with approval (Projects & Delivery, old shell screens, folder names, unused `mock-backend` parts).
+
+### Step 24 follow-up: same user experience as the Admin Portal
+
+**Goal (your feedback):** his exact screens and behaviour, only the implementation different. Fixes follow below, after "How it was checked".
+
+**How it was checked:**
+
+- **Screenshots:** his built app and ours, side by side in a browser, every page light and dark.
+- **Interaction audit:** on all 15 pages, every dropdown, menu, popup and view/edit dialog (66 interactions) opened with **real mouse clicks**. The audit compares what opens (dialog titles, options, popups, toasts) and a screenshot of each open state.
+- **Template creation:** checked end to end in both apps (select app, Create Template, fill, pick code, Create template → "Template created"). It behaves identically, also on the dev server.
+
+**Fixes:**
+
+| Difference                                                            | Cause                                                                                                                                                  | Fix                                                                                                           |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| Extra **Applications** sidebar section (with **Projects & Delivery**) | Added by the portal in Step 19; not in his UI                                                                                                          | Removed. Applications still open inside the portal from his Dashboard cards; breadcrumb "Applications › name" |
+| Bell listed the demo applications' sample messages and a count of 4   | The platform inbox merged the stand-in apps' seeded messages                                                                                           | The bell shows his administrative notifications only (still through `platform.inbox`)                         |
+| Branding preview dialogs wide instead of narrow (13–17% different)    | His dialogs keep the component's `sm:max-w-sm` because tailwind-merge does not drop a variant class for a plain one; Tailwind's CSS order then decides | Converter now cascades like Tailwind: component plain < page plain < component variants < page variants       |
+| Dropdown lists opened below the field                                 | Base UI places the list so the selected item sits on the field (`alignItemWithTrigger`)                                                                | Same placement in the in-house Select (measured: item text aligned with the field's text)                     |
+| Page could scroll / layout moved while a dropdown or menu was open    | Base UI locks scrolling for selects, menus and dialogs and keeps the scrollbar's space                                                                 | Same lock (only when the page scrolls, so centred dialogs stay centred)                                       |
+| Card menu 2px lower                                                   | The card lifts on hover; Base UI follows its button while it moves                                                                                     | Popups follow their anchor on every frame                                                                     |
+
+**Result:**
+
+- **Pages:** every page within **0.00–0.45%** of his version (most under 0.1%; login identical; the bell 0.07%).
+- **Interactions:** **all 66 behave identically**, median screenshot difference 0.00%.
+- **What remains:**
+  - sample dates, which are generated relative to "now", on Version History and Audit Logs;
+  - your "500+" text on the PeopleOS card;
+  - on the reminder schedule, his page moves up 1px while a dropdown is open (a side effect of how Base UI places lists inside the page body). Not copied.
+
+**Note:** if creating a template seems not to work in your browser, the saved data is from an older version. Use **Settings → Reset data** once (the application's notification codes come from the sample data). In his app, too, Create Template is disabled until an application is selected.
+
+**Verified:** lint, test (portal 111), typecheck and build for all 8 projects; Prettier clean.

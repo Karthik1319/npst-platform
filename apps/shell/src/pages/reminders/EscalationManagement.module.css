@@ -48,7 +48,7 @@
   display: none;
 }
 @media (width >= 48rem) {
-  .tableHead {
+  .tableHead.tableHead.tableHead {
     display: table-cell;
   }
 }
@@ -58,7 +58,7 @@
   display: none;
 }
 @media (width >= 64rem) {
-  .tableHead2 {
+  .tableHead2.tableHead2.tableHead2 {
     display: table-cell;
   }
 }
@@ -68,7 +68,7 @@
   display: none;
 }
 @media (width >= 80rem) {
-  .tableHead3 {
+  .tableHead3.tableHead3.tableHead3 {
     display: table-cell;
   }
 }
@@ -123,7 +123,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 48rem) {
-  .tableCell2 {
+  .tableCell2.tableCell2.tableCell2 {
     display: table-cell;
   }
 }
@@ -168,7 +168,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 80rem) {
-  .tableCell3 {
+  .tableCell3.tableCell3.tableCell3 {
     display: table-cell;
   }
 }
@@ -185,7 +185,7 @@
   color: var(--color-red-600);
 }
 @media (hover: hover) {
-  .button:hover {
+  .button.button.button:hover {
     background-color: var(--color-red-50);
   }
 }
@@ -207,7 +207,7 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 40rem) {
-  .div5 {
+  .div5.div5.div5 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

@@ -17,7 +17,7 @@
   gap: calc(var(--spacing) * 5);
 }
 @media (width >= 80rem) {
-  .div2 {
+  .div2.div2.div2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -80,7 +80,7 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 40rem) {
-  .div4 {
+  .div4.div4.div4 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -166,7 +166,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 40rem) {
-  .span3 {
+  .span3.span3.span3 {
     display: block;
   }
 }
@@ -253,7 +253,7 @@
   color: var(--color-red-600);
 }
 @media (hover: hover) {
-  .button:hover {
+  .button.button.button:hover {
     background-color: var(--color-red-50);
     color: var(--color-red-700);
   }

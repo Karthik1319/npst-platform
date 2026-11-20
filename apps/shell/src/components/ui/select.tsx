@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useRef,
+  useState,
   type ComponentProps,
   type ReactNode,
   type RefObject,
@@ -16,6 +17,7 @@ import {
   useControllable,
   useDismiss,
   usePopupPosition,
+  useScrollLock,
   type Align,
   type Side,
 } from './primitives';
@@ -188,12 +190,54 @@ function SelectContent({
     triggerRef.current?.focus();
   }, [setOpen, triggerRef]);
   useDismiss(open, [positionerRef, triggerRef], close);
+  // Like Base UI (alignItemWithTrigger): place the list so the selected item
+  // sits on the trigger, its text exactly where the trigger's value text is.
+  const [aligned, setAligned] = useState(false);
+  const placeOnTrigger = useCallback(
+    (positioner: HTMLElement): boolean => {
+      const trigger = triggerRef.current;
+      const list = listRef.current;
+      if (!alignItemWithTrigger || !trigger || !list) return false;
+      const item =
+        list.querySelector<HTMLElement>('[aria-selected="true"]') ??
+        list.querySelector<HTMLElement>('[role="option"]');
+      if (!item) return false;
+      const value =
+        trigger.querySelector<HTMLElement>('[data-slot="select-value"]') ??
+        trigger;
+      const itemText =
+        item.querySelector<HTMLElement>('[data-slot="select-item-text"]') ??
+        item;
+      const t = trigger.getBoundingClientRect();
+      const l = list.getBoundingClientRect();
+      const i = item.getBoundingClientRect();
+      const x =
+        value.getBoundingClientRect().left -
+        (itemText.getBoundingClientRect().left - l.left);
+      const y = t.top + t.height / 2 - (i.top - l.top) - i.height / 2;
+      const margin = 8;
+      const fits =
+        y >= margin &&
+        y + l.height <= window.innerHeight - margin &&
+        x >= margin &&
+        x + l.width <= window.innerWidth - margin;
+      setAligned(fits);
+      if (!fits) return false; // keep the normal placement below the trigger
+      positioner.style.setProperty('--npst-popup-x', `${x}px`);
+      positioner.style.setProperty('--npst-popup-y', `${y}px`);
+      return true;
+    },
+    [alignItemWithTrigger, triggerRef],
+  );
   const usedSide = usePopupPosition(open, triggerRef, positionerRef, {
     side,
     align: align === 'center' ? 'start' : align,
     sideOffset,
     alignOffset,
+    place: placeOnTrigger,
   });
+  // Like Base UI: the page does not scroll while the list is open.
+  useScrollLock(open);
   useEffect(() => {
     if (!open) return;
     const list = listRef.current;
@@ -213,7 +257,7 @@ function SelectContent({
           ref={listRef}
           role="listbox"
           data-slot="select-content"
-          data-align-trigger={false}
+          data-align-trigger={aligned}
           data-open=""
           data-side={usedSide}
           className={cn(styles.selectPrimitivePopup, className)}
@@ -223,7 +267,6 @@ function SelectContent({
           }}
           {...props}
         >
-          {void alignItemWithTrigger}
           {children}
         </div>
       </div>
@@ -277,7 +320,12 @@ function SelectItem({
       }}
       {...props}
     >
-      <span className={styles.selectPrimitiveItemText}>{children}</span>
+      <span
+        data-slot="select-item-text"
+        className={styles.selectPrimitiveItemText}
+      >
+        {children}
+      </span>
       {selected && (
         <span className={`${styles.span} npst-sized`}>
           <CheckIcon className={styles.checkIcon} />

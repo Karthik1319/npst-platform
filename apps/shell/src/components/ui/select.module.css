@@ -45,73 +45,6 @@
     -webkit-user-select: none;
     user-select: none;
   }
-  .selectPrimitiveTrigger:focus-visible {
-    border-color: var(--ring);
-    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
-      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow:
-      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
-      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
-    --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
-  }
-  .selectPrimitiveTrigger:disabled {
-    cursor: not-allowed;
-    opacity: 50%;
-  }
-  .selectPrimitiveTrigger[aria-invalid='true'] {
-    border-color: var(--destructive);
-    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
-      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow:
-      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
-      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--destructive);
-    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
-  }
-  .selectPrimitiveTrigger[data-placeholder] {
-    color: var(--muted-foreground);
-  }
-  .selectPrimitiveTrigger[data-size='default'] {
-    height: calc(var(--spacing) * 8);
-  }
-  .selectPrimitiveTrigger[data-size='sm'] {
-    height: calc(var(--spacing) * 7);
-    border-radius: min(var(--radius-md), 10px);
-  }
-  :is(.selectPrimitiveTrigger > *)[data-slot='select-value'] {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    display: flex;
-    align-items: center;
-    gap: calc(var(--spacing) * 1.5);
-  }
-  .selectPrimitiveTrigger:is(:global(.dark) *) {
-    background-color: var(--input);
-    background-color: color-mix(in oklab, var(--input) 30%, transparent);
-  }
-  @media (hover: hover) {
-    .selectPrimitiveTrigger:is(:global(.dark) *):hover {
-      background-color: var(--input);
-      background-color: color-mix(in oklab, var(--input) 50%, transparent);
-    }
-  }
-  .selectPrimitiveTrigger:is(:global(.dark) *)[aria-invalid='true'] {
-    border-color: var(--destructive);
-    border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
-    --tw-ring-color: var(--destructive);
-    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
-  }
-  .selectPrimitiveTrigger svg {
-    pointer-events: none;
-    flex-shrink: 0;
-  }
-  .selectPrimitiveTrigger svg:not([class*='npst-sized']) {
-    width: calc(var(--spacing) * 4);
-    height: calc(var(--spacing) * 4);
-  }
 
   /* pointer-events-none size-4 text-muted-foreground */
   .chevronDownIcon {
@@ -157,49 +90,6 @@
     --tw-duration: 100ms;
     transition-duration: 100ms;
   }
-  .selectPrimitivePopup[data-align-trigger='true'] {
-    animation: none;
-  }
-  .selectPrimitivePopup[data-side='bottom'] {
-    --tw-enter-translate-y: calc(2 * var(--spacing) * -1);
-  }
-  .selectPrimitivePopup[data-side='inline-end'] {
-    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
-  }
-  .selectPrimitivePopup[data-side='inline-start'] {
-    --tw-enter-translate-x: calc(2 * var(--spacing));
-  }
-  .selectPrimitivePopup[data-side='left'] {
-    --tw-enter-translate-x: calc(2 * var(--spacing));
-  }
-  .selectPrimitivePopup[data-side='right'] {
-    --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
-  }
-  .selectPrimitivePopup[data-side='top'] {
-    --tw-enter-translate-y: calc(2 * var(--spacing));
-  }
-  .selectPrimitivePopup:where([data-state='open']),
-  .selectPrimitivePopup:where([data-open]:not([data-open='false'])) {
-    animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
-      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
-      var(--tw-animation-iteration-count, 1)
-      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
-    --tw-enter-opacity: calc(0/100);
-    --tw-enter-opacity: 0;
-    --tw-enter-scale: calc(95 * 1%);
-    --tw-enter-scale: 0.95;
-  }
-  .selectPrimitivePopup:where([data-state='closed']),
-  .selectPrimitivePopup:where([data-closed]:not([data-closed='false'])) {
-    animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
-      var(--tw-ease, ease) var(--tw-animation-delay, 0s)
-      var(--tw-animation-iteration-count, 1)
-      var(--tw-animation-direction, normal) var(--tw-animation-fill-mode, none);
-    --tw-exit-opacity: calc(0/100);
-    --tw-exit-opacity: 0;
-    --tw-exit-scale: calc(95 * 1%);
-    --tw-exit-scale: 0.95;
-  }
 
   /* px-1.5 py-1 text-xs text-muted-foreground */
   .selectPrimitiveGroupLabel {
@@ -232,31 +122,6 @@
     }
     -webkit-user-select: none;
     user-select: none;
-  }
-  .selectPrimitiveItem:focus {
-    background-color: var(--accent);
-    color: var(--accent-foreground);
-  }
-  :is(.selectPrimitiveItem:not([data-variant='destructive']):focus *) {
-    color: var(--accent-foreground);
-  }
-  .selectPrimitiveItem:where([data-disabled='true']),
-  .selectPrimitiveItem:where([data-disabled]:not([data-disabled='false'])) {
-    pointer-events: none;
-    opacity: 50%;
-  }
-  .selectPrimitiveItem svg {
-    pointer-events: none;
-    flex-shrink: 0;
-  }
-  .selectPrimitiveItem svg:not([class*='npst-sized']) {
-    width: calc(var(--spacing) * 4);
-    height: calc(var(--spacing) * 4);
-  }
-  :is(.selectPrimitiveItem > *):is(span):last-child {
-    display: flex;
-    align-items: center;
-    gap: calc(var(--spacing) * 2);
   }
 
   /* flex flex-1 shrink-0 gap-2 whitespace-nowrap */
@@ -306,10 +171,6 @@
     background-color: var(--popover);
     padding-block: var(--spacing);
   }
-  .selectPrimitiveScrollUpArrow svg:not([class*='npst-sized']) {
-    width: calc(var(--spacing) * 4);
-    height: calc(var(--spacing) * 4);
-  }
 
   /* bottom-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4 */
   .selectPrimitiveScrollDownArrow {
@@ -323,8 +184,175 @@
     background-color: var(--popover);
     padding-block: var(--spacing);
   }
-  .selectPrimitiveScrollDownArrow svg:not([class*='npst-sized']) {
-    width: calc(var(--spacing) * 4);
-    height: calc(var(--spacing) * 4);
+}
+
+/* Variant styles (sm:, dark:, hover:, data-*: …) come after page styles, as in the original. */
+/* flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-placeholder:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 dark:bg-input/30 dark:hover:bg-input/50 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 (variants) */
+.selectPrimitiveTrigger.selectPrimitiveTrigger:focus-visible {
+  border-color: var(--ring);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+    calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-color: var(--ring);
+  --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger:disabled {
+  cursor: not-allowed;
+  opacity: 50%;
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger[aria-invalid='true'] {
+  border-color: var(--destructive);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+    calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-color: var(--destructive);
+  --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger[data-placeholder] {
+  color: var(--muted-foreground);
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger[data-size='default'] {
+  height: calc(var(--spacing) * 8);
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger[data-size='sm'] {
+  height: calc(var(--spacing) * 7);
+  border-radius: min(var(--radius-md), 10px);
+}
+:is(
+  .selectPrimitiveTrigger.selectPrimitiveTrigger > *
+)[data-slot='select-value'] {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 1.5);
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger:is(:global(.dark) *) {
+  background-color: var(--input);
+  background-color: color-mix(in oklab, var(--input) 30%, transparent);
+}
+@media (hover: hover) {
+  .selectPrimitiveTrigger.selectPrimitiveTrigger:is(:global(.dark) *):hover {
+    background-color: var(--input);
+    background-color: color-mix(in oklab, var(--input) 50%, transparent);
   }
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger:is(
+    :global(.dark) *
+  )[aria-invalid='true'] {
+  border-color: var(--destructive);
+  border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
+  --tw-ring-color: var(--destructive);
+  --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger svg {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.selectPrimitiveTrigger.selectPrimitiveTrigger svg:not([class*='npst-sized']) {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+}
+
+/* relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95 (variants) */
+.selectPrimitivePopup.selectPrimitivePopup[data-align-trigger='true'] {
+  animation: none;
+}
+.selectPrimitivePopup.selectPrimitivePopup[data-side='bottom'] {
+  --tw-enter-translate-y: calc(2 * var(--spacing) * -1);
+}
+.selectPrimitivePopup.selectPrimitivePopup[data-side='inline-end'] {
+  --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+}
+.selectPrimitivePopup.selectPrimitivePopup[data-side='inline-start'] {
+  --tw-enter-translate-x: calc(2 * var(--spacing));
+}
+.selectPrimitivePopup.selectPrimitivePopup[data-side='left'] {
+  --tw-enter-translate-x: calc(2 * var(--spacing));
+}
+.selectPrimitivePopup.selectPrimitivePopup[data-side='right'] {
+  --tw-enter-translate-x: calc(2 * var(--spacing) * -1);
+}
+.selectPrimitivePopup.selectPrimitivePopup[data-side='top'] {
+  --tw-enter-translate-y: calc(2 * var(--spacing));
+}
+.selectPrimitivePopup.selectPrimitivePopup:where([data-state='open']),
+.selectPrimitivePopup.selectPrimitivePopup:where(
+    [data-open]:not([data-open='false'])
+  ) {
+  animation: enter var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-enter-opacity: calc(0/100);
+  --tw-enter-opacity: 0;
+  --tw-enter-scale: calc(95 * 1%);
+  --tw-enter-scale: 0.95;
+}
+.selectPrimitivePopup.selectPrimitivePopup:where([data-state='closed']),
+.selectPrimitivePopup.selectPrimitivePopup:where(
+    [data-closed]:not([data-closed='false'])
+  ) {
+  animation: exit var(--tw-animation-duration, var(--tw-duration, 0.15s))
+    var(--tw-ease, ease) var(--tw-animation-delay, 0s)
+    var(--tw-animation-iteration-count, 1) var(--tw-animation-direction, normal)
+    var(--tw-animation-fill-mode, none);
+  --tw-exit-opacity: calc(0/100);
+  --tw-exit-opacity: 0;
+  --tw-exit-scale: calc(95 * 1%);
+  --tw-exit-scale: 0.95;
+}
+
+/* relative flex w-full cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2 (variants) */
+.selectPrimitiveItem.selectPrimitiveItem:focus {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+:is(
+  .selectPrimitiveItem.selectPrimitiveItem:not(
+      [data-variant='destructive']
+    ):focus
+    *
+) {
+  color: var(--accent-foreground);
+}
+.selectPrimitiveItem.selectPrimitiveItem:where([data-disabled='true']),
+.selectPrimitiveItem.selectPrimitiveItem:where(
+    [data-disabled]:not([data-disabled='false'])
+  ) {
+  pointer-events: none;
+  opacity: 50%;
+}
+.selectPrimitiveItem.selectPrimitiveItem svg {
+  pointer-events: none;
+  flex-shrink: 0;
+}
+.selectPrimitiveItem.selectPrimitiveItem svg:not([class*='npst-sized']) {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+}
+:is(.selectPrimitiveItem.selectPrimitiveItem > *):is(span):last-child {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+}
+
+/* top-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4 (variants) */
+.selectPrimitiveScrollUpArrow.selectPrimitiveScrollUpArrow
+  svg:not([class*='npst-sized']) {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
+}
+
+/* bottom-0 z-10 flex w-full cursor-default items-center justify-center bg-popover py-1 [&_svg:not([class*='size-'])]:size-4 (variants) */
+.selectPrimitiveScrollDownArrow.selectPrimitiveScrollDownArrow
+  svg:not([class*='npst-sized']) {
+  width: calc(var(--spacing) * 4);
+  height: calc(var(--spacing) * 4);
 }

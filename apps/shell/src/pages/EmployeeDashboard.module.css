@@ -16,7 +16,7 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 48rem) {
-  .div2 {
+  .div2.div2.div2 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

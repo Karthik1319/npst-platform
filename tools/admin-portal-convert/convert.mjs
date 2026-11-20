@@ -150,6 +150,17 @@ HIS_CLASSES.add('toaster');
 HIS_CLASSES.add('cn-toast');
 HIS_CLASSES.add('sr-only-x');
 
+/** A utility with a variant prefix (`sm:`, `dark:`, `hover:`, `[&_svg]:` …), ignoring `:` inside brackets. */
+function isVariantToken(token) {
+  let depth = 0;
+  for (const ch of token) {
+    if (ch === '[' || ch === '(') depth++;
+    else if (ch === ']' || ch === ')') depth--;
+    else if (ch === ':' && depth === 0) return true;
+  }
+  return false;
+}
+
 // Unprefixed font-size utilities (text-sm, text-2xl, text-[10px], …).
 const FONT_SIZE = /^text-(?:xs|sm|base|lg|[2-9]?xl|\[[\d.]+(?:px|rem|em)\])$/;
 
@@ -263,11 +274,15 @@ function variablesOnly(root) {
 }
 
 // ---------- CSS for one class string ----------
-function cssForSite(tokens, localClass, sizedMarker) {
+function cssForSite(tokens, localClass, sizedMarker, repeat = 1) {
   let out = rulesFor(tokens);
   // Longest tokens first, so a token that is a prefix of another is not replaced inside it.
+  // `repeat` raises the specificity (see variantCascade below).
+  const selector = Array.from({ length: repeat }, () => '.' + localClass).join(
+    '',
+  );
   for (const t of [...tokens].sort((a, b) => b.length - a.length))
-    out = out.split('.' + cssEscape(t)).join('.' + localClass);
+    out = out.split('.' + cssEscape(t)).join(selector);
   out = out.replace(
     /\.(group|peer)(\\\/[\w-]+)?(?![\w\\-])/g,
     (_m, kind, name) =>
@@ -340,6 +355,7 @@ function convertFile(file) {
   let cvaBase = null; // base tokens while converting a cva() call's variants
   const unmergedPending = []; // variant tokens that lose to a base token when not merged
   const unmergedRules = [];
+  const variantBlocks = []; // components: variant rules, outside the ui layer
   function siteExpr(staticText, hint) {
     let tokens = tokenize(staticText);
     if (cvaBase && staticText !== cvaBase.text) {
@@ -409,7 +425,20 @@ function convertFile(file) {
       names.set(local, true);
       bySet.set(key, local);
       const sized = utils.some((u) => /^(?:[a-z-]+:)*size-/.test(u));
-      let css = cssForSite(utils, local, 'npst-sized');
+      // Cascade like the original's single Tailwind stylesheet, where variant
+      // utilities (sm:, dark:, hover:, data-*: …) come after plain ones:
+      //   component plain  <  page plain  <  component variants  <  page variants.
+      // Component plain rules sit in the `ui` layer; variants get a higher specificity
+      // (component ×2, page ×3). tailwind-merge only drops a component class when the
+      // page sets the same utility with the SAME variant, which the ×3 also covers.
+      const plain = utils.filter((u) => !isVariantToken(u));
+      const variants = utils.filter((u) => isVariantToken(u));
+      let css = plain.length ? cssForSite(plain, local, 'npst-sized') : '';
+      const variantCss = variants.length
+        ? cssForSite(variants, local, 'npst-sized', isUi ? 2 : 3)
+        : '';
+      if (!isUi && variantCss)
+        css = [css, variantCss].filter(Boolean).join('\n');
       // tailwind-merge rule: a page's text size drops a component's `leading-*`
       // (e.g. CardTitle). Text-size utilities read --tw-leading, so reset it here.
       if (
@@ -418,7 +447,9 @@ function convertFile(file) {
         !utils.some((u) => /^leading-/.test(u))
       )
         css += `\n.${local} {\n  --tw-leading: initial;\n}`;
-      blocks.push(`/* ${key} */\n${css}`);
+      if (css) blocks.push(`/* ${key} */\n${css}`);
+      if (isUi && variantCss)
+        variantBlocks.push(`/* ${key} (variants) */\n${variantCss}`);
       if (sized) report.sized = (report.sized ?? 0) + 1;
     }
     resolveUnmerged(local);
@@ -662,7 +693,10 @@ function convertFile(file) {
     const cssText =
       `/* Generated from the original Tailwind classes (Step 18 converter); variables only. */\n` +
       (isUi
-        ? `@layer ui {\n${blocks.join('\n\n')}\n}\n`
+        ? `@layer ui {\n${blocks.join('\n\n')}\n}\n` +
+          (variantBlocks.length
+            ? `\n/* Variant styles (sm:, dark:, hover:, data-*: …) come after page styles, as in the original. */\n${variantBlocks.join('\n\n')}\n`
+            : '')
         : blocks.join('\n\n') + '\n') +
       (unmergedRules.length
         ? `\n/* Variants used directly (e.g. buttonVariants() on a link) are not passed through\n   tailwind-merge in the original, so Tailwind's CSS order decides: the base wins here. */\n@layer ui {\n${[...new Set(unmergedRules)].join('\n\n')}\n}\n`

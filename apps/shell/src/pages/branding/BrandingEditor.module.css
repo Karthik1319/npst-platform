@@ -31,7 +31,7 @@
   gap: calc(var(--spacing) * 6);
 }
 @media (width >= 80rem) {
-  .div3 {
+  .div3.div3.div3 {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
@@ -44,7 +44,7 @@
   background-color: var(--muted);
 }
 @media (width >= 80rem) {
-  .div4 {
+  .div4.div4.div4 {
     grid-column: span 5 / span 5;
   }
 }
@@ -57,7 +57,7 @@
   background-color: var(--muted);
 }
 @media (width >= 80rem) {
-  .div5 {
+  .div5.div5.div5 {
     grid-column: span 7 / span 7;
   }
 }
@@ -80,7 +80,7 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 64rem) {
-  .div7 {
+  .div7.div7.div7 {
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
@@ -110,7 +110,7 @@
   color: var(--color-blue-600);
 }
 @media (hover: hover) {
-  .link:hover {
+  .link.link.link:hover {
     text-decoration-line: underline;
   }
 }
@@ -353,7 +353,7 @@
   background-color: var(--border);
 }
 @media (width >= 40rem) {
-  .span9 {
+  .span9.span9.span9 {
     display: block;
   }
 }
@@ -371,7 +371,7 @@
   color: var(--color-blue-600);
 }
 @media (hover: hover) {
-  .link2:hover {
+  .link2.link2.link2:hover {
     text-decoration-line: underline;
   }
 }
@@ -387,7 +387,7 @@
   gap: calc(var(--spacing) * 6);
 }
 @media (width >= 80rem) {
-  .div16 {
+  .div16.div16.div16 {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
 }
@@ -402,7 +402,7 @@
     var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 @media (width >= 80rem) {
-  .card {
+  .card.card.card {
     grid-column: span 5 / span 5;
   }
 }
@@ -445,7 +445,7 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 40rem) {
-  .div17 {
+  .div17.div17.div17 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -556,7 +556,7 @@
   border-color: var(--border);
 }
 @media (hover: hover) {
-  .button3:hover {
+  .button3.button3.button3:hover {
     background-color: var(--muted);
     background-color: color-mix(in oklab, var(--muted) 60%, transparent);
   }
@@ -680,7 +680,7 @@
   color: var(--color-red-600);
 }
 @media (hover: hover) {
-  .button4:hover {
+  .button4.button4.button4:hover {
     background-color: var(--color-red-50);
   }
 }
@@ -708,7 +708,7 @@
   );
 }
 @media (width >= 80rem) {
-  .div27 {
+  .div27.div27.div27 {
     position: sticky;
     top: calc(var(--spacing) * 20);
     grid-column: span 7 / span 7;
@@ -801,7 +801,7 @@
   border-color: var(--border);
 }
 @media (hover: hover) {
-  .button7:hover {
+  .button7.button7.button7:hover {
     background-color: var(--muted);
   }
 }

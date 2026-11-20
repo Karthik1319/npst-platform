@@ -244,50 +244,38 @@ describe('login page (the only login, central session)', () => {
 });
 
 describe('navigation per role (RBAC, UI only)', () => {
-  const allApps = [
-    'PeopleOS',
-    'Deal Pulse',
-    'SkillUp Lounge',
-    'NPST Finance',
-    'Projects & Delivery',
-  ];
-
   it.each([
     [
       'superAdmin',
-      [
-        'Application Management',
-        'Shared Services',
-        'Administration',
-        'Applications',
-      ],
-      allApps,
+      ['Application Management', 'Shared Services', 'Administration'],
     ],
-    [
-      'admin',
-      [
-        'Application Management',
-        'Shared Services',
-        'Administration',
-        'Applications',
-      ],
-      allApps,
-    ],
-    [
-      'appAdmin',
-      ['Shared Services', 'Applications'],
-      ['PeopleOS', 'Projects & Delivery'],
-    ],
-    ['employee', ['Employee Services'], []],
+    ['admin', ['Application Management', 'Shared Services', 'Administration']],
+    ['appAdmin', ['Shared Services']],
+    ['employee', ['Employee Services']],
   ] as const)(
-    '%s sees sections %j and applications %j',
-    async (who, sections, apps) => {
+    '%s sees exactly the Admin Portal sections %j (no extra Applications section)',
+    async (who, sections) => {
       renderSignedInAt(who, '/');
       await screen.findByTestId('sidebar-nav');
-      await vi.waitFor(() => expect(applicationLinks()).toEqual(apps));
       expect(sidebarSections()).toEqual(sections);
+      expect(applicationLinks()).toEqual([]);
     },
   );
+
+  it('opens an application inside the portal from its Dashboard card', async () => {
+    renderSignedInAt('superAdmin', '/');
+    await dashboard();
+    {
+      const link = await screen.findByTitle('Open PeopleOS in the portal');
+      act(() => link.click());
+    }
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Mount stub' }),
+    ).toBeDefined();
+    expect(screen.getByTestId('breadcrumb-nav').textContent).toBe(
+      'ApplicationsPeopleOS',
+    );
+  });
 
   it('only the Super Admin sees Settings', async () => {
     renderSignedInAt('admin', '/');
@@ -448,10 +436,10 @@ describe('applications (MFEs)', () => {
     const popstate = vi.fn();
     window.addEventListener('popstate', popstate);
 
-    await vi.waitFor(() => expect(applicationLinks()).toContain('PeopleOS'));
-    act(() =>
-      within(sidebar()).getByRole('link', { name: 'PeopleOS' }).click(),
-    );
+    {
+      const link = await screen.findByTitle('Open PeopleOS in the portal');
+      act(() => link.click());
+    }
 
     await vi.waitFor(() => expect(popstate).toHaveBeenCalledTimes(1));
     window.removeEventListener('popstate', popstate);
@@ -481,13 +469,16 @@ describe('shell ↔ MFE communication', () => {
     expect(within(toaster).getByText('Hello from /deal-pulse')).toBeDefined();
   });
 
-  it("the bell shows the platform inbox, including the applications' messages", async () => {
+  it('the bell shows the platform inbox: the administrative notifications, as in the Admin Portal', async () => {
     renderSignedInAt('superAdmin', '/');
     await dashboard();
     act(() => screen.getByTestId('topbar-notifications-button').click());
     expect(
-      await screen.findByText('Solution proposal review due for ABC Bank'),
+      await screen.findByText('No administrative notifications.'),
     ).toBeDefined();
+    expect(
+      screen.queryByText('Solution proposal review due for ABC Bank'),
+    ).toBeNull();
   });
 
   it('central sign-out removes the open remote', async () => {
@@ -651,19 +642,18 @@ describe('User Management drives sign-in and access (mock RBAC and Provisioning)
     );
   });
 
-  it('applications assigned in User Management appear after sign-in', async () => {
+  it('applications assigned in User Management can be opened after sign-in', async () => {
+    renderSignedInAt('appAdmin', '/finance');
+    expect(await screen.findByText('Access denied')).toBeDefined();
+    cleanup();
+
     userService.update(USERS.appAdmin.id, {
       apps: ['app-keka', 'app-finance'],
     });
-    renderSignedInAt('appAdmin', '/');
-    await screen.findByTestId('sidebar-nav');
-    await vi.waitFor(() =>
-      expect(applicationLinks()).toEqual([
-        'PeopleOS',
-        'NPST Finance',
-        'Projects & Delivery',
-      ]),
-    );
+    renderSignedInAt('appAdmin', '/finance');
+    expect(
+      await screen.findByText('NPST Finance is not connected yet'),
+    ).toBeDefined();
   });
 });
 

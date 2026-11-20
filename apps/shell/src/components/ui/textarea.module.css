@@ -27,53 +27,56 @@
     --tw-outline-style: none;
     outline-style: none;
   }
-  .textarea::placeholder {
-    color: var(--muted-foreground);
+}
+
+/* Variant styles (sm:, dark:, hover:, data-*: …) come after page styles, as in the original. */
+/* flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 (variants) */
+.textarea.textarea::placeholder {
+  color: var(--muted-foreground);
+}
+.textarea.textarea:focus-visible {
+  border-color: var(--ring);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+    calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-color: var(--ring);
+  --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
+}
+.textarea.textarea:disabled {
+  cursor: not-allowed;
+  background-color: var(--input);
+  background-color: color-mix(in oklab, var(--input) 50%, transparent);
+  opacity: 50%;
+}
+.textarea.textarea[aria-invalid='true'] {
+  border-color: var(--destructive);
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
+    calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow:
+    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
+    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  --tw-ring-color: var(--destructive);
+  --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
+}
+@media (width >= 48rem) {
+  .textarea.textarea {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
   }
-  .textarea:focus-visible {
-    border-color: var(--ring);
-    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
-      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow:
-      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
-      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--ring);
-    --tw-ring-color: color-mix(in oklab, var(--ring) 50%, transparent);
-  }
-  .textarea:disabled {
-    cursor: not-allowed;
-    background-color: var(--input);
-    background-color: color-mix(in oklab, var(--input) 50%, transparent);
-    opacity: 50%;
-  }
-  .textarea[aria-invalid='true'] {
-    border-color: var(--destructive);
-    --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
-      calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-    box-shadow:
-      var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
-      var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
-    --tw-ring-color: var(--destructive);
-    --tw-ring-color: color-mix(in oklab, var(--destructive) 20%, transparent);
-  }
-  @media (width >= 48rem) {
-    .textarea {
-      font-size: var(--text-sm);
-      line-height: var(--tw-leading, var(--text-sm--line-height));
-    }
-  }
-  .textarea:is(:global(.dark) *) {
-    background-color: var(--input);
-    background-color: color-mix(in oklab, var(--input) 30%, transparent);
-  }
-  .textarea:is(:global(.dark) *):disabled {
-    background-color: var(--input);
-    background-color: color-mix(in oklab, var(--input) 80%, transparent);
-  }
-  .textarea:is(:global(.dark) *)[aria-invalid='true'] {
-    border-color: var(--destructive);
-    border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
-    --tw-ring-color: var(--destructive);
-    --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
-  }
+}
+.textarea.textarea:is(:global(.dark) *) {
+  background-color: var(--input);
+  background-color: color-mix(in oklab, var(--input) 30%, transparent);
+}
+.textarea.textarea:is(:global(.dark) *):disabled {
+  background-color: var(--input);
+  background-color: color-mix(in oklab, var(--input) 80%, transparent);
+}
+.textarea.textarea:is(:global(.dark) *)[aria-invalid='true'] {
+  border-color: var(--destructive);
+  border-color: color-mix(in oklab, var(--destructive) 50%, transparent);
+  --tw-ring-color: var(--destructive);
+  --tw-ring-color: color-mix(in oklab, var(--destructive) 40%, transparent);
 }

@@ -15,18 +15,6 @@
     line-height: var(--tw-leading, var(--text-sm--line-height));
   }
 
-  /* [&_tr]:border-b */
-  .thead tr {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 1px;
-  }
-
-  /* [&_tr:last-child]:border-0 */
-  .tbody tr:last-child {
-    border-style: var(--tw-border-style);
-    border-width: 0px;
-  }
-
   /* border-t bg-muted/50 font-medium [&>tr]:last:border-b-0 */
   .tfoot {
     border-top-style: var(--tw-border-style);
@@ -35,10 +23,6 @@
     background-color: color-mix(in oklab, var(--muted) 50%, transparent);
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
-  }
-  .tfoot > tr:last-child {
-    border-bottom-style: var(--tw-border-style);
-    border-bottom-width: 0px;
   }
 
   /* border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted */
@@ -55,19 +39,6 @@
     );
     transition-duration: var(--tw-duration, var(--default-transition-duration));
   }
-  @media (hover: hover) {
-    .tr:hover {
-      background-color: var(--muted);
-      background-color: color-mix(in oklab, var(--muted) 50%, transparent);
-    }
-  }
-  .tr:has([aria-expanded='true']) {
-    background-color: var(--muted);
-    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
-  }
-  .tr[data-state='selected'] {
-    background-color: var(--muted);
-  }
   .\[\.tr\]\:pb-\(--card-spacing\):is(.tr) {
     padding-bottom: var(--card-spacing);
   }
@@ -83,18 +54,12 @@
     white-space: nowrap;
     color: var(--foreground);
   }
-  .th:has([role='checkbox']) {
-    padding-right: 0px;
-  }
 
   /* p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 */
   .td {
     padding: calc(var(--spacing) * 2);
     vertical-align: middle;
     white-space: nowrap;
-  }
-  .td:has([role='checkbox']) {
-    padding-right: 0px;
   }
 
   /* mt-4 text-sm text-muted-foreground */
@@ -104,4 +69,48 @@
     line-height: var(--tw-leading, var(--text-sm--line-height));
     color: var(--muted-foreground);
   }
+}
+
+/* Variant styles (sm:, dark:, hover:, data-*: …) come after page styles, as in the original. */
+/* [&_tr]:border-b (variants) */
+.thead.thead tr {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 1px;
+}
+
+/* [&_tr:last-child]:border-0 (variants) */
+.tbody.tbody tr:last-child {
+  border-style: var(--tw-border-style);
+  border-width: 0px;
+}
+
+/* border-t bg-muted/50 font-medium [&>tr]:last:border-b-0 (variants) */
+.tfoot.tfoot > tr:last-child {
+  border-bottom-style: var(--tw-border-style);
+  border-bottom-width: 0px;
+}
+
+/* border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted (variants) */
+@media (hover: hover) {
+  .tr.tr:hover {
+    background-color: var(--muted);
+    background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+  }
+}
+.tr.tr:has([aria-expanded='true']) {
+  background-color: var(--muted);
+  background-color: color-mix(in oklab, var(--muted) 50%, transparent);
+}
+.tr.tr[data-state='selected'] {
+  background-color: var(--muted);
+}
+
+/* h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0 (variants) */
+.th.th:has([role='checkbox']) {
+  padding-right: 0px;
+}
+
+/* p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0 (variants) */
+.td.td:has([role='checkbox']) {
+  padding-right: 0px;
 }

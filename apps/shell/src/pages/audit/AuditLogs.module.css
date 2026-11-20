@@ -47,7 +47,7 @@
   gap: calc(var(--spacing) * 3);
 }
 @media (width >= 80rem) {
-  .div2 {
+  .div2.div2.div2 {
     flex-direction: row;
     align-items: center;
   }
@@ -59,7 +59,7 @@
   width: 100%;
 }
 @media (width >= 80rem) {
-  .div3 {
+  .div3.div3.div3 {
     max-width: var(--container-xs);
   }
 }
@@ -89,7 +89,7 @@
   gap: calc(var(--spacing) * 2);
 }
 @media (width >= 40rem) {
-  .div4 {
+  .div4.div4.div4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
@@ -99,7 +99,7 @@
   display: none;
 }
 @media (width >= 80rem) {
-  .tableHead {
+  .tableHead.tableHead.tableHead {
     display: table-cell;
   }
 }
@@ -109,7 +109,7 @@
   display: none;
 }
 @media (width >= 64rem) {
-  .tableHead2 {
+  .tableHead2.tableHead2.tableHead2 {
     display: table-cell;
   }
 }
@@ -119,7 +119,7 @@
   display: none;
 }
 @media (width >= 48rem) {
-  .tableHead3 {
+  .tableHead3.tableHead3.tableHead3 {
     display: table-cell;
   }
 }
@@ -133,7 +133,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 80rem) {
-  .tableCell {
+  .tableCell.tableCell.tableCell {
     display: table-cell;
   }
 }
@@ -179,7 +179,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 48rem) {
-  .tableCell4 {
+  .tableCell4.tableCell4.tableCell4 {
     display: table-cell;
   }
 }

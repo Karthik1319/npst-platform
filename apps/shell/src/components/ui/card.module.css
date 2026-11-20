@@ -21,26 +21,6 @@
     --tw-ring-color: color-mix(in oklab, var(--foreground) 10%, transparent);
     --card-spacing: calc(var(--spacing) * 4);
   }
-  .div:has([data-slot='card-footer']) {
-    padding-bottom: 0px;
-  }
-  .div:has(> img:first-child) {
-    padding-top: 0px;
-  }
-  .div[data-size='sm'] {
-    --card-spacing: calc(var(--spacing) * 3);
-  }
-  .div[data-size='sm']:has([data-slot='card-footer']) {
-    padding-bottom: 0px;
-  }
-  :is(.div > *):is(img:first-child) {
-    border-top-left-radius: calc(var(--radius) * 1.4);
-    border-top-right-radius: calc(var(--radius) * 1.4);
-  }
-  :is(.div > *):is(img:last-child) {
-    border-bottom-right-radius: calc(var(--radius) * 1.4);
-    border-bottom-left-radius: calc(var(--radius) * 1.4);
-  }
 
   /* @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing) */
   .div2 {
@@ -54,15 +34,6 @@
     border-top-right-radius: calc(var(--radius) * 1.4);
     padding-inline: var(--card-spacing);
   }
-  .div2:has([data-slot='card-action']) {
-    grid-template-columns: 1fr auto;
-  }
-  .div2:has([data-slot='card-description']) {
-    grid-template-rows: auto auto;
-  }
-  .div2:is(.border-b) {
-    padding-bottom: var(--card-spacing);
-  }
 
   /* font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm */
   .div3 {
@@ -73,10 +44,6 @@
     line-height: var(--leading-snug);
     --tw-font-weight: var(--font-weight-medium);
     font-weight: var(--font-weight-medium);
-  }
-  .div3:is(:where(:global(.npst-g-card))[data-size='sm'] *) {
-    font-size: var(--text-sm);
-    line-height: var(--tw-leading, var(--text-sm--line-height));
   }
 
   /* text-sm text-muted-foreground */
@@ -112,4 +79,44 @@
     background-color: color-mix(in oklab, var(--muted) 50%, transparent);
     padding: var(--card-spacing);
   }
+}
+
+/* Variant styles (sm:, dark:, hover:, data-*: …) come after page styles, as in the original. */
+/* flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl (variants) */
+.div.div:has([data-slot='card-footer']) {
+  padding-bottom: 0px;
+}
+.div.div:has(> img:first-child) {
+  padding-top: 0px;
+}
+.div.div[data-size='sm'] {
+  --card-spacing: calc(var(--spacing) * 3);
+}
+.div.div[data-size='sm']:has([data-slot='card-footer']) {
+  padding-bottom: 0px;
+}
+:is(.div.div > *):is(img:first-child) {
+  border-top-left-radius: calc(var(--radius) * 1.4);
+  border-top-right-radius: calc(var(--radius) * 1.4);
+}
+:is(.div.div > *):is(img:last-child) {
+  border-bottom-right-radius: calc(var(--radius) * 1.4);
+  border-bottom-left-radius: calc(var(--radius) * 1.4);
+}
+
+/* @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-(--card-spacing) has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-(--card-spacing) (variants) */
+.div2.div2:has([data-slot='card-action']) {
+  grid-template-columns: 1fr auto;
+}
+.div2.div2:has([data-slot='card-description']) {
+  grid-template-rows: auto auto;
+}
+.div2.div2:is(.border-b) {
+  padding-bottom: var(--card-spacing);
+}
+
+/* font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm (variants) */
+.div3.div3:is(:where(:global(.npst-g-card))[data-size='sm'] *) {
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
 }

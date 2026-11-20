@@ -23,7 +23,7 @@
   gap: calc(var(--spacing) * 3);
 }
 @media (width >= 40rem) {
-  .div2 {
+  .div2.div2.div2 {
     flex-direction: row;
     align-items: center;
   }
@@ -79,7 +79,7 @@
   display: none;
 }
 @media (width >= 48rem) {
-  .tableHead {
+  .tableHead.tableHead.tableHead {
     display: table-cell;
   }
 }
@@ -89,7 +89,7 @@
   display: none;
 }
 @media (width >= 64rem) {
-  .tableHead2 {
+  .tableHead2.tableHead2.tableHead2 {
     display: table-cell;
   }
 }
@@ -146,7 +146,7 @@
   color: var(--muted-foreground);
 }
 @media (width >= 64rem) {
-  .tableCell {
+  .tableCell.tableCell.tableCell {
     display: table-cell;
   }
 }
@@ -184,7 +184,7 @@
   gap: calc(var(--spacing) * 3);
 }
 @media (width >= 40rem) {
-  .div5 {
+  .div5.div5.div5 {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
@@ -234,7 +234,7 @@
   padding-bottom: calc(var(--spacing) * 2);
 }
 @media (width >= 48rem) {
-  .div7 {
+  .div7.div7.div7 {
     flex-direction: row;
     align-items: stretch;
   }
@@ -373,7 +373,7 @@
   color: var(--color-red-600);
 }
 @media (hover: hover) {
-  .button:hover {
+  .button.button.button:hover {
     background-color: var(--color-red-50);
   }
 }
@@ -417,7 +417,7 @@
   align-self: center;
 }
 @media (width >= 48rem) {
-  .div11 {
+  .div11.div11.div11 {
     display: block;
   }
 }
@@ -456,13 +456,13 @@
   transition-duration: var(--tw-duration, var(--default-transition-duration));
 }
 @media (hover: hover) {
-  .button2:hover {
+  .button2.button2.button2:hover {
     background-color: var(--muted);
     background-color: color-mix(in oklab, var(--muted) 60%, transparent);
   }
 }
 @media (width >= 48rem) {
-  .button2 {
+  .button2.button2.button2 {
     width: calc(var(--spacing) * 40);
   }
 }
@@ -527,7 +527,7 @@
   color: var(--primary);
 }
 @media (hover: hover) {
-  .button3:hover {
+  .button3.button3.button3:hover {
     text-decoration-line: underline;
   }
 }
@@ -584,7 +584,7 @@
   gap: calc(var(--spacing) * 4);
 }
 @media (width >= 40rem) {
-  .div17 {
+  .div17.div17.div17 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -600,7 +600,7 @@
   );
 }
 @media (width >= 40rem) {
-  .div18 {
+  .div18.div18.div18 {
     grid-column: span 2 / span 2;
   }
 }

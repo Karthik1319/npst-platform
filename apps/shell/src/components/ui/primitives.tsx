@@ -138,6 +138,12 @@ export interface PositionOptions {
   align?: Align;
   sideOffset?: number;
   alignOffset?: number;
+  /**
+   * Optional custom placement (e.g. a select aligning its selected item with the
+   * trigger). Runs after the default placement every time; returns true when it
+   * placed the popup itself.
+   */
+  place?: (popup: HTMLElement) => boolean;
 }
 
 const MARGIN = 8;
@@ -156,6 +162,7 @@ export function usePopupPosition(
     align = 'center',
     sideOffset = 0,
     alignOffset = 0,
+    place: customPlace,
   }: PositionOptions,
 ): Side {
   const [usedSide, setUsedSide] = useState<Side>(side);
@@ -226,15 +233,40 @@ export function usePopupPosition(
         `${originX}px ${s === 'top' ? `${h}px` : '0px'}`,
       );
       setUsedSide(s);
+      customPlace?.(popup);
     };
     place();
     window.addEventListener('resize', place);
     window.addEventListener('scroll', place, true);
+    // Like Base UI: follow the anchor while it moves (e.g. a card that lifts on
+    // hover with a transition), checking its position on every frame.
+    let frame = 0;
+    let last = '';
+    const follow = () => {
+      const r = anchorRef.current?.getBoundingClientRect();
+      const key = r ? `${r.left},${r.top},${r.width},${r.height}` : '';
+      if (key !== last) {
+        if (last) place();
+        last = key;
+      }
+      frame = requestAnimationFrame(follow);
+    };
+    frame = requestAnimationFrame(follow);
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener('resize', place);
       window.removeEventListener('scroll', place, true);
     };
-  }, [open, anchorRef, popupRef, side, align, sideOffset, alignOffset]);
+  }, [
+    open,
+    anchorRef,
+    popupRef,
+    side,
+    align,
+    sideOffset,
+    alignOffset,
+    customPlace,
+  ]);
   return usedSide;
 }
 
@@ -280,10 +312,28 @@ export function useScrollLock(open: boolean): void {
   useEffect(() => {
     if (!open) return;
     const root = document.documentElement;
-    root.classList.add('npst-scroll-lock');
-    return () => root.classList.remove('npst-scroll-lock');
+    locks += 1;
+    if (locks === 1) {
+      // Like Base UI: a page that scrolls keeps its scrollbar's space so nothing
+      // shifts; a page that does not scroll just stops scrolling.
+      const scrolls = root.scrollHeight > root.clientHeight;
+      root.style.setProperty(
+        '--npst-scrollbar-width',
+        `${window.innerWidth - root.clientWidth}px`,
+      );
+      lockClass = scrolls ? 'npst-scroll-lock' : 'npst-scroll-lock-plain';
+      root.classList.add(lockClass);
+    }
+    return () => {
+      locks -= 1;
+      if (locks === 0) root.classList.remove(lockClass);
+    };
   }, [open]);
 }
+
+/** Open popups that lock scrolling (a select inside a dialog, …). */
+let locks = 0;
+let lockClass = 'npst-scroll-lock';
 
 /** Moves focus between `[role=menuitem|option]` elements with the arrow keys. */
 export function handleListKeys(
